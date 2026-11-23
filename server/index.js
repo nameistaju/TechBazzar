@@ -6,6 +6,7 @@ import helmet from 'helmet';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
 import rateLimit from 'express-rate-limit';
+import path from 'path';
 
 import authRoutes from './routes/auth.js';
 import productsRoutes from './routes/products.js';
@@ -14,6 +15,8 @@ import ordersRoutes from './routes/orders.js';
 import addressesRoutes from './routes/addresses.js';
 import adminRoutes from './routes/admin.js';
 import miscRoutes from './routes/misc.js';
+import bannersRoutes from './routes/banners.js';
+import quotesRoutes from './routes/quotes.js';
 import { errorHandler } from './middleware/error.js';
 
 const app = express();
@@ -48,6 +51,9 @@ const apiLimiter = rateLimit({
 
 app.use('/api', apiLimiter);
 
+// Serve uploads statically
+app.use('/uploads', express.static(path.join(process.cwd(), 'public', 'uploads')));
+
 // Health check
 app.get('/api/health', (req, res) => {
   res.json({ data: { status: 'healthy', timestamp: new Date().toISOString() }, error: null });
@@ -60,6 +66,8 @@ app.use('/api/cart', cartRoutes);
 app.use('/api/orders', ordersRoutes);
 app.use('/api/addresses', addressesRoutes);
 app.use('/api/admin', adminRoutes);
+app.use('/api/banners', bannersRoutes);
+app.use('/api/quotes', quotesRoutes);
 app.use('/api', miscRoutes);
 
 // Fallback 404 for unhandled API endpoints

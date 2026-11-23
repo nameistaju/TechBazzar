@@ -25,7 +25,9 @@ import {
   X, 
   AlertTriangle,
   Menu,
-  ShieldCheck
+  ShieldCheck,
+  Layers,
+  MessageSquare
 } from 'lucide-react';
 import useAuthStore from '../store/authStore';
 import adminApi from '../api/adminApi';
@@ -43,6 +45,8 @@ import DiscountsView from '../components/admin/DiscountsView';
 import ReportsView from '../components/admin/ReportsView';
 import SettingsView from '../components/admin/SettingsView';
 import ActivityLogView from '../components/admin/ActivityLogView';
+import BannersView from '../components/admin/BannersView';
+import QuotesView from '../components/admin/QuotesView';
 
 // Modals
 import { 
@@ -169,14 +173,16 @@ export default function AdminPage() {
     if (tab === 'customers' && targetId) setTargetCustomerId(targetId);
   };
 
-  // Nav Items definition (11 Modules)
+  // Nav Items definition (13 Modules)
   const navItems = [
     { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
     { id: 'products', label: 'Products', icon: Package },
     { id: 'inventory', label: 'Inventory', icon: Boxes, badge: badges.lowStock, badgeColor: 'bg-[#FF4D00]' },
     { id: 'orders', label: 'Orders', icon: ShoppingBag, badge: badges.pendingOrders, badgeColor: 'bg-[#0A0A0A]' },
+    { id: 'quotes', label: 'RFQ Inquiries', icon: MessageSquare },
     { id: 'estimates', label: 'Estimates', icon: FileSpreadsheet },
     { id: 'invoices', label: 'Invoices', icon: Receipt },
+    { id: 'banners', label: 'Banners & Ads', icon: Layers },
     { id: 'customers', label: 'Customers', icon: Users },
     { id: 'discounts', label: 'Discounts', icon: Tag },
     { id: 'reports', label: 'Reports', icon: BarChart3 },
@@ -230,7 +236,7 @@ export default function AdminPage() {
           </button>
 
           <Link to="/" className="flex items-center gap-2">
-            <img src="/images/techbazaar-logo.png" alt="TechBazaar" className="h-7 w-auto object-contain" />
+            <img src="/logo.png" alt="TechBazaar" className="h-7 w-auto object-contain" />
             <span className="font-mono text-xs tracking-wider uppercase font-bold text-[#0A0A0A] hidden sm:inline">
               TECHBAZAAR <span className="text-[#FF4D00] font-normal">BACK-OFFICE</span>
             </span>
@@ -521,14 +527,24 @@ export default function AdminPage() {
               />
             )}
 
-            {/* 5. Estimates View */}
+            {/* 5. Quotes View */}
+            {activeTab === 'quotes' && (
+              <QuotesView onNavigate={handleDirectNavigate} />
+            )}
+
+            {/* 6. Estimates View */}
             {activeTab === 'estimates' && (
               <EstimatesView onNavigate={handleDirectNavigate} />
             )}
 
-            {/* 6. Invoices View */}
+            {/* 7. Invoices View */}
             {activeTab === 'invoices' && (
               <InvoicesView />
+            )}
+
+            {/* 8. Banners & Ads View */}
+            {activeTab === 'banners' && (
+              <BannersView />
             )}
 
             {/* 7. Customers CRM View */}

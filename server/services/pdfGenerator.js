@@ -47,7 +47,10 @@ export function generateDocumentPDF(docData, settings = {}, type = 'invoice') {
       const bgLight = '#F7F7F7';
 
       // 1. Header & Brand
-      const logoPath = path.resolve('public/images/techbazaar-logo.png');
+      let logoPath = path.resolve('public/logo.png');
+      if (!fs.existsSync(logoPath)) {
+        logoPath = path.resolve('public/images/techbazaar-logo.png');
+      }
       const startY = margin;
 
       // Draw subtle header accent bar

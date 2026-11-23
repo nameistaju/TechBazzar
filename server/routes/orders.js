@@ -6,7 +6,8 @@ import db from '../db/index.js';
 import { optionalAuth, requireAuth } from '../middleware/auth.js';
 import { validateBody } from '../middleware/validate.js';
 import PaymentService from '../services/payment.js';
-import { evaluateDiscount } from '../services/calculation.js';
+import { evaluateDiscount, getWholesaleTier } from '../services/calculation.js';
+import { generateDocumentPDF } from '../services/pdfGenerator.js';
 
 const router = Router();
 
@@ -21,7 +22,9 @@ const createOrderSchema = z.object({
   customer: z.object({
     name: z.string().min(2, 'Full name is required'),
     email: z.string().email('Valid email is required'),
-    phone: z.string().min(10, 'Valid 10-digit phone number is required')
+    phone: z.string().min(10, 'Valid 10-digit phone number is required'),
+    businessName: z.string().optional(),
+    gstin: z.string().optional()
   }),
   shippingAddress: z.object({
     addressLine: z.string().min(3, 'Address line is required'),
@@ -29,12 +32,19 @@ const createOrderSchema = z.object({
     state: z.string().min(2, 'State is required'),
     pincode: z.string().regex(/^\d{6}$/, 'Valid 6-digit PIN code is required')
   }),
+  billingAddress: z.object({
+    addressLine: z.string().optional(),
+    city: z.string().optional(),
+    state: z.string().optional(),
+    pincode: z.string().optional()
+  }).optional(),
   items: z.array(z.object({
     productId: z.string(),
     quantity: z.number().int().positive()
   })).min(1, 'Order must contain at least one item'),
-  paymentMethod: z.enum(['cod', 'card', 'upi']).default('card'),
-  discountCode: z.string().optional()
+  paymentMethod: z.enum(['cod', 'card', 'upi', 'bank_transfer']).default('card'),
+  discountCode: z.string().optional(),
+  isAdvancePayment: z.boolean().optional()
 });
 
 const trackOrderSchema = z.object({
@@ -49,9 +59,9 @@ function generateOrderNumber() {
   return `TB-${new Date().getFullYear()}-${randomSuffix}`;
 }
 
-// POST /api/orders (Guest or Logged-in)
+// POST /api/orders (Guest or Logged-in Wholesale Order)
 router.post('/', orderLimiter, optionalAuth, validateBody(createOrderSchema), async (req, res) => {
-  const { customer, shippingAddress, items, paymentMethod, discountCode } = req.body;
+  const { customer, shippingAddress, billingAddress, items, paymentMethod, discountCode, isAdvancePayment } = req.body;
   const userId = req.user ? req.user.id : null;
 
   try {
@@ -61,9 +71,9 @@ router.post('/', orderLimiter, optionalAuth, validateBody(createOrderSchema), as
       const orderItemsToInsert = [];
       const stockMovementRecords = [];
 
-      // 1. Verify and decrement stock for each item
+      // 1. Verify, calculate wholesale tier price, and decrement stock
       for (const item of items) {
-        const product = db.prepare('SELECT id, name, category, brand, price, stock, image FROM products WHERE id = ?').get(item.productId);
+        const product = db.prepare('SELECT * FROM products WHERE id = ?').get(item.productId);
 
         if (!product) {
           throw new Error(`Product "${item.productId}" is not available in catalog.`);
@@ -80,7 +90,12 @@ router.post('/', orderLimiter, optionalAuth, validateBody(createOrderSchema), as
         // Decrement product stock
         db.prepare('UPDATE products SET stock = stock - ? WHERE id = ?').run(item.quantity, product.id);
 
-        const lineTotal = product.price * item.quantity;
+        const tierInfo = getWholesaleTier(product, item.quantity);
+        const unitPrice = tierInfo.unitPrice;
+        const lineTotal = tierInfo.lineTotal;
+        const taxRate = product.gst_rate !== undefined ? Number(product.gst_rate) : 18;
+        const taxAmount = Math.round(lineTotal * (taxRate / 100));
+
         subtotal += lineTotal;
 
         orderItemsToInsert.push({
@@ -88,9 +103,14 @@ router.post('/', orderLimiter, optionalAuth, validateBody(createOrderSchema), as
           productName: product.name,
           category: product.category,
           brand: product.brand,
-          price: product.price,
+          price: unitPrice,
           quantity: item.quantity,
-          image: product.image
+          image: product.image,
+          tierApplied: tierInfo.tierIndex,
+          unitPrice: unitPrice,
+          taxRate: taxRate,
+          taxAmount: taxAmount,
+          lineTotal: lineTotal
         });
 
         stockMovementRecords.push({
@@ -99,6 +119,13 @@ router.post('/', orderLimiter, optionalAuth, validateBody(createOrderSchema), as
           before: product.stock,
           after: product.stock - item.quantity
         });
+      }
+
+      // Check Wholesale Minimum Order Value (MOV)
+      const movRow = db.prepare("SELECT value FROM settings WHERE key = 'min_order_value'").get();
+      const minOrderValue = movRow ? Number(movRow.value) : 2500;
+      if (subtotal < minOrderValue) {
+        throw new Error(`Minimum Wholesale Order Value is ₹${minOrderValue.toLocaleString('en-IN')}. Your subtotal is ₹${subtotal.toLocaleString('en-IN')}.`);
       }
 
       // Handle Discount Code if provided
@@ -116,9 +143,16 @@ router.post('/', orderLimiter, optionalAuth, validateBody(createOrderSchema), as
         }
       }
 
-      // Free shipping over ₹999, else ₹99
-      const shipping = subtotal >= 999 ? 0 : 99;
+      // Free shipping over ₹10,000 threshold, else ₹250 flat pallet freight
+      const freeShipRow = db.prepare("SELECT value FROM settings WHERE key = 'free_shipping_threshold'").get();
+      const freeShippingThreshold = freeShipRow ? Number(freeShipRow.value) : 10000;
+      const shipping = subtotal >= freeShippingThreshold ? 0 : 250;
       const total = Math.max(0, subtotal - discountAmount + shipping);
+
+      // Advance payment calculations (50% booking advance)
+      const isAdvance = Boolean(isAdvancePayment);
+      const advanceAmount = isAdvance ? Math.round(total / 2) : total;
+      const balanceAmount = isAdvance ? (total - advanceAmount) : 0;
 
       const orderNumber = generateOrderNumber();
       const trackingToken = crypto.randomBytes(24).toString('hex');
@@ -128,17 +162,21 @@ router.post('/', orderLimiter, optionalAuth, validateBody(createOrderSchema), as
         {
           status: 'Placed',
           timestamp: now,
-          note: 'Order confirmed and verified. Preparing for dispatch.'
+          note: isAdvance 
+            ? `Order placed with 50% advance (₹${advanceAmount.toLocaleString('en-IN')}). Balance ₹${balanceAmount.toLocaleString('en-IN')} due before dispatch.` 
+            : 'Order confirmed and verified. Preparing for bulk dispatch.'
         }
       ]);
 
       const insertOrderStmt = db.prepare(`
         INSERT INTO orders (
           order_number, user_id, guest_name, guest_email, guest_phone,
+          business_name, gstin, billing_address, advance_amount, balance_amount, is_advance_payment,
           tracking_token, status, status_history, subtotal, shipping,
           discount_code, discount_amount, total, address, payment_method, created_at
         ) VALUES (
           ?, ?, ?, ?, ?,
+          ?, ?, ?, ?, ?, ?,
           ?, 'Placed', ?, ?, ?,
           ?, ?, ?, ?, ?, ?
         )
@@ -150,6 +188,12 @@ router.post('/', orderLimiter, optionalAuth, validateBody(createOrderSchema), as
         customer.name.trim(),
         customer.email.trim().toLowerCase(),
         customer.phone.trim(),
+        customer.businessName ? customer.businessName.trim() : null,
+        customer.gstin ? customer.gstin.trim().toUpperCase() : null,
+        JSON.stringify(billingAddress || shippingAddress),
+        advanceAmount,
+        balanceAmount,
+        isAdvance ? 1 : 0,
         trackingToken,
         initialStatusHistory,
         subtotal,
@@ -164,21 +208,33 @@ router.post('/', orderLimiter, optionalAuth, validateBody(createOrderSchema), as
 
       const orderId = orderResult.lastInsertRowid;
 
-      // Insert snapshot items & record stock movements
+      // Insert snapshot items with wholesale tier breakdown & record stock movements
       const insertItemStmt = db.prepare(`
         INSERT INTO order_items (
-          order_id, product_id, product_name, price, quantity, image
-        ) VALUES (?, ?, ?, ?, ?, ?)
+          order_id, product_id, product_name, price, quantity, image,
+          tier_applied, unit_price, tax_rate, tax_amount
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
       `);
 
       for (const oi of orderItemsToInsert) {
-        insertItemStmt.run(orderId, oi.productId, oi.productName, oi.price, oi.quantity, oi.image);
+        insertItemStmt.run(
+          orderId,
+          oi.productId,
+          oi.productName,
+          oi.price,
+          oi.quantity,
+          oi.image,
+          oi.tierApplied,
+          oi.unitPrice,
+          oi.taxRate,
+          oi.taxAmount
+        );
       }
 
       for (const sm of stockMovementRecords) {
         db.prepare(`
           INSERT INTO stock_movements (product_id, quantity_change, stock_before, stock_after, reason, reference_id, notes)
-          VALUES (?, ?, ?, ?, 'sale', ?, 'Storefront customer order')
+          VALUES (?, ?, ?, ?, 'sale', ?, 'Storefront wholesale order')
         `).run(sm.productId, -sm.qty, sm.before, sm.after, orderNumber);
       }
 
@@ -192,20 +248,115 @@ router.post('/', orderLimiter, optionalAuth, validateBody(createOrderSchema), as
         db.prepare('UPDATE discounts SET used_count = used_count + 1 WHERE id = ?').run(appliedDiscount.id);
       }
 
+      // Auto-generate Tax Invoice
+      let invoiceId = null;
+      let invoiceNumber = null;
+      try {
+        const invSeqRow = db.prepare("SELECT invoice_number FROM invoices WHERE invoice_number LIKE 'INV-2026-%' ORDER BY id DESC LIMIT 1").get();
+        let invSeq = 1;
+        if (invSeqRow && invSeqRow.invoice_number) {
+          const parts = invSeqRow.invoice_number.split('-');
+          const lastNum = parseInt(parts[2], 10);
+          if (!isNaN(lastNum)) invSeq = lastNum + 1;
+        }
+        invoiceNumber = `INV-2026-${String(invSeq).padStart(4, '0')}`;
+
+        let taxableValue = 0;
+        let totalTax = 0;
+        for (const oi of orderItemsToInsert) {
+          taxableValue += oi.lineTotal;
+          totalTax += oi.taxAmount;
+        }
+        const cgst = Math.round(totalTax / 2);
+        const sgst = totalTax - cgst;
+
+        const invInsert = db.prepare(`
+          INSERT INTO invoices (
+            invoice_number, customer_id, customer_name, customer_email, customer_phone,
+            customer_gstin, place_of_supply, billing_address, shipping_address,
+            invoice_date, due_date, payment_terms, status, subtotal, discount_amount,
+            taxable_value, cgst_amount, sgst_amount, igst_amount, shipping_amount,
+            round_off, total, amount_paid, balance_due, amount_in_words, notes, terms, template
+          ) VALUES (
+            ?, ?, ?, ?, ?,
+            ?, 'Karnataka (29)', ?, ?,
+            ?, ?, ?, ?, ?, ?,
+            ?, ?, ?, 0, ?,
+            0, ?, ?, ?, 'Rupees Only', 'Thank you for your wholesale business with TechBazaar.', 'Standard 1-year bulk manufacturer warranty.', 'standard'
+          )
+        `).run(
+          invoiceNumber,
+          userId,
+          customer.businessName || customer.name.trim(),
+          customer.email.trim(),
+          customer.phone.trim(),
+          customer.gstin ? customer.gstin.trim().toUpperCase() : null,
+          JSON.stringify(billingAddress || shippingAddress),
+          JSON.stringify(shippingAddress),
+          now.split('T')[0],
+          now.split('T')[0],
+          isAdvance ? '50% Advance Booking' : 'Full Payment',
+          paymentMethod === 'cod' ? 'Unpaid' : (isAdvance ? 'Partially Paid' : 'Paid'),
+          subtotal,
+          discountAmount,
+          taxableValue,
+          cgst,
+          sgst,
+          shipping,
+          total,
+          paymentMethod === 'cod' ? 0 : advanceAmount,
+          paymentMethod === 'cod' ? total : balanceAmount
+        );
+
+        invoiceId = invInsert.lastInsertRowid;
+
+        // Insert invoice line items
+        const invItemStmt = db.prepare(`
+          INSERT INTO invoice_items (
+            invoice_id, product_id, item_name, quantity, rate,
+            discount_percent, discount_amount, tax_rate, tax_amount, line_total
+          ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        `);
+
+        for (const oi of orderItemsToInsert) {
+          invItemStmt.run(
+            invoiceId,
+            oi.productId,
+            oi.productName,
+            oi.quantity,
+            oi.unitPrice,
+            0,
+            0,
+            oi.taxRate,
+            oi.taxAmount,
+            oi.lineTotal
+          );
+        }
+
+        // Link invoice to order
+        db.prepare('UPDATE orders SET invoice_id = ? WHERE id = ?').run(invoiceId, orderId);
+      } catch (invErr) {
+        console.error('Invoice auto-creation warning:', invErr.message);
+      }
+
       // Upsert into customers CRM directory
       db.prepare(`
-        INSERT INTO customers (name, email, phone, shipping_address, tags)
-        VALUES (?, ?, ?, ?, ?)
+        INSERT INTO customers (name, company, email, phone, gstin, shipping_address, tags)
+        VALUES (?, ?, ?, ?, ?, ?, ?)
         ON CONFLICT(email) DO UPDATE SET
           name = excluded.name,
+          company = COALESCE(excluded.company, customers.company),
           phone = excluded.phone,
+          gstin = COALESCE(excluded.gstin, customers.gstin),
           shipping_address = excluded.shipping_address
       `).run(
         customer.name.trim(),
+        customer.businessName ? customer.businessName.trim() : null,
         customer.email.trim().toLowerCase(),
         customer.phone.trim(),
+        customer.gstin ? customer.gstin.trim().toUpperCase() : null,
         JSON.stringify(shippingAddress),
-        JSON.stringify(['Storefront Buyer'])
+        JSON.stringify(['Wholesale Buyer', customer.businessName ? 'B2B Business' : 'Guest Buyer'])
       );
 
       // If user was logged in, clear their cart in DB
@@ -217,13 +368,20 @@ router.post('/', orderLimiter, optionalAuth, validateBody(createOrderSchema), as
         orderId,
         orderNumber,
         trackingToken,
+        invoiceId,
+        invoiceNumber,
         subtotal,
         discountAmount,
         shipping,
         total,
+        advanceAmount,
+        balanceAmount,
+        isAdvancePayment: isAdvance,
         status: 'Placed',
         customer: {
           name: customer.name,
+          businessName: customer.businessName,
+          gstin: customer.gstin,
           email: customer.email,
           phone: customer.phone
         },
@@ -350,6 +508,64 @@ router.get('/my', requireAuth, (req, res) => {
 
   return res.json({
     data: { orders: formattedOrders },
+    error: null
+  });
+});
+
+// GET /api/orders/:orderNumber/invoice (Public/Guest Tax Invoice download/view)
+router.get('/:orderNumber/invoice', async (req, res) => {
+  const { orderNumber } = req.params;
+  const order = db.prepare('SELECT * FROM orders WHERE order_number = ?').get(orderNumber);
+  if (!order) {
+    return res.status(404).json({ data: null, error: 'Order not found' });
+  }
+
+  let invoice = null;
+  if (order.invoice_id) {
+    invoice = db.prepare('SELECT * FROM invoices WHERE id = ?').get(order.invoice_id);
+  }
+
+  if (!invoice) {
+    // Lookup by invoice_number pattern
+    invoice = db.prepare('SELECT * FROM invoices WHERE customer_email = ? ORDER BY id DESC LIMIT 1').get(order.guest_email);
+  }
+
+  if (!invoice) {
+    return res.status(404).json({ data: null, error: 'Tax Invoice not found for this order' });
+  }
+
+  const items = db.prepare('SELECT * FROM invoice_items WHERE invoice_id = ?').all(invoice.id);
+
+  // If requested directly in browser or pdf requested, stream official A4 PDF
+  const wantsPdf = req.query.pdf === 'true' || 
+                   req.query.download === 'true' || 
+                   (req.headers.accept && req.headers.accept.includes('text/html') && req.query.format !== 'json');
+
+  if (wantsPdf) {
+    try {
+      const settingsRows = db.prepare('SELECT key, value FROM settings').all();
+      const settingsMap = {};
+      settingsRows.forEach(r => { settingsMap[r.key] = r.value; });
+      const pdfBuffer = await generateDocumentPDF({ ...invoice, items }, settingsMap, 'invoice');
+      res.setHeader('Content-Type', 'application/pdf');
+      res.setHeader('Content-Disposition', `inline; filename="${invoice.invoice_number}.pdf"`);
+      return res.send(pdfBuffer);
+    } catch (pdfErr) {
+      console.error('Invoice PDF generation warning:', pdfErr);
+    }
+  }
+
+  return res.json({
+    data: {
+      invoice: {
+        ...invoice,
+        billing_address: JSON.parse(invoice.billing_address || '{}'),
+        shipping_address: JSON.parse(invoice.shipping_address || '{}'),
+        items,
+        orderNumber: order.order_number,
+        paymentMethod: order.payment_method
+      }
+    },
     error: null
   });
 });

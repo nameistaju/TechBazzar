@@ -1,5 +1,5 @@
 import React from 'react';
-import { LayoutGrid, List, SlidersHorizontal, X } from 'lucide-react';
+import { LayoutGrid, List, Table as TableIcon, SlidersHorizontal, X } from 'lucide-react';
 
 export default function SortBar({
   totalCount,
@@ -76,6 +76,19 @@ export default function SortBar({
               aria-label="List view"
             >
               <List size={15} />
+            </button>
+            <button
+              type="button"
+              onClick={() => onChangeViewMode('table')}
+              className={`p-2 transition-colors ${
+                viewMode === 'table' 
+                  ? 'bg-[#0A0A0A] text-white' 
+                  : 'text-[#6B6B6B] hover:text-[#0A0A0A] hover:bg-[#F7F7F7]'
+              }`}
+              title="Wholesale Table View"
+              aria-label="Table view"
+            >
+              <TableIcon size={15} />
             </button>
           </div>
         </div>

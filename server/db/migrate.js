@@ -1,4 +1,5 @@
 import db from './index.js';
+import { generateSampleBanners } from './generateSampleBanners.js';
 
 console.log('🔄 Starting TechBazaar Database Migration...');
 
@@ -27,7 +28,17 @@ const productColumns = [
   { name: 'sale_starts_at', type: 'DATETIME' },
   { name: 'sale_ends_at', type: 'DATETIME' },
   { name: 'featured_hero', type: 'BOOLEAN DEFAULT 0' },
-  { name: 'deleted_at', type: 'DATETIME' }
+  { name: 'deleted_at', type: 'DATETIME' },
+  // Wholesale Bulk-Buying Attributes
+  { name: 'moq', type: 'INTEGER DEFAULT 10' },
+  { name: 'pack_size', type: 'INTEGER DEFAULT 5' },
+  { name: 'tier1_qty', type: 'INTEGER DEFAULT 10' },
+  { name: 'tier1_price', type: 'INTEGER DEFAULT 0' },
+  { name: 'tier2_qty', type: 'INTEGER DEFAULT 50' },
+  { name: 'tier2_price', type: 'INTEGER DEFAULT 0' },
+  { name: 'tier3_qty', type: 'INTEGER DEFAULT 100' },
+  { name: 'tier3_price', type: 'INTEGER DEFAULT 0' },
+  { name: 'suggested_retail_price', type: 'INTEGER DEFAULT 0' }
 ];
 
 for (const col of productColumns) {
@@ -50,13 +61,36 @@ const orderColumns = [
   { name: 'discount_code', type: 'TEXT' },
   { name: 'discount_amount', type: 'INTEGER DEFAULT 0' },
   { name: 'internal_notes', type: 'TEXT' },
-  { name: 'payment_status', type: 'TEXT DEFAULT "Paid"' }
+  { name: 'payment_status', type: 'TEXT DEFAULT "Paid"' },
+  // Wholesale B2B Attributes
+  { name: 'business_name', type: 'TEXT' },
+  { name: 'gstin', type: 'TEXT' },
+  { name: 'billing_address', type: 'TEXT' },
+  { name: 'advance_amount', type: 'INTEGER DEFAULT 0' },
+  { name: 'balance_amount', type: 'INTEGER DEFAULT 0' },
+  { name: 'is_advance_payment', type: 'BOOLEAN DEFAULT 0' },
+  { name: 'invoice_id', type: 'INTEGER' }
 ];
 
 for (const col of orderColumns) {
   if (!columnExists('orders', col.name)) {
     db.exec(`ALTER TABLE orders ADD COLUMN ${col.name} ${col.type}`);
     console.log(`  + Added column 'orders.${col.name}'`);
+  }
+}
+
+// 3b. Upgrade order_items table
+const orderItemColumns = [
+  { name: 'tier_applied', type: 'INTEGER DEFAULT 1' },
+  { name: 'unit_price', type: 'INTEGER DEFAULT 0' },
+  { name: 'tax_rate', type: 'REAL DEFAULT 18' },
+  { name: 'tax_amount', type: 'INTEGER DEFAULT 0' }
+];
+
+for (const col of orderItemColumns) {
+  if (!columnExists('order_items', col.name)) {
+    db.exec(`ALTER TABLE order_items ADD COLUMN ${col.name} ${col.type}`);
+    console.log(`  + Added column 'order_items.${col.name}'`);
   }
 }
 
@@ -265,9 +299,59 @@ db.exec(`
     name TEXT PRIMARY KEY,
     current_value INTEGER NOT NULL
   );
+
+  -- Quote Requests (Wholesale RFQ / Inquiries from /quote)
+  CREATE TABLE IF NOT EXISTS quote_requests (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    quote_number TEXT UNIQUE NOT NULL,
+    status TEXT DEFAULT 'Pending', -- 'Pending', 'Replied', 'Accepted', 'Rejected'
+    business_name TEXT,
+    contact_name TEXT NOT NULL,
+    email TEXT NOT NULL,
+    phone TEXT NOT NULL,
+    gstin TEXT,
+    pincode TEXT,
+    items TEXT NOT NULL, -- JSON array of items: [{ product_id, name, quantity, target_price }]
+    target_price INTEGER,
+    notes TEXT,
+    estimate_id INTEGER REFERENCES estimates(id) ON DELETE SET NULL,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+  );
+
+  -- Banner & Ad Management System (Dual-Image: 3:1 Desktop, 4:3 Mobile)
+  CREATE TABLE IF NOT EXISTS banners (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    title TEXT NOT NULL,
+    slot TEXT NOT NULL, -- 'home-mid-1' | 'home-mid-2' | 'home-mid-3' | 'category-inline' | 'cart-promo' | 'product-below'
+    desktop_image TEXT NOT NULL,
+    mobile_image TEXT,
+    thumb TEXT,
+    focal_x REAL DEFAULT 50,
+    focal_y REAL DEFAULT 50,
+    alt TEXT NOT NULL,
+    link_type TEXT DEFAULT 'none', -- 'product' | 'category' | 'brand' | 'coupon' | 'page' | 'external' | 'none'
+    link_target TEXT,
+    new_tab BOOLEAN DEFAULT 0,
+    label TEXT, -- null | 'Ad' | 'Offer' | 'New'
+    starts_at DATETIME,
+    ends_at DATETIME,
+    active BOOLEAN DEFAULT 1,
+    sort_order INTEGER DEFAULT 0,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+  );
+
+  -- Banner Performance Stats (Daily aggregates)
+  CREATE TABLE IF NOT EXISTS banner_stats (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    banner_id INTEGER NOT NULL REFERENCES banners(id) ON DELETE CASCADE,
+    date DATE NOT NULL,
+    impressions INTEGER DEFAULT 0,
+    clicks INTEGER DEFAULT 0,
+    UNIQUE(banner_id, date)
+  );
 `);
 
-console.log('  ✓ Verified all secondary tables (stock_movements, discounts, estimates, invoices, etc.)');
+console.log('  ✓ Verified all secondary tables (stock_movements, discounts, estimates, invoices, quote_requests, banners, etc.)');
 
 // 5. Initialize Counters if not set
 const initCounter = (name, initialVal) => {
@@ -281,9 +365,46 @@ const initCounter = (name, initialVal) => {
 initCounter('invoice', 1);
 initCounter('estimate', 1);
 initCounter('credit_note', 1);
+initCounter('quote_request', 1);
 
-// 6. Backfill Products with SKU, Cost Price, MRP, and Images JSON
-const products = db.prepare('SELECT id, name, category, price, original_price, image, sku, cost_price, mrp, images FROM products').all();
+// 6. Wholesale System Settings
+const wholesaleSettings = [
+  { key: 'min_order_value', value: '2500' },
+  { key: 'free_shipping_threshold', value: '10000' },
+  { key: 'wholesale_prices_only_registered', value: '0' },
+  { key: 'allow_custom_quotes', value: '1' }
+];
+
+const insertSetting = db.prepare(`
+  INSERT INTO settings (key, value)
+  VALUES (?, ?)
+  ON CONFLICT(key) DO NOTHING
+`);
+
+db.transaction(() => {
+  for (const s of wholesaleSettings) {
+    insertSetting.run(s.key, s.value);
+  }
+})();
+console.log('  ✓ Initialized wholesale system settings');
+
+// 7. Backfill Products with SKU, Cost Price, MRP, Images JSON, and 3-Tier Wholesale Pricing
+const wholesaleCategories = {
+  'chargers-cables': { moq: 20, packSize: 5, t1Qty: 20, t2Qty: 50, t3Qty: 100, t2Disc: 0.12, t3Disc: 0.22 },
+  'phone-cases': { moq: 20, packSize: 5, t1Qty: 20, t2Qty: 50, t3Qty: 100, t2Disc: 0.12, t3Disc: 0.22 },
+  'earbuds': { moq: 10, packSize: 5, t1Qty: 10, t2Qty: 50, t3Qty: 100, t2Disc: 0.08, t3Disc: 0.16 },
+  'headphones': { moq: 10, packSize: 5, t1Qty: 10, t2Qty: 50, t3Qty: 100, t2Disc: 0.08, t3Disc: 0.16 },
+  'speakers': { moq: 10, packSize: 5, t1Qty: 10, t2Qty: 50, t3Qty: 100, t2Disc: 0.08, t3Disc: 0.16 },
+  'power-banks': { moq: 10, packSize: 5, t1Qty: 10, t2Qty: 50, t3Qty: 100, t2Disc: 0.10, t3Disc: 0.18 },
+  'smartwatches': { moq: 5, packSize: 2, t1Qty: 5, t2Qty: 20, t3Qty: 50, t2Disc: 0.07, t3Disc: 0.14 },
+  'gaming': { moq: 5, packSize: 2, t1Qty: 5, t2Qty: 20, t3Qty: 50, t2Disc: 0.07, t3Disc: 0.14 },
+  'cameras-cctv': { moq: 5, packSize: 2, t1Qty: 5, t2Qty: 20, t3Qty: 50, t2Disc: 0.08, t3Disc: 0.15 },
+  'smartphones': { moq: 2, packSize: 1, t1Qty: 2, t2Qty: 5, t3Qty: 10, t2Disc: 0.04, t3Disc: 0.08 },
+  'laptops': { moq: 2, packSize: 1, t1Qty: 2, t2Qty: 5, t3Qty: 10, t2Disc: 0.04, t3Disc: 0.08 }
+};
+const defaultWholesaleConfig = { moq: 5, packSize: 2, t1Qty: 5, t2Qty: 20, t3Qty: 50, t2Disc: 0.08, t3Disc: 0.16 };
+
+const products = db.prepare('SELECT id, name, category, price, original_price, image, sku, cost_price, mrp, images, stock, moq FROM products').all();
 
 const updateStmt = db.prepare(`
   UPDATE products
@@ -291,7 +412,17 @@ const updateStmt = db.prepare(`
     sku = COALESCE(sku, ?),
     cost_price = CASE WHEN cost_price = 0 OR cost_price IS NULL THEN ? ELSE cost_price END,
     mrp = CASE WHEN mrp = 0 OR mrp IS NULL THEN ? ELSE mrp END,
-    images = COALESCE(images, ?)
+    images = COALESCE(images, ?),
+    moq = ?,
+    pack_size = ?,
+    tier1_qty = ?,
+    tier1_price = ?,
+    tier2_qty = ?,
+    tier2_price = ?,
+    tier3_qty = ?,
+    tier3_price = ?,
+    suggested_retail_price = ?,
+    stock = CASE WHEN stock < ? THEN ? ELSE stock END
   WHERE id = ?
 `);
 
@@ -300,17 +431,111 @@ const backfillTx = db.transaction((items) => {
   for (const [idx, p] of items.entries()) {
     const catCode = (p.category || 'GEN').replace(/[^a-zA-Z]/g, '').slice(0, 3).toUpperCase();
     const autoSku = p.sku || `TB-${catCode}-${String(idx + 1).padStart(4, '0')}`;
-    const costPrice = p.cost_price || Math.round(p.price * 0.65);
-    const mrp = p.mrp || (p.original_price && p.original_price > p.price ? p.original_price : Math.round(p.price * 1.2));
+    const basePrice = p.price || 1000;
+    const costPrice = p.cost_price || Math.round(basePrice * 0.65);
+    const mrp = p.mrp || (p.original_price && p.original_price > basePrice ? p.original_price : Math.round(basePrice * 1.35));
     const imagesJson = p.images || JSON.stringify([p.image]);
 
-    updateStmt.run(autoSku, costPrice, mrp, imagesJson, p.id);
+    const cfg = wholesaleCategories[p.category] || defaultWholesaleConfig;
+    const t1Price = basePrice;
+    const t2Price = Math.round(basePrice * (1 - cfg.t2Disc));
+    const t3Price = Math.round(basePrice * (1 - cfg.t3Disc));
+    const suggestedRetailPrice = mrp;
+    const minStock = cfg.moq * 3;
+
+    updateStmt.run(
+      autoSku,
+      costPrice,
+      mrp,
+      imagesJson,
+      cfg.moq,
+      cfg.packSize,
+      cfg.t1Qty,
+      t1Price,
+      cfg.t2Qty,
+      t2Price,
+      cfg.t3Qty,
+      t3Price,
+      suggestedRetailPrice,
+      minStock,
+      minStock,
+      p.id
+    );
     count++;
   }
   return count;
 });
 
 const updatedCount = backfillTx(products);
-console.log(`  ✓ Backfilled ${updatedCount} products with SKU, Cost Price, MRP, and Images JSON`);
+console.log(`  ✓ Backfilled ${updatedCount} products with wholesale MOQs, pack sizes, and 3-tier price brackets`);
+
+// 8. Generate and Seed Sample Banners
+generateSampleBanners();
+
+const bannerCount = db.prepare('SELECT COUNT(*) as count FROM banners').get();
+if (bannerCount.count === 0) {
+  const insertBanner = db.prepare(`
+    INSERT INTO banners (
+      title, slot, desktop_image, mobile_image, thumb, alt, link_type, link_target, label, active, sort_order
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 1, ?)
+  `);
+
+  const initialBanners = [
+    {
+      title: 'FESTIVE BULK DEALS - Extra 15% Off Orders Above ₹50,000',
+      slot: 'home-mid-1',
+      desktop_image: '/uploads/banners/festive-deals-desktop.svg',
+      mobile_image: '/uploads/banners/festive-deals-mobile.svg',
+      thumb: '/uploads/banners/festive-deals-thumb.svg',
+      alt: 'Festive wholesale discounts on bulk electronics purchases',
+      link_type: 'coupon',
+      link_target: 'FESTIVE25',
+      label: 'Offer',
+      sort_order: 1
+    },
+    {
+      title: 'FACTORY DIRECT SMART AUDIO - High-Margin Resale Inventory',
+      slot: 'home-mid-2',
+      desktop_image: '/uploads/banners/smart-audio-desktop.svg',
+      mobile_image: '/uploads/banners/smart-audio-mobile.svg',
+      thumb: '/uploads/banners/smart-audio-thumb.svg',
+      alt: 'Factory direct wireless audio for retail shop owners',
+      link_type: 'category',
+      link_target: 'earbuds',
+      label: 'New',
+      sort_order: 1
+    },
+    {
+      title: 'TECHBAZAAR B2B PARTNER CLUB - Priority Allocation & 30-Day Credit',
+      slot: 'home-mid-3',
+      desktop_image: '/uploads/banners/b2b-partner-desktop.svg',
+      mobile_image: '/uploads/banners/b2b-partner-mobile.svg',
+      thumb: '/uploads/banners/b2b-partner-thumb.svg',
+      alt: 'Join TechBazaar wholesale B2B reseller partner network',
+      link_type: 'page',
+      link_target: '/quote',
+      label: 'Ad',
+      sort_order: 1
+    }
+  ];
+
+  db.transaction(() => {
+    for (const b of initialBanners) {
+      insertBanner.run(
+        b.title,
+        b.slot,
+        b.desktop_image,
+        b.mobile_image,
+        b.thumb,
+        b.alt,
+        b.link_type,
+        b.link_target,
+        b.label,
+        b.sort_order
+      );
+    }
+  })();
+  console.log('  ✓ Seeded 3 default active banners across home-mid-1, home-mid-2, home-mid-3 slots');
+}
 
 console.log('✅ TechBazaar Database Migration Completed Successfully!\n');

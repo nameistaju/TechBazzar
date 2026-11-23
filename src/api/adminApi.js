@@ -120,7 +120,25 @@ export const adminApi = {
     const sp = new URLSearchParams(params).toString();
     return apiClient(`/admin/activity-log${sp ? `?${sp}` : ''}`);
   },
-  undoActivity: (id) => apiClient(`/admin/activity-log/${id}/undo`, { method: 'POST' })
+  undoActivity: (id) => apiClient(`/admin/activity-log/${id}/undo`, { method: 'POST' }),
+
+  // 13. Banners & Ads Management
+  getBanners: () => apiClient('/admin/banners'),
+  createBanner: (payload) => apiClient('/admin/banners', { method: 'POST', body: payload }),
+  updateBanner: (id, payload) => apiClient(`/admin/banners/${id}`, { method: 'PUT', body: payload }),
+  deleteBanner: (id) => apiClient(`/admin/banners/${id}`, { method: 'DELETE' }),
+  toggleBanner: (id, isActive) => apiClient(`/admin/banners/${id}/toggle`, { method: 'PATCH', body: { isActive } }),
+  reorderBanners: (slot, bannerIds) => apiClient('/admin/banners/reorder', { method: 'POST', body: { slot, bannerIds } }),
+  uploadBannerImage: (payload) => apiClient('/admin/banners/upload', { method: 'POST', body: payload }),
+  getExportBannersUrl: () => '/api/admin/banners/export/csv',
+
+  // 14. Wholesale RFQ Quotes Inbox
+  getQuotes: (params = {}) => {
+    const sp = new URLSearchParams(params).toString();
+    return apiClient(`/admin/quotes${sp ? `?${sp}` : ''}`);
+  },
+  updateQuote: (id, payload) => apiClient(`/admin/quotes/${id}`, { method: 'PATCH', body: payload }),
+  convertQuoteToEstimate: (id) => apiClient(`/admin/quotes/${id}/convert-to-estimate`, { method: 'POST' })
 };
 
 export default adminApi;

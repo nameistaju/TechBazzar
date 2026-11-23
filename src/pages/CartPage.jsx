@@ -10,21 +10,37 @@ import {
   ShieldCheck, 
   Tag, 
   Check, 
-  ArrowLeft 
+  ArrowLeft,
+  Bookmark,
+  Download,
+  FileText,
+  CheckCircle2,
+  AlertTriangle
 } from 'lucide-react';
 import { useStore } from '../context/StoreContext';
 import Breadcrumbs from '../components/common/Breadcrumbs';
+import BannerSlot from '../components/common/BannerSlot';
 
 export default function CartPage() {
   const { 
     cart, 
+    cartItems,
     cartCount, 
     cartSubtotal, 
     cartSavings, 
     shippingFee, 
     cartTotal, 
+    taxableValue,
+    totalTax,
+    minOrderValue,
+    meetsMinOrderValue,
+    amountToMinOrder,
+    minOrderProgress,
     freeShippingProgress, 
     amountToFreeShipping, 
+    isFreeShippingMet,
+    saveCurrentCart,
+    exportCartCSV,
     updateQuantity, 
     removeFromCart, 
     clearCart,
@@ -100,24 +116,92 @@ export default function CartPage() {
           </button>
         </div>
 
-        {/* Free Shipping Alert Bar */}
-        <div className="bg-[#F7F7F7] border border-[#EAEAEA] p-4 rounded-[4px] mb-8">
-          <div className="flex items-center justify-between text-xs mb-2 font-medium">
-            <span className="flex items-center gap-2 text-[#0A0A0A]">
-              <Truck size={16} className="text-[#FF4D00]" />
-              {amountToFreeShipping === 0 ? (
-                <strong className="text-emerald-600 font-semibold">You've unlocked FREE Express Shipping!</strong>
-              ) : (
-                <span>Add <strong className="text-[#0A0A0A] tabular-nums font-semibold">₹{amountToFreeShipping.toLocaleString('en-IN')}</strong> more to unlock FREE Express Pan-India Shipping</span>
-              )}
-            </span>
-            <span className="text-xs text-[#6B6B6B] tabular-nums">{freeShippingProgress}%</span>
+        {/* Slot 5: cart-promo Banner */}
+        <div className="mb-6">
+          <BannerSlot slot="cart-promo" />
+        </div>
+
+        {/* Wholesale Minimum Order Value (MOV) & Free Shipping Dual Status */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
+          {/* Minimum Order Value Bar */}
+          <div className={`p-4 rounded-[4px] border ${
+            meetsMinOrderValue 
+              ? 'bg-emerald-50 border-emerald-200 text-emerald-900' 
+              : 'bg-[#FFF9F6] border-[#FF4D00]/40 text-[#0A0A0A]'
+          }`}>
+            <div className="flex items-center justify-between text-xs mb-2 font-medium">
+              <span className="flex items-center gap-2">
+                {meetsMinOrderValue ? (
+                  <CheckCircle2 size={16} className="text-emerald-600" />
+                ) : (
+                  <AlertTriangle size={16} className="text-[#FF4D00]" />
+                )}
+                {meetsMinOrderValue ? (
+                  <strong className="text-emerald-700">Wholesale MOQ Met (₹{minOrderValue.toLocaleString('en-IN')}+)</strong>
+                ) : (
+                  <span>Add <strong className="text-[#FF4D00] tabular-nums font-bold">₹{amountToMinOrder.toLocaleString('en-IN')}</strong> to meet Minimum Wholesale Order (₹{minOrderValue.toLocaleString('en-IN')})</span>
+                )}
+              </span>
+              <span className="text-xs font-semibold tabular-nums">{minOrderProgress}%</span>
+            </div>
+            <div className="w-full h-2 bg-[#EAEAEA] rounded-full overflow-hidden">
+              <div 
+                className={`h-full transition-all duration-300 rounded-full ${meetsMinOrderValue ? 'bg-emerald-600' : 'bg-[#FF4D00]'}`}
+                style={{ width: `${minOrderProgress}%` }}
+              />
+            </div>
           </div>
-          <div className="w-full h-2 bg-[#EAEAEA] rounded-full overflow-hidden">
-            <div 
-              className="h-full bg-[#FF4D00] transition-all duration-500 rounded-full"
-              style={{ width: `${freeShippingProgress}%` }}
-            />
+
+          {/* Free Shipping Alert Bar */}
+          <div className="bg-[#F7F7F7] border border-[#EAEAEA] p-4 rounded-[4px]">
+            <div className="flex items-center justify-between text-xs mb-2 font-medium">
+              <span className="flex items-center gap-2 text-[#0A0A0A]">
+                <Truck size={16} className="text-[#FF4D00]" />
+                {isFreeShippingMet ? (
+                  <strong className="text-emerald-600 font-semibold">FREE Pallet Freight Unlocked!</strong>
+                ) : (
+                  <span>Add <strong className="text-[#0A0A0A] tabular-nums font-semibold">₹{amountToFreeShipping.toLocaleString('en-IN')}</strong> for Free Pallet Shipping</span>
+                )}
+              </span>
+              <span className="text-xs text-[#6B6B6B] tabular-nums">{freeShippingProgress}%</span>
+            </div>
+            <div className="w-full h-2 bg-[#EAEAEA] rounded-full overflow-hidden">
+              <div 
+                className="h-full bg-emerald-600 transition-all duration-500 rounded-full"
+                style={{ width: `${freeShippingProgress}%` }}
+              />
+            </div>
+          </div>
+        </div>
+
+        {/* B2B Utilities Bar: Save Cart, Export CSV, Request Quote */}
+        <div className="bg-white border border-[#EAEAEA] p-3 rounded-[4px] mb-8 flex flex-wrap items-center justify-between gap-3 text-xs">
+          <div className="flex items-center gap-2 text-[#6B6B6B]">
+            <span className="font-semibold text-[#0A0A0A] uppercase tracking-wider text-[11px]">Wholesale Utilities:</span>
+            <span>All prices reflect active volume tiers and exclude GST until checkout.</span>
+          </div>
+          <div className="flex items-center gap-3">
+            <button
+              type="button"
+              onClick={() => saveCurrentCart()}
+              className="px-3 py-1.5 rounded border border-[#EAEAEA] hover:border-[#0A0A0A] text-[#0A0A0A] text-xs font-medium flex items-center gap-1.5 transition-colors"
+            >
+              <Bookmark size={13} className="text-[#FF4D00]" /> Save Cart List
+            </button>
+            <button
+              type="button"
+              onClick={exportCartCSV}
+              className="px-3 py-1.5 rounded border border-[#EAEAEA] hover:border-[#0A0A0A] text-[#0A0A0A] text-xs font-medium flex items-center gap-1.5 transition-colors"
+            >
+              <Download size={13} /> Export to CSV
+            </button>
+            <button
+              type="button"
+              onClick={() => navigate('/quote')}
+              className="px-3 py-1.5 rounded bg-[#0A0A0A] hover:bg-[#FF4D00] text-white text-xs font-medium flex items-center gap-1.5 transition-colors"
+            >
+              <FileText size={13} /> Request Custom Quote
+            </button>
           </div>
         </div>
 
@@ -126,7 +210,7 @@ export default function CartPage() {
           
           {/* Left Column: Cart Table */}
           <div className="lg:col-span-8 divide-y divide-[#EAEAEA] border-y border-[#EAEAEA]">
-            {cart.map((item) => (
+            {(cartItems || cart).map((item) => (
               <div key={item.id} className="py-6 flex flex-col sm:flex-row gap-6 items-start sm:items-center justify-between group">
                 
                 {/* Image & Title */}
@@ -143,18 +227,31 @@ export default function CartPage() {
                   </Link>
 
                   <div className="min-w-0">
-                    <span className="text-[10px] uppercase tracking-wider text-[#6B6B6B] font-medium block">
-                      {item.brand}
-                    </span>
+                    <div className="flex items-center gap-2">
+                      <span className="text-[10px] uppercase tracking-wider text-[#6B6B6B] font-medium">
+                        {item.brand}
+                      </span>
+                      <span className="bg-[#0A0A0A] text-white text-[9px] font-bold px-1.5 py-0.2 rounded uppercase">
+                        Tier {item.tierApplied || 1}
+                      </span>
+                    </div>
                     <Link
                       to={`/product/${item.id}`}
-                      className="text-xs sm:text-sm font-medium text-[#0A0A0A] hover:text-[#FF4D00] transition-colors line-clamp-1"
+                      className="text-xs sm:text-sm font-medium text-[#0A0A0A] hover:text-[#FF4D00] transition-colors line-clamp-1 mt-0.5"
                     >
                       {item.name}
                     </Link>
-                    <span className="text-xs text-[#8A8A8A] block mt-1 tabular-nums">
-                      ₹{item.price.toLocaleString('en-IN')} each
-                    </span>
+                    <div className="flex items-center gap-2 text-xs text-[#8A8A8A] mt-1 tabular-nums">
+                      <span>₹{(item.unitPrice || item.price).toLocaleString('en-IN')} / unit</span>
+                      <span>•</span>
+                      <span>MOQ: {item.moq || 10}</span>
+                      {item.savingsVsMrp > 0 && (
+                        <>
+                          <span>•</span>
+                          <span className="text-emerald-700 font-medium">Save ₹{item.savingsVsMrp.toLocaleString('en-IN')}</span>
+                        </>
+                      )}
+                    </div>
                   </div>
                 </div>
 
@@ -165,8 +262,9 @@ export default function CartPage() {
                   <div className="flex items-center border border-[#EAEAEA] rounded-[4px] bg-white">
                     <button
                       type="button"
-                      onClick={() => updateQuantity(item.id, item.quantity - 1)}
-                      className="p-1.5 hover:bg-[#F7F7F7] text-[#0A0A0A] transition-colors"
+                      onClick={() => updateQuantity(item.id, Math.max(item.moq || 1, item.quantity - (item.packSize || 5)))}
+                      disabled={item.quantity <= (item.moq || 1)}
+                      className="p-1.5 hover:bg-[#F7F7F7] text-[#0A0A0A] transition-colors disabled:opacity-30"
                       aria-label="Decrease quantity"
                     >
                       <Minus size={13} />
@@ -176,7 +274,7 @@ export default function CartPage() {
                     </span>
                     <button
                       type="button"
-                      onClick={() => updateQuantity(item.id, item.quantity + 1)}
+                      onClick={() => updateQuantity(item.id, item.quantity + (item.packSize || 5))}
                       className="p-1.5 hover:bg-[#F7F7F7] text-[#0A0A0A] transition-colors"
                       aria-label="Increase quantity"
                     >
@@ -186,14 +284,9 @@ export default function CartPage() {
 
                   {/* Price */}
                   <div className="text-right min-w-[90px]">
-                    <span className="text-sm font-semibold text-[#0A0A0A] tabular-nums">
-                      ₹{(item.price * item.quantity).toLocaleString('en-IN')}
+                    <span className="text-sm font-bold text-[#0A0A0A] tabular-nums">
+                      ₹{(item.lineTotal || (item.price * item.quantity)).toLocaleString('en-IN')}
                     </span>
-                    {item.originalPrice && item.originalPrice > item.price && (
-                      <div className="text-[11px] text-[#8A8A8A] line-through tabular-nums">
-                        ₹{(item.originalPrice * item.quantity).toLocaleString('en-IN')}
-                      </div>
-                    )}
                   </div>
 
                   {/* Remove */}
@@ -289,7 +382,7 @@ export default function CartPage() {
 
               <div className="flex justify-between text-base font-semibold text-[#0A0A0A] pt-4">
                 <span>Total Payable</span>
-                <span className="tabular-nums text-lg">₹{finalPayableTotal.toLocaleString('en-IN')}</span>
+                <span className="tabular-nums text-lg text-[#FF4D00]">₹{finalPayableTotal.toLocaleString('en-IN')}</span>
               </div>
             </div>
 
@@ -297,14 +390,25 @@ export default function CartPage() {
             <div className="space-y-3 pt-2">
               <button
                 type="button"
+                disabled={!meetsMinOrderValue}
                 onClick={() => navigate('/checkout')}
-                className="w-full bg-[#FF4D00] hover:bg-[#E04400] text-white text-xs font-semibold uppercase tracking-widest py-4 rounded-[4px] transition-colors flex items-center justify-center gap-2 group shadow-sm"
+                className={`w-full text-xs font-semibold uppercase tracking-widest py-4 rounded-[4px] transition-colors flex items-center justify-center gap-2 group shadow-sm ${
+                  meetsMinOrderValue
+                    ? 'bg-[#0A0A0A] hover:bg-[#FF4D00] text-white cursor-pointer'
+                    : 'bg-neutral-300 text-neutral-500 cursor-not-allowed'
+                }`}
               >
-                Proceed to Checkout <ArrowRight size={14} className="group-hover:translate-x-1 transition-transform" />
+                {meetsMinOrderValue ? (
+                  <>
+                    Proceed to Wholesale Checkout <ArrowRight size={14} className="group-hover:translate-x-1 transition-transform" />
+                  </>
+                ) : (
+                  <span>Min Order ₹{minOrderValue.toLocaleString('en-IN')} Required</span>
+                )}
               </button>
 
               <div className="flex items-center justify-center gap-2 text-[11px] text-[#8A8A8A]">
-                <ShieldCheck size={14} className="text-emerald-600" /> 100% Secure Encrypted Checkout
+                <ShieldCheck size={14} className="text-emerald-600" /> GST Tax Invoice Included • 100% Genuine Hardware
               </div>
             </div>
 

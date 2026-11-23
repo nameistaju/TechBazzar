@@ -11,7 +11,10 @@ import {
   Mail, 
   Check, 
   Lock,
-  Loader2
+  Loader2,
+  FileText,
+  Printer,
+  Building2
 } from 'lucide-react';
 import useAuthStore from '../store/authStore';
 import { useStore } from '../context/StoreContext';
@@ -120,58 +123,116 @@ export default function OrderSuccessPage() {
           </p>
 
           {/* Order reference banner */}
-          <div className="bg-[#F7F7F7] border border-[#EAEAEA] rounded-[4px] p-4 flex flex-col sm:flex-row items-center justify-between gap-3 text-left mb-8">
-            <div>
-              <span className="text-[10px] uppercase tracking-wider text-[#8A8A8A] block">
-                Order Reference
-              </span>
-              <span className="font-mono text-sm sm:text-base font-bold text-[#0A0A0A]">
-                #{orderNumber}
-              </span>
+          <div className="bg-[#F7F7F7] border border-[#EAEAEA] rounded-[4px] p-4 text-left mb-6 space-y-3">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 border-b border-[#EAEAEA] pb-3">
+              <div>
+                <span className="text-[10px] uppercase tracking-wider text-[#8A8A8A] block">
+                  Order Reference
+                </span>
+                <span className="font-mono text-base font-bold text-[#0A0A0A]">
+                  #{orderNumber}
+                </span>
+              </div>
+              <div className="sm:text-right">
+                <span className="text-[10px] uppercase tracking-wider text-[#8A8A8A] block">
+                  Estimated Carrier Dispatch
+                </span>
+                <span className="text-xs font-semibold text-[#0A0A0A] flex items-center gap-1.5">
+                  <Truck size={14} className="text-emerald-600" /> by {formattedDelivery}
+                </span>
+              </div>
             </div>
-            <div>
-              <span className="text-[10px] uppercase tracking-wider text-[#8A8A8A] block">
-                Estimated Delivery
-              </span>
-              <span className="text-xs font-semibold text-[#0A0A0A] flex items-center gap-1.5">
-                <Truck size={14} className="text-emerald-600" /> by {formattedDelivery}
-              </span>
+
+            {/* Wholesale Advance & Balance Info */}
+            {order && (
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs pt-1">
+                <div>
+                  <span className="text-[10px] uppercase text-[#8A8A8A] block">Billing Entity</span>
+                  <strong className="text-[#0A0A0A]">
+                    {order.customer?.company || order.customer?.name || 'Authorized Buyer'}
+                  </strong>
+                  {order.customer?.gstin && (
+                    <span className="block font-mono text-[11px] text-[#6B6B6B] mt-0.5">
+                      GSTIN: {order.customer.gstin}
+                    </span>
+                  )}
+                </div>
+                <div>
+                  <span className="text-[10px] uppercase text-[#8A8A8A] block">Payment Status</span>
+                  {order.balanceDue && order.balanceDue > 0 ? (
+                    <div>
+                      <span className="text-[#FF4D00] font-bold">
+                        50% Advance Paid (₹{(order.advancePaid ? order.advancePaid / 100 : Math.round(order.total / 200)).toLocaleString('en-IN')})
+                      </span>
+                      <span className="block text-[11px] text-[#6B6B6B]">
+                        Balance on dispatch: ₹{(order.balanceDue / 100).toLocaleString('en-IN')}
+                      </span>
+                    </div>
+                  ) : (
+                    <span className="text-emerald-700 font-semibold">
+                      Full Payment Recorded (₹{((order.total || 0) / 100).toLocaleString('en-IN')})
+                    </span>
+                  )}
+                </div>
+              </div>
+            )}
+          </div>
+
+          {/* Tax Invoice Direct Download Banner */}
+          <div className="p-3.5 bg-emerald-50/60 border border-emerald-200/80 rounded-[4px] flex flex-col sm:flex-row items-center justify-between gap-3 text-left mb-8">
+            <div className="flex items-center gap-2.5">
+              <FileText size={18} className="text-emerald-700 shrink-0" />
+              <div>
+                <p className="text-xs font-semibold text-emerald-950">GST Tax Invoice Ready</p>
+                <p className="text-[11px] text-emerald-800">
+                  Compliant B2B Tax Invoice with HSN breakdown & ITC details.
+                </p>
+              </div>
             </div>
+            <a
+              href={`/api/orders/${orderNumber}/invoice`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="py-2 px-4 bg-emerald-700 hover:bg-emerald-800 text-white text-xs font-semibold uppercase tracking-wider rounded-[4px] transition-colors flex items-center gap-1.5 shrink-0"
+            >
+              <Printer size={13} />
+              <span>View / Print Invoice</span>
+            </a>
           </div>
 
           {/* Status Timeline Preview */}
           <div className="border-t border-[#F2F2F2] pt-6 mb-8 text-left">
             <span className="text-xs uppercase tracking-wider font-semibold text-[#0A0A0A] block mb-4">
-              Fulfillment Timeline
+              Wholesale Logistics Timeline
             </span>
             <div className="grid grid-cols-4 gap-2 text-center text-xs">
               <div className="space-y-1">
                 <div className="w-6 h-6 rounded-full bg-[#0A0A0A] text-white flex items-center justify-center mx-auto text-[10px] font-bold">
                   ✓
                 </div>
-                <span className="text-[11px] font-semibold text-[#0A0A0A] block">Placed</span>
-                <span className="text-[9px] text-[#8A8A8A]">Confirmed</span>
+                <span className="text-[11px] font-semibold text-[#0A0A0A] block">Booked</span>
+                <span className="text-[9px] text-[#8A8A8A]">Inventory Locked</span>
               </div>
               <div className="space-y-1">
                 <div className="w-6 h-6 rounded-full bg-[#EAEAEA] text-[#6B6B6B] flex items-center justify-center mx-auto text-[10px]">
                   2
                 </div>
-                <span className="text-[11px] text-[#6B6B6B] block">Packed</span>
-                <span className="text-[9px] text-[#8A8A8A]">In warehouse</span>
+                <span className="text-[11px] text-[#6B6B6B] block">QC & Pack</span>
+                <span className="text-[9px] text-[#8A8A8A]">Master Cartons</span>
               </div>
               <div className="space-y-1">
                 <div className="w-6 h-6 rounded-full bg-[#EAEAEA] text-[#6B6B6B] flex items-center justify-center mx-auto text-[10px]">
                   3
                 </div>
-                <span className="text-[11px] text-[#6B6B6B] block">Shipped</span>
-                <span className="text-[9px] text-[#8A8A8A]">Air express</span>
+                <span className="text-[11px] text-[#6B6B6B] block">Freight</span>
+                <span className="text-[9px] text-[#8A8A8A]">Pallet Linehaul</span>
               </div>
               <div className="space-y-1">
                 <div className="w-6 h-6 rounded-full bg-[#EAEAEA] text-[#6B6B6B] flex items-center justify-center mx-auto text-[10px]">
                   4
                 </div>
                 <span className="text-[11px] text-[#6B6B6B] block">Delivered</span>
-                <span className="text-[9px] text-[#8A8A8A]">At door</span>
+                <span className="text-[9px] text-[#8A8A8A]">Store Handover</span>
               </div>
             </div>
           </div>
@@ -188,7 +249,7 @@ export default function OrderSuccessPage() {
               to="/shop"
               className="py-3 px-6 bg-white border border-[#EAEAEA] hover:border-[#0A0A0A] text-[#0A0A0A] text-xs font-semibold uppercase tracking-widest rounded-[4px] transition-colors"
             >
-              Continue Shopping
+              Continue Bulk Shopping
             </Link>
           </div>
         </div>

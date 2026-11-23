@@ -114,31 +114,30 @@ export default function Footer() {
             </ul>
           </div>
 
-          {/* Customer Care */}
+          {/* B2B Services */}
           <div>
             <h4 className="text-xs font-semibold uppercase tracking-widest text-white mb-4">
-              Customer Care
+              Wholesale Hub
             </h4>
             <ul className="space-y-2.5 text-xs text-[#8A8A8A]">
-              <li><Link to="/cart" className="hover:text-[#FF4D00] transition-colors">Track Order</Link></li>
-              <li><Link to="/shop" className="hover:text-[#FF4D00] transition-colors">Shipping & Delivery</Link></li>
-              <li><Link to="/shop" className="hover:text-[#FF4D00] transition-colors">7-Day Easy Returns</Link></li>
-              <li><Link to="/shop" className="hover:text-[#FF4D00] transition-colors">Warranty Claim</Link></li>
-              <li><Link to="/shop" className="hover:text-[#FF4D00] transition-colors">Contact Support</Link></li>
+              <li><Link to="/quick-order" className="hover:text-[#FF4D00] transition-colors">Quick Order Matrix</Link></li>
+              <li><Link to="/quote" className="hover:text-[#FF4D00] transition-colors">Request Custom Quote</Link></li>
+              <li><Link to="/track" className="hover:text-[#FF4D00] transition-colors">Track Pallet Consignment</Link></li>
+              <li><Link to="/contact" className="hover:text-[#FF4D00] transition-colors">Logistics & Warehouse</Link></li>
+              <li><Link to="/shop?flag=flashSale" className="hover:text-[#FF4D00] transition-colors">Bulk Clearance Lots</Link></li>
             </ul>
           </div>
 
           {/* About & Trust */}
           <div>
             <h4 className="text-xs font-semibold uppercase tracking-widest text-white mb-4">
-              TechBazaar
+              TechBazaar B2B
             </h4>
             <ul className="space-y-2.5 text-xs text-[#8A8A8A]">
-              <li><Link to="/shop?brand=all" className="hover:text-[#FF4D00] transition-colors">Authorized Brands</Link></li>
-              <li><Link to="/shop?sale=true" className="hover:text-[#FF4D00] transition-colors">Flash Deals</Link></li>
-              <li><Link to="/shop?plus=true" className="hover:text-[#FF4D00] transition-colors">TechBazaar Plus</Link></li>
-              <li><Link to="/shop" className="hover:text-[#FF4D00] transition-colors">Privacy Policy</Link></li>
-              <li><Link to="/shop" className="hover:text-[#FF4D00] transition-colors">Terms of Service</Link></li>
+              <li><Link to="/contact" className="hover:text-[#FF4D00] transition-colors">Contact Wholesale Desk</Link></li>
+              <li><Link to="/shop" className="hover:text-[#FF4D00] transition-colors">Authorized OEM Brands</Link></li>
+              <li><Link to="/admin" className="hover:text-[#FF4D00] transition-colors">Back-Office Portal</Link></li>
+              <li><Link to="/quote" className="hover:text-[#FF4D00] transition-colors">GST Input Tax Credit Guide</Link></li>
             </ul>
           </div>
         </div>

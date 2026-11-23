@@ -86,6 +86,12 @@ export default function ProductsView({ initialEditId, onClearInitialEdit }) {
     originalPrice: 1499,
     costPrice: 650,
     mrp: 1499,
+    moq: 10,
+    packSize: 5,
+    tier1Price: 999,
+    tier2Price: 920,
+    tier3Price: 850,
+    suggestedRetailPrice: 1499,
     gstRate: 18,
     isTaxInclusive: true,
     stock: 20,
@@ -215,6 +221,12 @@ export default function ProductsView({ initialEditId, onClearInitialEdit }) {
         ...p,
         costPrice: p.costPrice || Math.round(p.price * 0.65),
         mrp: p.mrp || p.originalPrice || Math.round(p.price * 1.25),
+        moq: p.moq || p.wholesale_moq || 10,
+        packSize: p.pack_size || p.packSize || 5,
+        tier1Price: p.tier1_price || p.tier1Price || p.price || 999,
+        tier2Price: p.tier2_price || p.tier2Price || Math.round((p.price || 999) * 0.92),
+        tier3Price: p.tier3_price || p.tier3Price || Math.round((p.price || 999) * 0.85),
+        suggestedRetailPrice: p.suggested_retail_price || p.suggestedRetailPrice || p.mrp || Math.round(p.price * 1.3),
         images: p.images && p.images.length > 0 ? p.images : [p.image],
         specRows,
         seo: p.seo || { title: p.name, description: p.shortDescription || '' }
@@ -245,6 +257,12 @@ export default function ProductsView({ initialEditId, onClearInitialEdit }) {
       price: Number(form.price),
       costPrice: Number(form.costPrice),
       mrp: Number(form.mrp),
+      moq: Number(form.moq) || 1,
+      pack_size: Number(form.packSize) || 1,
+      tier1_price: Number(form.tier1Price) || Number(form.price),
+      tier2_price: Number(form.tier2Price) || Math.round(Number(form.price) * 0.92),
+      tier3_price: Number(form.tier3Price) || Math.round(Number(form.price) * 0.85),
+      suggested_retail_price: Number(form.suggestedRetailPrice) || Number(form.mrp),
       stock: Number(form.stock),
       lowStockThreshold: Number(form.lowStockThreshold),
       gstRate: Number(form.gstRate),
@@ -1123,6 +1141,99 @@ export default function ProductsView({ initialEditId, onClearInitialEdit }) {
                           <span>Price is Inclusive of GST</span>
                         </label>
                       </div>
+                    </div>
+                  </div>
+
+                  {/* Wholesale Bulk Tier Pricing & MOQ Matrix */}
+                  <div className="p-4 bg-orange-50/40 border border-orange-200/70 space-y-4">
+                    <div className="flex items-center justify-between">
+                      <div className="text-xs font-mono uppercase tracking-wider font-bold text-[#0A0A0A] flex items-center gap-1.5">
+                        <span className="w-2 h-2 rounded-full bg-[#FF4D00]"></span>
+                        Wholesale Tier Pricing & MOQ Matrix
+                      </div>
+                      <span className="text-[10px] font-mono text-[#FF4D00] font-bold">B2B VOLUME DISCOUNTS</span>
+                    </div>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                      <div>
+                        <label className="block text-xs font-mono uppercase tracking-wider text-[#6B6B6B] mb-1">
+                          Minimum Order Quantity (MOQ)
+                        </label>
+                        <input
+                          type="number"
+                          min="1"
+                          value={form.moq}
+                          onChange={(e) => setForm({ ...form, moq: e.target.value })}
+                          className="w-full px-3 py-2 border border-[#EAEAEA] text-sm font-mono bg-white outline-none focus:border-[#0A0A0A]"
+                        />
+                      </div>
+
+                      <div>
+                        <label className="block text-xs font-mono uppercase tracking-wider text-[#6B6B6B] mb-1">
+                          Pack Step Size (Units / Master Carton)
+                        </label>
+                        <input
+                          type="number"
+                          min="1"
+                          value={form.packSize}
+                          onChange={(e) => setForm({ ...form, packSize: e.target.value })}
+                          className="w-full px-3 py-2 border border-[#EAEAEA] text-sm font-mono bg-white outline-none focus:border-[#0A0A0A]"
+                        />
+                      </div>
+                    </div>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                      <div>
+                        <label className="block text-[10px] font-mono uppercase text-[#6B6B6B] mb-1">
+                          Tier 1: MOQ+ Price (₹)
+                        </label>
+                        <input
+                          type="number"
+                          min="1"
+                          value={form.tier1Price}
+                          onChange={(e) => setForm({ ...form, tier1Price: e.target.value, price: e.target.value })}
+                          className="w-full px-2.5 py-1.5 border border-[#EAEAEA] text-xs font-mono font-bold bg-white outline-none"
+                        />
+                      </div>
+
+                      <div>
+                        <label className="block text-[10px] font-mono uppercase text-[#6B6B6B] mb-1">
+                          Tier 2: 50+ Units Price (₹)
+                        </label>
+                        <input
+                          type="number"
+                          min="1"
+                          value={form.tier2Price}
+                          onChange={(e) => setForm({ ...form, tier2Price: e.target.value })}
+                          className="w-full px-2.5 py-1.5 border border-[#EAEAEA] text-xs font-mono font-bold bg-white outline-none"
+                        />
+                      </div>
+
+                      <div>
+                        <label className="block text-[10px] font-mono uppercase text-[#6B6B6B] mb-1">
+                          Tier 3: 100+ Units Price (₹)
+                        </label>
+                        <input
+                          type="number"
+                          min="1"
+                          value={form.tier3Price}
+                          onChange={(e) => setForm({ ...form, tier3Price: e.target.value })}
+                          className="w-full px-2.5 py-1.5 border border-[#EAEAEA] text-xs font-mono font-bold bg-white outline-none"
+                        />
+                      </div>
+                    </div>
+
+                    <div>
+                      <label className="block text-xs font-mono uppercase tracking-wider text-[#6B6B6B] mb-1">
+                        Suggested Retail Price (Reseller MSRP in ₹)
+                      </label>
+                      <input
+                        type="number"
+                        min="1"
+                        value={form.suggestedRetailPrice}
+                        onChange={(e) => setForm({ ...form, suggestedRetailPrice: e.target.value })}
+                        className="w-full px-3 py-2 border border-[#EAEAEA] text-sm font-mono bg-white outline-none focus:border-[#0A0A0A]"
+                      />
                     </div>
                   </div>
                 </div>

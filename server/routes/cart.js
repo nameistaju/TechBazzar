@@ -4,7 +4,7 @@ import db from '../db/index.js';
 import { requireAuth, optionalAuth } from '../middleware/auth.js';
 import { validateBody } from '../middleware/validate.js';
 import { formatProduct } from './products.js';
-import { evaluateDiscount } from '../services/calculation.js';
+import { evaluateDiscount, getWholesaleTier } from '../services/calculation.js';
 
 const router = Router();
 
@@ -53,18 +53,23 @@ router.post('/validate', validateBody(validateCartSchema), (req, res) => {
       warnings.push(`Only ${product.stock} units of "${product.name}" available. Cart quantity adjusted.`);
     }
 
-    if (item.clientPrice && item.clientPrice !== product.price) {
-      warnings.push(`Price for "${product.name}" changed from ₹${item.clientPrice} to ₹${product.price}.`);
+    const moq = product.moq ? Number(product.moq) : 1;
+    if (actualQty < moq) {
+      warnings.push(`Minimum wholesale order for "${product.name}" is ${moq} units.`);
     }
 
-    const itemTotal = product.price * actualQty;
+    const tierInfo = getWholesaleTier(product, actualQty);
+    const unitPrice = tierInfo.unitPrice;
+    const itemTotal = tierInfo.lineTotal;
     subtotal += itemTotal;
 
     validatedItems.push({
       product: formatProduct(product),
       quantity: actualQty,
-      price: product.price,
-      total: itemTotal
+      price: unitPrice,
+      total: itemTotal,
+      tierApplied: tierInfo.tierIndex,
+      savingsVsMrp: tierInfo.savingsVsMrp
     });
   }
 

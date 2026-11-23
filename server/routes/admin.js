@@ -485,19 +485,31 @@ router.post('/products', (req, res) => {
   const primaryImage = (p.images && p.images[0]) || p.image || '/images/image-1.webp';
   const imagesJson = JSON.stringify(p.images && p.images.length > 0 ? p.images : [primaryImage]);
 
+  const moq = p.moq ? Number(p.moq) : 10;
+  const packSize = p.packSize ? Number(p.packSize) : 5;
+  const tier1Qty = p.tier1Qty ? Number(p.tier1Qty) : moq;
+  const tier1Price = p.tier1Price ? Number(p.tier1Price) : Number(p.price);
+  const tier2Qty = p.tier2Qty ? Number(p.tier2Qty) : 50;
+  const tier2Price = p.tier2Price ? Number(p.tier2Price) : Math.round(Number(p.price) * 0.9);
+  const tier3Qty = p.tier3Qty ? Number(p.tier3Qty) : 100;
+  const tier3Price = p.tier3Price ? Number(p.tier3Price) : Math.round(Number(p.price) * 0.8);
+  const suggestedRetail = p.suggestedRetailPrice ? Number(p.suggestedRetailPrice) : mrp;
+
   const insert = db.prepare(`
     INSERT INTO products (
       id, name, brand, category, price, original_price, cost_price, mrp,
       sku, gst_rate, is_tax_inclusive, stock, low_stock_threshold, track_inventory,
       allow_backorder, supplier, status, image, images, variants, specs, tags,
       short_description, is_flash_sale, is_trending, is_bestseller, is_new,
-      is_recommended, featured_hero, sale_price, sale_starts_at, sale_ends_at, seo
+      is_recommended, featured_hero, sale_price, sale_starts_at, sale_ends_at, seo,
+      moq, pack_size, tier1_qty, tier1_price, tier2_qty, tier2_price, tier3_qty, tier3_price, suggested_retail_price
     ) VALUES (
       ?, ?, ?, ?, ?, ?, ?, ?,
       ?, ?, ?, ?, ?, ?,
       ?, ?, ?, ?, ?, ?, ?, ?,
       ?, ?, ?, ?, ?,
-      ?, ?, ?, ?, ?, ?
+      ?, ?, ?, ?, ?, ?,
+      ?, ?, ?, ?, ?, ?, ?, ?, ?
     )
   `);
 
@@ -534,7 +546,16 @@ router.post('/products', (req, res) => {
     p.salePrice ? Number(p.salePrice) : null,
     p.saleStartsAt || null,
     p.saleEndsAt || null,
-    JSON.stringify(p.seo || {})
+    JSON.stringify(p.seo || {}),
+    moq,
+    packSize,
+    tier1Qty,
+    tier1Price,
+    tier2Qty,
+    tier2Price,
+    tier3Qty,
+    tier3Price,
+    suggestedRetail
   );
 
   // Log stock movement if initial stock > 0
@@ -595,6 +616,15 @@ router.patch('/products/:id', (req, res) => {
   if (p.saleStartsAt !== undefined) { updates.push('sale_starts_at = ?'); params.push(p.saleStartsAt); }
   if (p.saleEndsAt !== undefined) { updates.push('sale_ends_at = ?'); params.push(p.saleEndsAt); }
   if (p.seo !== undefined) { updates.push('seo = ?'); params.push(JSON.stringify(p.seo)); }
+  if (p.moq !== undefined) { updates.push('moq = ?'); params.push(Number(p.moq)); }
+  if (p.packSize !== undefined || p.pack_size !== undefined) { updates.push('pack_size = ?'); params.push(Number(p.packSize !== undefined ? p.packSize : p.pack_size)); }
+  if (p.tier1Qty !== undefined || p.tier1_qty !== undefined) { updates.push('tier1_qty = ?'); params.push(Number(p.tier1Qty !== undefined ? p.tier1Qty : p.tier1_qty)); }
+  if (p.tier1Price !== undefined || p.tier1_price !== undefined) { updates.push('tier1_price = ?'); params.push(Number(p.tier1Price !== undefined ? p.tier1Price : p.tier1_price)); }
+  if (p.tier2Qty !== undefined || p.tier2_qty !== undefined) { updates.push('tier2_qty = ?'); params.push(Number(p.tier2Qty !== undefined ? p.tier2Qty : p.tier2_qty)); }
+  if (p.tier2Price !== undefined || p.tier2_price !== undefined) { updates.push('tier2_price = ?'); params.push(Number(p.tier2Price !== undefined ? p.tier2Price : p.tier2_price)); }
+  if (p.tier3Qty !== undefined || p.tier3_qty !== undefined) { updates.push('tier3_qty = ?'); params.push(Number(p.tier3Qty !== undefined ? p.tier3Qty : p.tier3_qty)); }
+  if (p.tier3Price !== undefined || p.tier3_price !== undefined) { updates.push('tier3_price = ?'); params.push(Number(p.tier3Price !== undefined ? p.tier3Price : p.tier3_price)); }
+  if (p.suggestedRetailPrice !== undefined || p.suggested_retail_price !== undefined) { updates.push('suggested_retail_price = ?'); params.push(Number(p.suggestedRetailPrice !== undefined ? p.suggestedRetailPrice : p.suggested_retail_price)); }
 
   // Stock update with movement logging
   if (p.stock !== undefined && Number(p.stock) !== existing.stock) {
@@ -2215,6 +2245,355 @@ router.post('/activity-log/:id/undo', (req, res) => {
   logActivity('undo', log.entity_type, log.entity_id, `Undid previous action: ${log.details}`);
 
   return res.json({ data: { message: 'Action successfully undone.' }, error: null });
+});
+
+// --- BANNERS & ADS MANAGEMENT ---
+
+// GET /api/admin/banners - list all banners with analytics
+router.get('/banners', (req, res) => {
+  const banners = db.prepare(`
+    SELECT b.*,
+      COALESCE(SUM(s.impressions), 0) AS total_impressions,
+      COALESCE(SUM(s.clicks), 0) AS total_clicks,
+      CASE WHEN SUM(s.impressions) > 0 
+        THEN ROUND((CAST(SUM(s.clicks) AS REAL) / SUM(s.impressions)) * 100, 2)
+        ELSE 0 END AS ctr
+    FROM banners b
+    LEFT JOIN banner_stats s ON b.id = s.banner_id
+    GROUP BY b.id
+    ORDER BY b.slot ASC, b.sort_order ASC, b.id ASC
+  `).all();
+
+  return res.json({ data: { banners }, error: null });
+});
+
+// POST /api/admin/banners - create banner
+router.post('/banners', (req, res) => {
+  const b = req.body;
+  if (!b.title || !b.slot || !b.desktop_image) {
+    return res.status(400).json({ data: null, error: 'Title, slot, and desktop image are required.' });
+  }
+
+  const result = db.prepare(`
+    INSERT INTO banners (
+      title, slot, desktop_image, mobile_image, thumb, focal_x, focal_y,
+      alt, link_type, link_target, new_tab, label, starts_at, ends_at,
+      active, sort_order
+    ) VALUES (
+      ?, ?, ?, ?, ?, ?, ?,
+      ?, ?, ?, ?, ?, ?, ?,
+      ?, ?
+    )
+  `).run(
+    b.title.trim(),
+    b.slot,
+    b.desktop_image,
+    b.mobile_image || b.desktop_image,
+    b.thumb || b.mobile_image || b.desktop_image,
+    b.focal_x !== undefined ? Number(b.focal_x) : 50,
+    b.focal_y !== undefined ? Number(b.focal_y) : 50,
+    b.alt ? b.alt.trim() : b.title.trim(),
+    b.link_type || 'none',
+    b.link_target || '',
+    b.new_tab ? 1 : 0,
+    b.label || null,
+    b.starts_at || null,
+    b.ends_at || null,
+    b.active !== undefined ? (b.active ? 1 : 0) : 1,
+    b.sort_order !== undefined ? Number(b.sort_order) : 0
+  );
+
+  const banner = db.prepare('SELECT * FROM banners WHERE id = ?').get(result.lastInsertRowid);
+  logActivity('create', 'banner', banner.id, `Created banner "${banner.title}" for slot "${banner.slot}"`);
+
+  return res.status(201).json({ data: { banner }, error: null });
+});
+
+// PUT /api/admin/banners/:id - update banner
+router.put('/banners/:id', (req, res) => {
+  const b = req.body;
+  const existing = db.prepare('SELECT * FROM banners WHERE id = ?').get(req.params.id);
+  if (!existing) {
+    return res.status(404).json({ data: null, error: 'Banner not found.' });
+  }
+
+  db.prepare(`
+    UPDATE banners SET
+      title = ?, slot = ?, desktop_image = ?, mobile_image = ?, thumb = ?,
+      focal_x = ?, focal_y = ?, alt = ?, link_type = ?, link_target = ?,
+      new_tab = ?, label = ?, starts_at = ?, ends_at = ?, active = ?, sort_order = ?
+    WHERE id = ?
+  `).run(
+    b.title ? b.title.trim() : existing.title,
+    b.slot || existing.slot,
+    b.desktop_image || existing.desktop_image,
+    b.mobile_image || existing.mobile_image,
+    b.thumb || existing.thumb,
+    b.focal_x !== undefined ? Number(b.focal_x) : existing.focal_x,
+    b.focal_y !== undefined ? Number(b.focal_y) : existing.focal_y,
+    b.alt ? b.alt.trim() : existing.alt,
+    b.link_type !== undefined ? b.link_type : existing.link_type,
+    b.link_target !== undefined ? b.link_target : existing.link_target,
+    b.new_tab !== undefined ? (b.new_tab ? 1 : 0) : existing.new_tab,
+    b.label !== undefined ? b.label : existing.label,
+    b.starts_at !== undefined ? b.starts_at : existing.starts_at,
+    b.ends_at !== undefined ? b.ends_at : existing.ends_at,
+    b.active !== undefined ? (b.active ? 1 : 0) : existing.active,
+    b.sort_order !== undefined ? Number(b.sort_order) : existing.sort_order,
+    req.params.id
+  );
+
+  const updated = db.prepare('SELECT * FROM banners WHERE id = ?').get(req.params.id);
+  logActivity('update', 'banner', updated.id, `Updated banner "${updated.title}"`);
+
+  return res.json({ data: { banner: updated }, error: null });
+});
+
+// DELETE /api/admin/banners/:id
+router.delete('/banners/:id', (req, res) => {
+  const existing = db.prepare('SELECT * FROM banners WHERE id = ?').get(req.params.id);
+  if (!existing) {
+    return res.status(404).json({ data: null, error: 'Banner not found.' });
+  }
+
+  db.prepare('DELETE FROM banners WHERE id = ?').run(req.params.id);
+  logActivity('delete', 'banner', req.params.id, `Deleted banner "${existing.title}"`, existing, null, true);
+
+  return res.json({ data: { message: 'Banner deleted successfully' }, error: null });
+});
+
+// PATCH /api/admin/banners/:id/toggle
+router.patch('/banners/:id/toggle', (req, res) => {
+  const existing = db.prepare('SELECT * FROM banners WHERE id = ?').get(req.params.id);
+  if (!existing) {
+    return res.status(404).json({ data: null, error: 'Banner not found.' });
+  }
+
+  const nextState = existing.active ? 0 : 1;
+  db.prepare('UPDATE banners SET active = ? WHERE id = ?').run(nextState, req.params.id);
+
+  return res.json({ data: { id: existing.id, active: nextState }, error: null });
+});
+
+// POST /api/admin/banners/reorder
+router.post('/banners/reorder', (req, res) => {
+  const { bannerIds } = req.body;
+  if (!Array.isArray(bannerIds)) {
+    return res.status(400).json({ data: null, error: 'bannerIds array required' });
+  }
+
+  const stmt = db.prepare('UPDATE banners SET sort_order = ? WHERE id = ?');
+  const updateMany = db.transaction((ids) => {
+    ids.forEach((id, idx) => stmt.run(idx, id));
+  });
+  updateMany(bannerIds);
+
+  return res.json({ data: { message: 'Banners reordered successfully' }, error: null });
+});
+
+// POST /api/admin/banners/upload - saves cropped base64 webp to public/uploads/banners/
+router.post('/banners/upload', (req, res) => {
+  try {
+    const { base64, type = 'banner' } = req.body;
+    if (!base64 || typeof base64 !== 'string') {
+      return res.status(400).json({ data: null, error: 'Base64 image data is required' });
+    }
+
+    const matches = base64.match(/^data:([A-Za-z-+\/]+);base64,(.+)$/);
+    let buffer;
+    let ext = 'webp';
+    if (matches && matches.length === 3) {
+      if (matches[1].includes('png')) ext = 'png';
+      else if (matches[1].includes('jpeg') || matches[1].includes('jpg')) ext = 'jpg';
+      buffer = Buffer.from(matches[2], 'base64');
+    } else {
+      buffer = Buffer.from(base64, 'base64');
+    }
+
+    const uploadDir = path.join(process.cwd(), 'public', 'uploads', 'banners');
+    if (!fs.existsSync(uploadDir)) {
+      fs.mkdirSync(uploadDir, { recursive: true });
+    }
+
+    const filename = `${type}_${Date.now()}_${Math.random().toString(36).substring(2, 7)}.${ext}`;
+    const filePath = path.join(uploadDir, filename);
+    fs.writeFileSync(filePath, buffer);
+
+    const publicUrl = `/uploads/banners/${filename}`;
+    return res.json({ data: { url: publicUrl, filename }, error: null });
+  } catch (err) {
+    return res.status(500).json({ data: null, error: err.message });
+  }
+});
+
+// GET /api/admin/banners/export/csv
+router.get('/banners/export/csv', (req, res) => {
+  const stats = db.prepare(`
+    SELECT b.id, b.title, b.slot, b.active,
+           COALESCE(SUM(s.impressions), 0) AS total_impressions,
+           COALESCE(SUM(s.clicks), 0) AS total_clicks,
+           CASE WHEN SUM(s.impressions) > 0 
+             THEN ROUND((CAST(SUM(s.clicks) AS REAL) / SUM(s.impressions)) * 100, 2)
+             ELSE 0 END AS ctr
+    FROM banners b
+    LEFT JOIN banner_stats s ON b.id = s.banner_id
+    GROUP BY b.id
+    ORDER BY b.slot ASC, b.id ASC
+  `).all();
+
+  const headers = ['ID', 'Title', 'Slot', 'Active', 'Impressions', 'Clicks', 'CTR (%)'];
+  const rows = [headers.join(',')];
+  for (const s of stats) {
+    rows.push([
+      s.id,
+      `"${(s.title || '').replace(/"/g, '""')}"`,
+      s.slot,
+      s.active ? 'Yes' : 'No',
+      s.total_impressions,
+      s.total_clicks,
+      s.ctr
+    ].join(','));
+  }
+
+  res.setHeader('Content-Type', 'text/csv');
+  res.setHeader('Content-Disposition', 'attachment; filename="banner-analytics.csv"');
+  return res.send(rows.join('\n'));
+});
+
+// --- WHOLESALE RFQ / QUOTES INBOX ---
+
+// GET /api/admin/quotes
+router.get('/quotes', (req, res) => {
+  const quotes = db.prepare('SELECT * FROM quote_requests ORDER BY id DESC').all();
+  const formatted = quotes.map(q => {
+    let items = [];
+    try { items = JSON.parse(q.items); } catch { items = []; }
+    return { ...q, items };
+  });
+  return res.json({ data: { quotes: formatted }, error: null });
+});
+
+// PATCH /api/admin/quotes/:id
+router.patch('/quotes/:id', (req, res) => {
+  const { status, notes } = req.body;
+  const quote = db.prepare('SELECT * FROM quote_requests WHERE id = ?').get(req.params.id);
+  if (!quote) return res.status(404).json({ data: null, error: 'Quote request not found' });
+
+  const updates = [];
+  const params = [];
+  if (status !== undefined) { updates.push('status = ?'); params.push(status); }
+  if (notes !== undefined) { updates.push('notes = ?'); params.push(notes); }
+
+  if (updates.length > 0) {
+    params.push(req.params.id);
+    db.prepare(`UPDATE quote_requests SET ${updates.join(', ')} WHERE id = ?`).run(...params);
+  }
+
+  const updated = db.prepare('SELECT * FROM quote_requests WHERE id = ?').get(req.params.id);
+  return res.json({ data: { quote: updated }, error: null });
+});
+
+// POST /api/admin/quotes/:id/convert-to-estimate
+router.post('/quotes/:id/convert-to-estimate', (req, res) => {
+  const quote = db.prepare('SELECT * FROM quote_requests WHERE id = ?').get(req.params.id);
+  if (!quote) return res.status(404).json({ data: null, error: 'Quote request not found' });
+
+  let rawItems = [];
+  try { rawItems = JSON.parse(quote.items); } catch { rawItems = []; }
+
+  // Map quote items to estimate items
+  const estItems = rawItems.map(it => ({
+    productId: it.productId || it.id || 'custom-item',
+    name: it.name || it.productName || 'Wholesale Product',
+    description: it.specs ? JSON.stringify(it.specs) : '',
+    quantity: Number(it.quantity) || 10,
+    rate: Number(it.targetPrice || it.unitPrice || it.price || 1000),
+    discountPercent: 0,
+    taxRate: 18
+  }));
+
+  const settings = getSettingsMap();
+  const estimateNumber = getNextSequence('estimate', settings.estimate_prefix || 'EST-');
+
+  const totals = calculateDocumentTotals({
+    items: estItems,
+    discountAmount: 0,
+    shippingAmount: 0,
+    placeOfSupply: 'Karnataka (29)'
+  });
+
+  const insertEst = db.prepare(`
+    INSERT INTO estimates (
+      estimate_number, customer_id, customer_name, customer_email, customer_phone,
+      billing_address, estimate_date, valid_until, status, subtotal, discount_amount,
+      tax_amount, shipping_amount, round_off, total, amount_in_words, notes, terms
+    ) VALUES (
+      ?, NULL, ?, ?, ?,
+      ?, ?, ?, 'Draft', ?, ?,
+      ?, ?, ?, ?, ?, ?, ?
+    )
+  `);
+
+  const estRes = insertEst.run(
+    estimateNumber,
+    quote.business_name || quote.contact_name,
+    quote.email,
+    quote.phone,
+    JSON.stringify({ pincode: quote.pincode }),
+    new Date().toISOString().split('T')[0],
+    new Date(Date.now() + 15 * 86400000).toISOString().split('T')[0],
+    totals.subtotal,
+    totals.discountAmount,
+    totals.totalTax,
+    totals.shippingAmount,
+    totals.roundOff,
+    totals.total,
+    totals.amountInWords,
+    `Converted from ${quote.quote_number}. ${quote.notes || ''}`.trim(),
+    settings.invoice_terms || ''
+  );
+
+  const estimateId = estRes.lastInsertRowid;
+  const insertItem = db.prepare(`
+    INSERT INTO estimate_items (
+      estimate_id, product_id, item_name, description, quantity, rate,
+      discount_percent, discount_amount, tax_rate, tax_amount, line_total
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+  `);
+
+  for (const calcItem of totals.calculatedItems) {
+    insertItem.run(
+      estimateId,
+      calcItem.productId,
+      calcItem.name,
+      calcItem.description,
+      calcItem.quantity,
+      calcItem.rate,
+      calcItem.discountPercent,
+      calcItem.discountAmount,
+      calcItem.taxRate,
+      calcItem.taxAmount,
+      calcItem.lineTotal
+    );
+  }
+
+  // Update quote request status
+  db.prepare('UPDATE quote_requests SET estimate_id = ?, status = ? WHERE id = ?').run(
+    estimateId,
+    'Quoted',
+    quote.id
+  );
+
+  logActivity('create', 'estimate', estimateId, `Converted ${quote.quote_number} to estimate ${estimateNumber}`);
+
+  return res.json({
+    data: {
+      estimateId,
+      estimateNumber,
+      message: `Quote successfully converted to Estimate ${estimateNumber}`
+    },
+    error: null
+  });
 });
 
 export default router;

@@ -1,10 +1,12 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
+import { calculateWholesaleCart, getWholesaleTier } from '../utils/wholesaleCalculation';
 
 const StoreContext = createContext();
 
 const CART_STORAGE_KEY = 'techbazaar_cart';
 const WISHLIST_STORAGE_KEY = 'techbazaar_wishlist';
 const RECENT_STORAGE_KEY = 'techbazaar_recent';
+const SAVED_CARTS_KEY = 'techbazaar_saved_carts';
 
 export function StoreProvider({ children }) {
   // 1. Cart state
@@ -20,7 +22,17 @@ export function StoreProvider({ children }) {
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [cartBump, setCartBump] = useState(false);
 
-  // 2. Wishlist state
+  // 2. Saved Cart Lists
+  const [savedCarts, setSavedCarts] = useState(() => {
+    try {
+      const saved = localStorage.getItem(SAVED_CARTS_KEY);
+      return saved ? JSON.parse(saved) : [];
+    } catch (e) {
+      return [];
+    }
+  });
+
+  // 3. Wishlist state
   const [wishlist, setWishlist] = useState(() => {
     try {
       const saved = localStorage.getItem(WISHLIST_STORAGE_KEY);
@@ -30,7 +42,7 @@ export function StoreProvider({ children }) {
     }
   });
 
-  // 3. Recently viewed products
+  // 4. Recently viewed products
   const [recentlyViewed, setRecentlyViewed] = useState(() => {
     try {
       const saved = localStorage.getItem(RECENT_STORAGE_KEY);
@@ -40,8 +52,8 @@ export function StoreProvider({ children }) {
     }
   });
 
-  // 4. Toast notifications
-  const [toast, setToast] = useState(null); // { id, message, type: 'info'|'cart'|'wishlist', actionLabel, onAction }
+  // 5. Toast notifications
+  const [toast, setToast] = useState(null);
 
   // Sync to localStorage
   useEffect(() => {
@@ -49,6 +61,12 @@ export function StoreProvider({ children }) {
       localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(cart));
     } catch (e) {}
   }, [cart]);
+
+  useEffect(() => {
+    try {
+      localStorage.setItem(SAVED_CARTS_KEY, JSON.stringify(savedCarts));
+    } catch (e) {}
+  }, [savedCarts]);
 
   useEffect(() => {
     try {
@@ -82,16 +100,19 @@ export function StoreProvider({ children }) {
 
   const hideToast = () => setToast(null);
 
-  // Cart operations
-  const addToCart = (product, qty = 1, showFeedback = true) => {
+  // Cart operations with Wholesale MOQ awareness
+  const addToCart = (product, qty = null, showFeedback = true) => {
+    const moq = Number(product.moq || 10);
+    const initialQty = qty !== null ? Math.max(1, Number(qty)) : moq;
+
     setCart((prevCart) => {
       const existing = prevCart.find((item) => item.id === product.id);
       if (existing) {
         return prevCart.map((item) =>
-          item.id === product.id ? { ...item, quantity: item.quantity + qty } : item
+          item.id === product.id ? { ...item, quantity: item.quantity + (qty !== null ? qty : (product.packSize || 5)) } : item
         );
       }
-      return [...prevCart, { ...product, quantity: qty }];
+      return [...prevCart, { ...product, quantity: initialQty }];
     });
 
     // Trigger cart badge bump animation
@@ -100,7 +121,7 @@ export function StoreProvider({ children }) {
 
     if (showFeedback) {
       showToast(
-        `Added "${product.name.slice(0, 28)}..." to cart`,
+        `Added ${initialQty} units of "${product.name.slice(0, 24)}..."`,
         'View Cart',
         () => setIsCartOpen(true)
       );
@@ -134,6 +155,76 @@ export function StoreProvider({ children }) {
 
   const clearCart = () => setCart([]);
 
+  // Saved Cart List Management
+  const saveCurrentCart = (name = null) => {
+    if (cart.length === 0) {
+      showToast('Cart is empty. Add products before saving.');
+      return;
+    }
+    const cartName = name || `Wholesale Order (${new Date().toLocaleDateString('en-IN', { month: 'short', day: 'numeric' })})`;
+    const newSaved = {
+      id: `cart-${Date.now()}`,
+      name: cartName,
+      createdAt: new Date().toISOString(),
+      items: [...cart],
+      itemCount: cart.reduce((sum, it) => sum + it.quantity, 0),
+      totalValue: cartSummary.subtotal
+    };
+    setSavedCarts((prev) => [newSaved, ...prev]);
+    showToast(`Saved cart list "${cartName}"`, 'View', () => setIsCartOpen(true));
+  };
+
+  const loadSavedCart = (savedCartId) => {
+    const found = savedCarts.find(c => c.id === savedCartId);
+    if (!found) return;
+    setCart([...found.items]);
+    showToast(`Loaded "${found.name}" with ${found.items.length} items`);
+  };
+
+  const deleteSavedCart = (savedCartId) => {
+    setSavedCarts((prev) => prev.filter(c => c.id !== savedCartId));
+    showToast('Saved cart list removed');
+  };
+
+  // Export Cart to CSV
+  const exportCartCSV = () => {
+    if (cart.length === 0) {
+      showToast('Cart is empty.');
+      return;
+    }
+    const headers = ['SKU', 'Product Name', 'Category', 'Quantity', 'Unit Price (INR)', 'Line Total (INR)', 'GST Rate (%)', 'Tax Amount (INR)'];
+    const rows = [headers.join(',')];
+
+    for (const item of cartSummary.items) {
+      rows.push([
+        item.sku || `TB-${(item.category || 'GEN').slice(0, 3).toUpperCase()}`,
+        `"${(item.name || '').replace(/"/g, '""')}"`,
+        item.category || 'Electronics',
+        item.quantity,
+        item.unitPrice,
+        item.lineTotal,
+        item.taxRate || 18,
+        item.taxAmount || 0
+      ].join(','));
+    }
+
+    rows.push('');
+    rows.push(`"Subtotal",,,,,,"INR ${cartSummary.subtotal}"`);
+    rows.push(`"Shipping",,,,,,"INR ${cartSummary.shipping}"`);
+    rows.push(`"Total Payable",,,,,,"INR ${cartSummary.total}"`);
+
+    const blob = new Blob([rows.join('\n')], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.setAttribute('download', `TechBazaar_Wholesale_Cart_${Date.now()}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+    showToast('Wholesale cart exported to CSV');
+  };
+
   // Wishlist operations
   const toggleWishlist = (product) => {
     const exists = wishlist.some((item) => item.id === product.id);
@@ -165,30 +256,49 @@ export function StoreProvider({ children }) {
     });
   };
 
-  // Calculations
-  const cartCount = cart.reduce((sum, item) => sum + item.quantity, 0);
-  const cartSubtotal = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
-  const cartOriginalTotal = cart.reduce((sum, item) => sum + (item.originalPrice || item.price) * item.quantity, 0);
-  const cartSavings = Math.max(0, cartOriginalTotal - cartSubtotal);
+  // Wholesale Cart Summary Calculations
+  const MIN_ORDER_VALUE = 2500;
+  const FREE_SHIPPING_THRESHOLD = 10000;
 
-  const FREE_SHIPPING_THRESHOLD = 999;
-  const shippingFee = cartSubtotal >= FREE_SHIPPING_THRESHOLD || cartSubtotal === 0 ? 0 : 99;
-  const cartTotal = cartSubtotal + shippingFee;
-  const freeShippingProgress = Math.min(100, Math.round((cartSubtotal / FREE_SHIPPING_THRESHOLD) * 100));
-  const amountToFreeShipping = Math.max(0, FREE_SHIPPING_THRESHOLD - cartSubtotal);
+  const cartSummary = calculateWholesaleCart({
+    items: cart,
+    minOrderValue: MIN_ORDER_VALUE,
+    freeShippingThreshold: FREE_SHIPPING_THRESHOLD
+  });
+
+  const cartCount = cart.reduce((sum, item) => sum + item.quantity, 0);
 
   return (
     <StoreContext.Provider
       value={{
         cart,
+        cartItems: cartSummary.items,
         cartCount,
-        cartSubtotal,
-        cartOriginalTotal,
-        cartSavings,
-        shippingFee,
-        cartTotal,
-        freeShippingProgress,
-        amountToFreeShipping,
+        cartSubtotal: cartSummary.subtotal,
+        cartTotal: cartSummary.total,
+        cartSavings: cartSummary.totalSavingsVsMrp,
+        shippingFee: cartSummary.shipping,
+        taxableValue: cartSummary.totalTaxable,
+        totalTax: cartSummary.totalTax,
+        
+        // MOV & Free shipping progress
+        minOrderValue: MIN_ORDER_VALUE,
+        meetsMinOrderValue: cartSummary.meetsMinOrderValue,
+        amountToMinOrder: cartSummary.amountToMinOrder,
+        minOrderProgress: Math.min(100, Math.round((cartSummary.subtotal / MIN_ORDER_VALUE) * 100)),
+
+        freeShippingThreshold: FREE_SHIPPING_THRESHOLD,
+        freeShippingProgress: cartSummary.freeShippingProgress,
+        amountToFreeShipping: cartSummary.amountToFreeShipping,
+        isFreeShippingMet: cartSummary.subtotal >= FREE_SHIPPING_THRESHOLD,
+
+        // Saved Carts & Export
+        savedCarts,
+        saveCurrentCart,
+        loadSavedCart,
+        deleteSavedCart,
+        exportCartCSV,
+
         isCartOpen,
         setIsCartOpen,
         cartBump,

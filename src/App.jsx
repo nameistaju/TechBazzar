@@ -24,6 +24,9 @@ import AccountPage from './pages/AccountPage';
 import AdminPage from './pages/AdminPage';
 import WishlistPage from './pages/WishlistPage';
 import SearchResultsPage from './pages/SearchResultsPage';
+import QuickOrderPage from './pages/QuickOrderPage';
+import QuoteRequestPage from './pages/QuoteRequestPage';
+import ContactPage from './pages/ContactPage';
 import NotFoundPage from './pages/NotFoundPage';
 
 const queryClient = new QueryClient({
@@ -99,6 +102,9 @@ export default function App() {
                 <Route path="/admin" element={<AdminPage />} />
                 <Route path="/wishlist" element={<WishlistPage />} />
                 <Route path="/search" element={<SearchResultsPage />} />
+                <Route path="/quick-order" element={<QuickOrderPage />} />
+                <Route path="/quote" element={<QuoteRequestPage />} />
+                <Route path="/contact" element={<ContactPage />} />
                 <Route path="*" element={<NotFoundPage />} />
               </Routes>
             </main>

@@ -223,8 +223,16 @@ export default function Navbar() {
               <Zap size={13} /> Flash Sale
             </Link>
 
+            <Link to="/quick-order" className="hover:text-[#FF4D00] transition-colors py-2">
+              Quick Order
+            </Link>
+
+            <Link to="/quote" className="hover:text-[#FF4D00] transition-colors py-2">
+              RFQ / Quote
+            </Link>
+
             <Link to="/track" className="flex items-center gap-1 hover:text-[#FF4D00] transition-colors py-2">
-              <PackageCheck size={13} /> Track Order
+              <PackageCheck size={13} /> Track
             </Link>
 
             {user?.role === 'admin' && (
@@ -470,13 +478,19 @@ export default function Navbar() {
 
               {/* Mobile Nav Links */}
               <nav className="flex flex-col gap-4 text-xs font-semibold uppercase tracking-wider text-[#0A0A0A]">
-                <Link to="/shop" className="hover:text-[#FF4D00] py-1">
+                <Link to="/shop" onClick={() => setIsMobileMenuOpen(false)} className="hover:text-[#FF4D00] py-1">
                   All Products
                 </Link>
-                <Link to="/shop?flag=flashSale" className="text-[#FF4D00] py-1 flex items-center gap-1.5">
+                <Link to="/quick-order" onClick={() => setIsMobileMenuOpen(false)} className="hover:text-[#FF4D00] py-1">
+                  Quick Order Matrix
+                </Link>
+                <Link to="/quote" onClick={() => setIsMobileMenuOpen(false)} className="hover:text-[#FF4D00] py-1">
+                  Request Bulk Quote
+                </Link>
+                <Link to="/shop?flag=flashSale" onClick={() => setIsMobileMenuOpen(false)} className="text-[#FF4D00] py-1 flex items-center gap-1.5">
                   <Zap size={14} /> Flash Sale
                 </Link>
-                <Link to="/track" className="hover:text-[#FF4D00] py-1 flex items-center gap-1.5">
+                <Link to="/track" onClick={() => setIsMobileMenuOpen(false)} className="hover:text-[#FF4D00] py-1 flex items-center gap-1.5">
                   <PackageCheck size={14} /> Track Order
                 </Link>
 

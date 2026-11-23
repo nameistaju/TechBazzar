@@ -6,6 +6,8 @@ import FilterDrawerMobile from '../components/shop/FilterDrawerMobile';
 import SortBar from '../components/shop/SortBar';
 import ProductCard from '../components/common/ProductCard';
 import ProductListRow from '../components/shop/ProductListRow';
+import ProductTableView from '../components/shop/ProductTableView';
+import BannerSlot from '../components/common/BannerSlot';
 import { products } from '../data/products';
 import { categories } from '../data/categories';
 import { RotateCcw, PackageOpen } from 'lucide-react';
@@ -230,7 +232,7 @@ export default function ShopPage() {
               onOpenMobileFilters={() => setIsMobileFilterOpen(true)}
             />
 
-            {/* Product Grid / List Display */}
+            {/* Product Grid / List / Table Display with Category-Inline Banner */}
             {displayedProducts.length === 0 ? (
               <div className="py-20 text-center bg-[#F7F7F7] border border-[#EAEAEA] rounded-[4px] p-8">
                 <div className="w-14 h-14 mx-auto rounded-full bg-white flex items-center justify-center text-[#9E9E9E] mb-3 shadow-sm">
@@ -248,15 +250,41 @@ export default function ShopPage() {
                   <RotateCcw size={13} /> Reset All Filters
                 </button>
               </div>
+            ) : viewMode === 'table' ? (
+              <div className="space-y-6">
+                <ProductTableView products={displayedProducts} />
+                <BannerSlot slot="category-inline" className="my-6" />
+              </div>
             ) : viewMode === 'grid' ? (
               <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 gap-4 sm:gap-6">
-                {displayedProducts.map((product) => (
+                {displayedProducts.slice(0, 8).map((product) => (
+                  <ProductCard key={product.id} product={product} />
+                ))}
+
+                {/* Slot 4: category-inline Banner after item 8 */}
+                {displayedProducts.length > 8 && (
+                  <div className="col-span-full my-2">
+                    <BannerSlot slot="category-inline" />
+                  </div>
+                )}
+
+                {displayedProducts.slice(8).map((product) => (
                   <ProductCard key={product.id} product={product} />
                 ))}
               </div>
             ) : (
               <div className="space-y-4">
-                {displayedProducts.map((product) => (
+                {displayedProducts.slice(0, 8).map((product) => (
+                  <ProductListRow key={product.id} product={product} />
+                ))}
+
+                {displayedProducts.length > 8 && (
+                  <div className="my-4">
+                    <BannerSlot slot="category-inline" />
+                  </div>
+                )}
+
+                {displayedProducts.slice(8).map((product) => (
                   <ProductListRow key={product.id} product={product} />
                 ))}
               </div>

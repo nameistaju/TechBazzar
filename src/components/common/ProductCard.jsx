@@ -1,24 +1,42 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Heart, ShoppingBag, Check, Star } from 'lucide-react';
+import { Heart, ShoppingBag, Check, Star, Plus, Minus } from 'lucide-react';
 import { useStore } from '../../context/StoreContext';
+import { getWholesaleTier } from '../../utils/wholesaleCalculation';
 
 export default function ProductCard({ product }) {
   const { addToCart, toggleWishlist, isInWishlist } = useStore();
   const [isAdded, setIsAdded] = useState(false);
   const [imageLoaded, setImageLoaded] = useState(false);
 
+  const moq = Number(product.moq || 10);
+  const packSize = Number(product.packSize || 5);
+  const [qty, setQty] = useState(moq);
+
   const inWishlist = isInWishlist(product.id);
 
-  // Discount percentage calculation
-  const discountPercent = product.originalPrice && product.originalPrice > product.price
-    ? Math.round(((product.originalPrice - product.price) / product.originalPrice) * 100)
-    : null;
+  // Wholesale tier pricing calculations
+  const currentTier = getWholesaleTier(product, qty);
+  const lowestPrice = product.tier3Price || Math.round((product.price || 1000) * 0.8);
+  const mrp = Number(product.mrp || product.originalPrice || Math.round((product.price || 1000) * 1.35));
+  const maxSavingsPercent = mrp > 0 ? Math.round(((mrp - lowestPrice) / mrp) * 100) : 25;
+
+  const handleStepDown = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setQty(prev => Math.max(moq, prev - packSize));
+  };
+
+  const handleStepUp = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setQty(prev => prev + packSize);
+  };
 
   const handleAddToCart = (e) => {
     e.preventDefault();
     e.stopPropagation();
-    addToCart(product, 1);
+    addToCart(product, qty);
     setIsAdded(true);
     setTimeout(() => setIsAdded(false), 1500);
   };
@@ -32,20 +50,17 @@ export default function ProductCard({ product }) {
   return (
     <div className="group bg-white border border-[#EAEAEA] rounded-[4px] p-4 flex flex-col justify-between transition-all duration-300 hover:-translate-y-1 hover:border-[#D4D4D4] hover:shadow-[0_12px_24px_-6px_rgba(0,0,0,0.06)] relative">
       
-      {/* Top Badges: Discount & Wishlist */}
+      {/* Top Badges: Savings & MOQ & Wishlist */}
       <div className="flex items-center justify-between mb-2 z-10">
-        <div>
-          {discountPercent ? (
+        <div className="flex items-center gap-1.5 flex-wrap">
+          {maxSavingsPercent > 0 && (
             <span className="inline-block bg-[#FF4D00] text-white text-[10px] font-bold tracking-wider px-2 py-0.5 rounded-[2px] uppercase">
-              -{discountPercent}%
+              Save up to {maxSavingsPercent}%
             </span>
-          ) : product.isNew ? (
-            <span className="inline-block bg-[#0A0A0A] text-white text-[10px] font-medium tracking-widest px-2 py-0.5 rounded-[2px] uppercase">
-              NEW
-            </span>
-          ) : (
-            <span />
           )}
+          <span className="inline-flex items-center gap-0.5 bg-[#0A0A0A] text-white text-[9px] font-semibold tracking-wider px-1.5 py-0.5 rounded-[2px] uppercase">
+            MOQ {moq}
+          </span>
         </div>
 
         <button
@@ -67,7 +82,7 @@ export default function ProductCard({ product }) {
       </div>
 
       {/* Product Image with Skeleton Loading */}
-      <Link to={`/product/${product.id}`} className="block relative aspect-square w-full mb-4 bg-[#FAFAFA] rounded-[4px] overflow-hidden p-4 flex items-center justify-center">
+      <Link to={`/product/${product.id}`} className="block relative aspect-square w-full mb-3 bg-[#FAFAFA] rounded-[4px] overflow-hidden p-3 flex items-center justify-center">
         <img
           src={product.image}
           alt={product.name}
@@ -84,9 +99,10 @@ export default function ProductCard({ product }) {
       {/* Product Information */}
       <div className="flex-1 flex flex-col justify-between">
         <div>
-          {/* Brand */}
-          <div className="text-[10px] uppercase tracking-widest text-[#6B6B6B] font-medium mb-1">
-            {product.brand}
+          {/* Brand & SKU */}
+          <div className="flex items-center justify-between text-[10px] text-[#6B6B6B] font-medium mb-1">
+            <span className="uppercase tracking-widest">{product.brand}</span>
+            <span className="font-mono text-[9px] text-[#8A8A8A]">{product.sku || 'B2B'}</span>
           </div>
 
           {/* Product Title */}
@@ -98,52 +114,93 @@ export default function ProductCard({ product }) {
             {product.name}
           </Link>
 
-          {/* Rating */}
-          <div className="flex items-center gap-1.5 text-[11px] text-[#6B6B6B] mb-3">
-            <span className="flex items-center text-amber-500 font-semibold tabular-nums">
-              <Star size={12} className="fill-current text-amber-400 mr-0.5" />
-              {product.rating}
+          {/* Rating & Stock */}
+          <div className="flex items-center justify-between text-[11px] text-[#6B6B6B] mb-2.5">
+            <div className="flex items-center gap-1">
+              <span className="flex items-center text-amber-500 font-semibold tabular-nums">
+                <Star size={11} className="fill-current text-amber-400 mr-0.5" />
+                {product.rating || '4.5'}
+              </span>
+              <span className="text-[#D4D4D4]">•</span>
+              <span className="text-[10px] text-[#8A8A8A]">({product.reviewsCount || 12})</span>
+            </div>
+            <span className="text-[10px] font-medium text-emerald-700 bg-emerald-50 px-1.5 py-0.5 rounded">
+              {product.stock > 0 ? `${product.stock} in bulk` : 'In Stock'}
             </span>
-            <span className="text-[#D4D4D4]">•</span>
-            <span className="tabular-nums">({product.reviewsCount})</span>
           </div>
         </div>
 
-        {/* Pricing and Quick Add to Cart */}
-        <div className="pt-3 border-t border-[#F2F2F2] flex items-center justify-between gap-2">
-          <div>
-            <div className="text-sm font-semibold text-[#0A0A0A] tabular-nums">
-              ₹{product.price.toLocaleString('en-IN')}
-            </div>
-            {product.originalPrice && product.originalPrice > product.price && (
-              <div className="text-[11px] text-[#8A8A8A] line-through tabular-nums">
-                ₹{product.originalPrice.toLocaleString('en-IN')}
+        {/* Pricing and Tier Stepper */}
+        <div className="pt-2.5 border-t border-[#F2F2F2]">
+          <div className="flex items-baseline justify-between mb-2">
+            <div>
+              <div className="text-[10px] text-[#6B6B6B] uppercase tracking-wider">
+                From <span className="text-xs font-bold text-[#0A0A0A] tabular-nums">₹{lowestPrice.toLocaleString('en-IN')}</span> / unit
               </div>
-            )}
+              <div className="text-[10px] text-[#8A8A8A] line-through tabular-nums">
+                MRP ₹{mrp.toLocaleString('en-IN')}
+              </div>
+            </div>
+            <div className="text-right">
+              <div className="text-xs font-bold text-[#FF4D00] tabular-nums">
+                ₹{currentTier.unitPrice.toLocaleString('en-IN')}
+              </div>
+              <div className="text-[9px] text-[#6B6B6B]">
+                Tier {currentTier.activeTier} ({qty} pcs)
+              </div>
+            </div>
           </div>
 
-          <button
-            type="button"
-            onClick={handleAddToCart}
-            className={`px-3 py-2 rounded-[4px] text-xs font-semibold tracking-wider uppercase transition-all duration-200 flex items-center gap-1.5 ${
-              isAdded 
-                ? 'bg-emerald-600 text-white' 
-                : 'bg-[#F7F7F7] text-[#0A0A0A] hover:bg-[#FF4D00] hover:text-white border border-[#EAEAEA] hover:border-[#FF4D00]'
-            }`}
-            aria-label="Add to cart"
-          >
-            {isAdded ? (
-              <>
-                <Check size={13} className="stroke-[2.5]" />
-                <span className="text-[10px]">Added</span>
-              </>
-            ) : (
-              <>
-                <ShoppingBag size={13} strokeWidth={1.75} />
-                <span className="text-[10px]">Add</span>
-              </>
-            )}
-          </button>
+          {/* Stepper + Add to Cart Button */}
+          <div className="flex items-center gap-1.5">
+            {/* Quantity Stepper */}
+            <div className="flex items-center border border-[#EAEAEA] rounded-[3px] bg-[#FAFAFA] overflow-hidden h-7">
+              <button
+                type="button"
+                onClick={handleStepDown}
+                disabled={qty <= moq}
+                className="w-6 h-full flex items-center justify-center text-[#6B6B6B] hover:text-[#0A0A0A] hover:bg-neutral-200/50 disabled:opacity-30 disabled:hover:bg-transparent"
+                aria-label="Decrease quantity"
+              >
+                <Minus size={11} />
+              </button>
+              <span className="w-8 text-center text-[11px] font-semibold text-[#0A0A0A] tabular-nums select-none">
+                {qty}
+              </span>
+              <button
+                type="button"
+                onClick={handleStepUp}
+                className="w-6 h-full flex items-center justify-center text-[#6B6B6B] hover:text-[#0A0A0A] hover:bg-neutral-200/50"
+                aria-label="Increase quantity"
+              >
+                <Plus size={11} />
+              </button>
+            </div>
+
+            {/* Quick Add Button */}
+            <button
+              type="button"
+              onClick={handleAddToCart}
+              className={`flex-1 h-7 rounded-[3px] text-[10px] font-semibold tracking-wider uppercase transition-all duration-200 flex items-center justify-center gap-1 ${
+                isAdded 
+                  ? 'bg-emerald-600 text-white' 
+                  : 'bg-[#0A0A0A] text-white hover:bg-[#FF4D00] hover:text-white border border-[#0A0A0A] hover:border-[#FF4D00]'
+              }`}
+              aria-label={`Add ${qty} units to wholesale cart`}
+            >
+              {isAdded ? (
+                <>
+                  <Check size={12} className="stroke-[2.5]" />
+                  <span>Added</span>
+                </>
+              ) : (
+                <>
+                  <ShoppingBag size={11} strokeWidth={1.75} />
+                  <span>Add {qty}</span>
+                </>
+              )}
+            </button>
+          </div>
         </div>
       </div>
     </div>

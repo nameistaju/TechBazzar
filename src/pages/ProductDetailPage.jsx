@@ -22,6 +22,8 @@ import { products as localProducts } from '../data/products';
 import { categories } from '../data/categories';
 import Breadcrumbs from '../components/common/Breadcrumbs';
 import ProductCard from '../components/common/ProductCard';
+import BannerSlot from '../components/common/BannerSlot';
+import { getWholesaleTier } from '../utils/wholesaleCalculation';
 import productsApi from '../api/productsApi';
 import miscApi from '../api/miscApi';
 
@@ -49,13 +51,21 @@ export default function ProductDetailPage() {
     return () => { isMounted = false; };
   }, [id]);
 
-  const [quantity, setQuantity] = useState(1);
+  const moq = Number(product?.moq || 10);
+  const packSize = Number(product?.packSize || 5);
+  const [quantity, setQuantity] = useState(moq);
   const [isAdded, setIsAdded] = useState(false);
   const [activeTab, setActiveTab] = useState('specs'); // 'specs', 'description', 'reviews'
   const [pincode, setPincode] = useState('');
   const [pincodeStatus, setPincodeStatus] = useState(null);
   const [isZoomed, setIsZoomed] = useState(false);
   const [mousePos, setMousePos] = useState({ x: 50, y: 50 });
+
+  useEffect(() => {
+    if (product?.moq) {
+      setQuantity(prev => Math.max(Number(product.moq), prev));
+    }
+  }, [product?.moq]);
 
   // Notify Me state for out-of-stock items
   const [notifyEmail, setNotifyEmail] = useState('');
@@ -272,27 +282,89 @@ export default function ProductDetailPage() {
               </div>
             </div>
 
-            {/* Pricing Section */}
-            <div className="p-4 bg-[#F7F7F7] border border-[#EAEAEA] rounded-[4px] space-y-1">
-              <div className="flex items-baseline gap-3">
-                <span className="text-3xl font-bold text-[#0A0A0A] tabular-nums">
-                  ₹{product.price.toLocaleString('en-IN')}
-                </span>
-                {product.originalPrice && product.originalPrice > product.price && (
-                  <span className="text-base text-[#8A8A8A] line-through tabular-nums">
-                    ₹{product.originalPrice.toLocaleString('en-IN')}
-                  </span>
-                )}
-                {savingsAmount > 0 && (
-                  <span className="text-xs font-semibold text-emerald-700 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded-[2px]">
-                    You save ₹{savingsAmount.toLocaleString('en-IN')} ({discountPercent}%)
-                  </span>
-                )}
-              </div>
-              <p className="text-[11px] text-[#6B6B6B]">
-                Inclusive of all taxes. Free express shipping on this item.
-              </p>
-            </div>
+            {/* Wholesale Pricing & Volume Tiers Box */}
+            {(() => {
+              const tierInfo = getWholesaleTier(product, quantity);
+              const mrp = Number(product.mrp || product.originalPrice || Math.round((product.price || 1000) * 1.35));
+              return (
+                <div className="p-4 bg-[#FAFAFA] border border-[#EAEAEA] rounded-[4px] space-y-3">
+                  <div className="flex flex-wrap items-baseline justify-between gap-2">
+                    <div>
+                      <div className="text-[10px] uppercase tracking-wider text-[#6B6B6B] font-semibold">
+                        Wholesale Unit Price
+                      </div>
+                      <div className="flex items-baseline gap-2.5">
+                        <span className="text-3xl font-bold text-[#0A0A0A] tabular-nums">
+                          ₹{tierInfo.unitPrice.toLocaleString('en-IN')}
+                        </span>
+                        <span className="text-xs text-[#8A8A8A] line-through tabular-nums">
+                          MRP ₹{mrp.toLocaleString('en-IN')}
+                        </span>
+                      </div>
+                    </div>
+                    <div className="text-right">
+                      <div className="text-[10px] uppercase tracking-wider text-[#6B6B6B] font-semibold">
+                        Line Total ({quantity} units)
+                      </div>
+                      <div className="text-xl font-bold text-[#FF4D00] tabular-nums">
+                        ₹{tierInfo.lineTotal.toLocaleString('en-IN')}
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Volume Discount Tiers Table */}
+                  <div className="grid grid-cols-3 gap-2 pt-2 border-t border-[#EAEAEA]">
+                    {tierInfo.tiers.map((t, idx) => (
+                      <div
+                        key={idx}
+                        onClick={() => setQuantity(t.minQty)}
+                        className={`p-2 rounded-[3px] border cursor-pointer text-center transition-all ${
+                          t.active
+                            ? 'bg-[#FFF0EB] border-[#FF4D00] shadow-xs'
+                            : 'bg-white border-[#EAEAEA] hover:border-[#BDBDBD]'
+                        }`}
+                      >
+                        <div className={`text-[10px] font-semibold uppercase tracking-wider ${t.active ? 'text-[#FF4D00]' : 'text-[#6B6B6B]'}`}>
+                          {t.label}
+                        </div>
+                        <div className={`text-sm font-bold tabular-nums mt-0.5 ${t.active ? 'text-[#FF4D00]' : 'text-[#0A0A0A]'}`}>
+                          ₹{t.price.toLocaleString('en-IN')}
+                        </div>
+                        <div className="text-[9px] text-[#8A8A8A] mt-0.5">
+                          {mrp > 0 ? `${Math.round(((mrp - t.price) / mrp) * 100)}% off MRP` : ''}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+
+                  {/* Margin and Savings pill */}
+                  <div className="flex flex-wrap items-center justify-between gap-2 pt-1 text-[11px]">
+                    <span className="text-emerald-700 font-semibold bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">
+                      You save ₹{tierInfo.savingsVsMrp.toLocaleString('en-IN')} vs MRP ({tierInfo.savingsPercent}%)
+                    </span>
+                    <span className="text-[#0A0A0A] font-medium bg-neutral-100 px-2 py-0.5 rounded border border-neutral-200">
+                      Est. Resale Margin: <strong className="text-[#FF4D00] font-bold">{tierInfo.resaleMarginPercent}%</strong>
+                    </span>
+                  </div>
+
+                  {/* Next Tier Upsell Nudge */}
+                  {tierInfo.nextTier && (
+                    <div className="p-2 bg-white border border-dashed border-[#FF4D00]/60 rounded text-[11px] text-[#0A0A0A] flex items-center justify-between">
+                      <span>
+                        Add <strong className="text-[#FF4D00]">{tierInfo.nextTier.unitsNeeded} more</strong> to unlock <strong>Tier {tierInfo.nextTier.targetTier} (₹{tierInfo.nextTier.targetUnitPrice}/unit)</strong>
+                      </span>
+                      <button
+                        type="button"
+                        onClick={() => setQuantity(tierInfo.nextTier.targetQty)}
+                        className="text-[10px] font-bold text-[#FF4D00] hover:underline uppercase tracking-wider ml-2"
+                      >
+                        Upgrade
+                      </button>
+                    </div>
+                  )}
+                </div>
+              );
+            })()}
 
             {/* Spec Highlights Chips */}
             <div className="flex flex-wrap gap-2">
@@ -322,8 +394,9 @@ export default function ProductDetailPage() {
                     <div className="flex items-center border border-[#EAEAEA] rounded-[4px] bg-white">
                       <button
                         type="button"
-                        onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                        className="p-2 hover:bg-[#F7F7F7] text-[#0A0A0A] transition-colors"
+                        onClick={() => setQuantity(Math.max(moq, quantity - packSize))}
+                        disabled={quantity <= moq}
+                        className="p-2 hover:bg-[#F7F7F7] text-[#0A0A0A] transition-colors disabled:opacity-30"
                       >
                         <Minus size={14} />
                       </button>
@@ -332,18 +405,16 @@ export default function ProductDetailPage() {
                       </span>
                       <button
                         type="button"
-                        onClick={() => setQuantity(Math.min(stock, quantity + 1))}
+                        onClick={() => setQuantity(Math.min(stock, quantity + packSize))}
                         className="p-2 hover:bg-[#F7F7F7] text-[#0A0A0A] transition-colors disabled:opacity-40"
                         disabled={quantity >= stock}
                       >
                         <Plus size={14} />
                       </button>
                     </div>
-                    {isLowStock && (
-                      <span className="text-[11px] text-[#FF4D00] font-medium">
-                        Max available: {stock}
-                      </span>
-                    )}
+                    <span className="text-[11px] text-[#6B6B6B]">
+                      MOQ: <strong className="text-[#0A0A0A]">{moq}</strong> (Pack: {packSize})
+                    </span>
                   </div>
 
                   {/* Action Buttons: Add to Cart, Buy Now, Wishlist */}
@@ -359,11 +430,11 @@ export default function ProductDetailPage() {
                     >
                       {isAdded ? (
                         <>
-                          <Check size={16} /> Added to Bag
+                          <Check size={16} /> Added to Cart
                         </>
                       ) : (
                         <>
-                          <ShoppingBag size={16} strokeWidth={1.75} /> Add to Bag
+                          <ShoppingBag size={16} strokeWidth={1.75} /> Add {quantity} Units
                         </>
                       )}
                     </button>
@@ -373,7 +444,7 @@ export default function ProductDetailPage() {
                       onClick={handleBuyNow}
                       className="flex-1 py-4 px-6 rounded-[4px] text-xs font-semibold uppercase tracking-widest bg-[#FF4D00] hover:bg-[#E04400] text-white transition-colors flex items-center justify-center gap-2 shadow-sm cursor-pointer"
                     >
-                      Buy Now <ArrowRight size={15} />
+                      Bulk Checkout <ArrowRight size={15} />
                     </button>
 
                     <button
@@ -387,6 +458,15 @@ export default function ProductDetailPage() {
                       <Heart size={18} className={inWishlist ? 'fill-current' : ''} />
                     </button>
                   </div>
+
+                  {/* Request Custom Quote Secondary CTA */}
+                  <button
+                    type="button"
+                    onClick={() => navigate(`/quote?productId=${product.id}&qty=${quantity}`)}
+                    className="w-full py-2.5 px-4 rounded-[4px] border border-[#0A0A0A] text-[#0A0A0A] hover:bg-[#0A0A0A] hover:text-white text-xs font-semibold uppercase tracking-wider transition-colors flex items-center justify-center gap-2 mt-2"
+                  >
+                    Request Custom Bulk Quote →
+                  </button>
                 </>
               ) : (
                 /* Out of stock: disabled buttons + Notify Me form */
@@ -605,6 +685,11 @@ export default function ProductDetailPage() {
               </div>
             )}
           </div>
+        </div>
+
+        {/* Slot 6: product-below Banner */}
+        <div className="my-12">
+          <BannerSlot slot="product-below" />
         </div>
 
         {/* Related Products Grid */}

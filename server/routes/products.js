@@ -6,24 +6,47 @@ const router = Router();
 // Helper to format product row from DB
 export function formatProduct(row) {
   if (!row) return null;
+  const basePrice = Number(row.price || 0);
+  const moq = Number(row.moq || 10);
+  const packSize = Number(row.pack_size || 5);
+  const t1Price = Number(row.tier1_price || basePrice);
+  const t2Price = Number(row.tier2_price || Math.round(basePrice * 0.9));
+  const t3Price = Number(row.tier3_price || Math.round(basePrice * 0.8));
+  const mrp = Number(row.mrp || row.original_price || Math.round(basePrice * 1.35));
+
   return {
     id: row.id,
+    sku: row.sku || `TB-${(row.category || 'GEN').slice(0, 3).toUpperCase()}-0001`,
     name: row.name,
     brand: row.brand,
     category: row.category,
-    price: row.price,
-    originalPrice: row.original_price,
+    price: basePrice,
+    originalPrice: row.original_price || mrp,
+    mrp: mrp,
+    costPrice: row.cost_price || Math.round(basePrice * 0.65),
+    suggestedRetailPrice: row.suggested_retail_price || mrp,
+    moq: moq,
+    packSize: packSize,
+    tier1Qty: Number(row.tier1_qty || moq),
+    tier1Price: t1Price,
+    tier2Qty: Number(row.tier2_qty || 50),
+    tier2Price: t2Price,
+    tier3Qty: Number(row.tier3_qty || 100),
+    tier3Price: t3Price,
+    gstRate: row.gst_rate !== undefined ? Number(row.gst_rate) : 18,
+    isTaxInclusive: row.is_tax_inclusive !== undefined ? Boolean(row.is_tax_inclusive) : true,
     rating: row.rating,
     reviewsCount: row.reviews_count,
     image: row.image,
+    images: row.images ? (typeof row.images === 'string' ? JSON.parse(row.images) : row.images) : [row.image],
     stock: row.stock,
     isFlashSale: Boolean(row.is_flash_sale),
     isTrending: Boolean(row.is_trending),
     isBestseller: Boolean(row.is_bestseller),
     isNew: Boolean(row.is_new),
     isRecommended: Boolean(row.is_recommended),
-    tags: row.tags ? JSON.parse(row.tags) : [],
-    specs: row.specs ? JSON.parse(row.specs) : {},
+    tags: row.tags ? (typeof row.tags === 'string' ? JSON.parse(row.tags) : row.tags) : [],
+    specs: row.specs ? (typeof row.specs === 'string' ? JSON.parse(row.specs) : row.specs) : {},
     shortDescription: row.short_description || ''
   };
 }
@@ -35,6 +58,8 @@ router.get('/', (req, res) => {
     brand,
     minPrice,
     maxPrice,
+    minMoq,
+    maxMoq,
     rating,
     inStock,
     sort = 'popularity',
@@ -64,6 +89,16 @@ router.get('/', (req, res) => {
   if (maxPrice) {
     conditions.push('price <= ?');
     params.push(Number(maxPrice));
+  }
+
+  if (minMoq) {
+    conditions.push('moq >= ?');
+    params.push(Number(minMoq));
+  }
+
+  if (maxMoq) {
+    conditions.push('moq <= ?');
+    params.push(Number(maxMoq));
   }
 
   if (rating) {

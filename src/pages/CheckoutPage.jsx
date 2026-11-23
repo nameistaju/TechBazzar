@@ -25,7 +25,7 @@ import addressesApi from '../api/addressesApi';
 import Breadcrumbs from '../components/common/Breadcrumbs';
 
 export default function CheckoutPage() {
-  const { cart, cartSubtotal, shippingFee, cartTotal, clearCart } = useStore();
+  const { cart, cartItems, cartSubtotal, shippingFee, cartTotal, minOrderValue, meetsMinOrderValue, clearCart } = useStore();
   const { user, isAuthenticated, openAuthModal } = useAuthStore();
   const navigate = useNavigate();
 
@@ -35,13 +35,24 @@ export default function CheckoutPage() {
   // Form State (autofill friendly)
   const [formData, setFormData] = useState({
     name: user?.name || '',
+    businessName: '',
+    gstin: '',
     email: user?.email || '',
     phone: '',
     addressLine: '',
     city: '',
     state: 'Karnataka',
-    pincode: ''
+    pincode: '',
+    sameAsBilling: true,
+    billingAddressLine: '',
+    billingCity: '',
+    billingState: 'Karnataka',
+    billingPincode: ''
   });
+
+  const [isAdvancePayment, setIsAdvancePayment] = useState(false);
+  const advanceAmount = Math.round(cartTotal / 2);
+  const balanceAmount = cartTotal - advanceAmount;
 
   // Saved addresses for logged-in users
   const [savedAddresses, setSavedAddresses] = useState([]);
@@ -126,6 +137,9 @@ export default function CheckoutPage() {
     if (!formData.addressLine.trim()) errs.addressLine = 'Street address is required';
     if (!formData.city.trim()) errs.city = 'City is required';
     if (!formData.pincode.trim() || !/^\d{6}$/.test(formData.pincode.trim())) errs.pincode = 'Valid 6-digit PIN code required';
+    if (formData.gstin.trim() && !/^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1}$/.test(formData.gstin.trim().toUpperCase())) {
+      errs.gstin = 'Invalid GSTIN format. Expected 15-character code (e.g. 29ABCDE1234F1Z5)';
+    }
     
     setErrors(errs);
     return Object.keys(errs).length === 0;
@@ -147,6 +161,10 @@ export default function CheckoutPage() {
 
   const handleNextToPayment = (e) => {
     e.preventDefault();
+    if (!meetsMinOrderValue) {
+      setStockError(`Minimum Wholesale Order Value is ₹${minOrderValue.toLocaleString('en-IN')}. Your cart subtotal is ₹${cartSubtotal.toLocaleString('en-IN')}.`);
+      return;
+    }
     if (validateAddressStep()) {
       setCurrentStep(2);
       window.scrollTo(0, 0);
@@ -168,6 +186,8 @@ export default function CheckoutPage() {
     const payload = {
       customer: {
         name: formData.name.trim(),
+        businessName: formData.businessName.trim() || undefined,
+        gstin: formData.gstin.trim().toUpperCase() || undefined,
         email: formData.email.trim().toLowerCase(),
         phone: formData.phone.trim()
       },
@@ -177,11 +197,23 @@ export default function CheckoutPage() {
         state: formData.state.trim(),
         pincode: formData.pincode.trim()
       },
+      billingAddress: formData.sameAsBilling ? {
+        addressLine: formData.addressLine.trim(),
+        city: formData.city.trim(),
+        state: formData.state.trim(),
+        pincode: formData.pincode.trim()
+      } : {
+        addressLine: formData.billingAddressLine.trim() || formData.addressLine.trim(),
+        city: formData.billingCity.trim() || formData.city.trim(),
+        state: formData.billingState.trim() || formData.state.trim(),
+        pincode: formData.billingPincode.trim() || formData.pincode.trim()
+      },
       items: cart.map((i) => ({
         productId: i.id,
         quantity: i.quantity
       })),
-      paymentMethod
+      paymentMethod,
+      isAdvancePayment
     };
 
     const res = await ordersApi.createOrder(payload);
@@ -402,6 +434,37 @@ export default function CheckoutPage() {
                       {errors.name && <p className="text-[10px] text-red-500 mt-1">{errors.name}</p>}
                     </div>
 
+                    {/* Wholesale Business Details */}
+                    <div>
+                      <label className="block text-[11px] font-semibold uppercase tracking-wider text-[#6B6B6B] mb-1.5">
+                        Business / Trade Name (Optional)
+                      </label>
+                      <input
+                        type="text"
+                        placeholder="Apex Electronics LLP"
+                        value={formData.businessName}
+                        onChange={(e) => setFormData({ ...formData, businessName: e.target.value })}
+                        className="w-full h-11 px-3.5 text-xs bg-[#FAFAFA] border border-[#EAEAEA] rounded-[4px] focus:outline-none focus:bg-white focus:border-[#0A0A0A] transition-colors"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-[11px] font-semibold uppercase tracking-wider text-[#6B6B6B] mb-1.5">
+                        GSTIN (For 18% Input Tax Credit)
+                      </label>
+                      <input
+                        type="text"
+                        maxLength={15}
+                        placeholder="29ABCDE1234F1Z5"
+                        value={formData.gstin}
+                        onChange={(e) => setFormData({ ...formData, gstin: e.target.value.toUpperCase() })}
+                        className={`w-full h-11 px-3.5 text-xs font-mono uppercase bg-[#FAFAFA] border rounded-[4px] focus:outline-none focus:bg-white transition-colors ${
+                          errors.gstin ? 'border-red-400 bg-red-50/20' : 'border-[#EAEAEA] focus:border-[#0A0A0A]'
+                        }`}
+                      />
+                      {errors.gstin && <p className="text-[10px] text-red-500 mt-1">{errors.gstin}</p>}
+                    </div>
+
                     <div>
                       <label className="block text-[11px] font-semibold uppercase tracking-wider text-[#6B6B6B] mb-1.5">
                         Email Address *
@@ -503,6 +566,19 @@ export default function CheckoutPage() {
                       />
                       {errors.pincode && <p className="text-[10px] text-red-500 mt-1">{errors.pincode}</p>}
                     </div>
+
+                    {/* Same as billing toggle */}
+                    <div className="sm:col-span-2 pt-2">
+                      <label className="flex items-center gap-2.5 text-xs text-[#0A0A0A] font-medium cursor-pointer">
+                        <input
+                          type="checkbox"
+                          checked={formData.sameAsBilling}
+                          onChange={(e) => setFormData({ ...formData, sameAsBilling: e.target.checked })}
+                          className="accent-[#FF4D00]"
+                        />
+                        <span>Billing address is same as delivery destination</span>
+                      </label>
+                    </div>
                   </div>
                 )}
 
@@ -540,39 +616,106 @@ export default function CheckoutPage() {
 
                 <div className="space-y-3">
                   {[
-                    { id: 'card', title: 'Credit / Debit Card', desc: 'Visa, Mastercard, RuPay, Amex', icon: CreditCard },
-                    { id: 'upi', title: 'UPI Instant QR / VPA', desc: 'Google Pay, PhonePe, Paytm, CRED', icon: QrCode },
-                    { id: 'cod', title: 'Cash on Delivery', desc: 'Pay cash or UPI upon package handoff', icon: Banknote }
+                    { id: 'card', title: 'Credit / Debit Card', desc: 'Visa, Mastercard, RuPay, Corporate Amex', icon: CreditCard },
+                    { id: 'upi', title: 'UPI Instant QR / VPA', desc: 'Google Pay, PhonePe, Paytm, CRED Business', icon: QrCode },
+                    { id: 'bank_transfer', title: 'Direct Bank Transfer (NEFT / RTGS / IMPS)', desc: 'HDFC Bank • A/C: 50200098765432 • IFSC: HDFC0001234', icon: Building2 },
+                    { id: 'cod', title: 'Cash / Pay on Delivery', desc: 'Available for wholesale orders under ₹50,000', icon: Banknote }
                   ].map((method) => {
                     const Icon = method.icon;
                     const isSelected = paymentMethod === method.id;
 
                     return (
-                      <label
-                        key={method.id}
-                        className={`flex items-start gap-4 p-4 border rounded-[4px] cursor-pointer transition-all ${
-                          isSelected
-                            ? 'border-[#0A0A0A] bg-[#FAFAFA] ring-1 ring-[#0A0A0A]'
-                            : 'border-[#EAEAEA] hover:border-[#BDBDBD]'
-                        }`}
-                      >
-                        <input
-                          type="radio"
-                          name="payment"
-                          checked={isSelected}
-                          onChange={() => setPaymentMethod(method.id)}
-                          className="mt-1 accent-[#FF4D00]"
-                        />
-                        <div className="flex-1">
-                          <div className="flex items-center gap-2">
-                            <span className="text-xs font-semibold text-[#0A0A0A]">{method.title}</span>
+                      <div key={method.id} className="space-y-2">
+                        <label
+                          className={`flex items-start gap-4 p-4 border rounded-[4px] cursor-pointer transition-all ${
+                            isSelected
+                              ? 'border-[#0A0A0A] bg-[#FAFAFA] ring-1 ring-[#0A0A0A]'
+                              : 'border-[#EAEAEA] hover:border-[#BDBDBD]'
+                          }`}
+                        >
+                          <input
+                            type="radio"
+                            name="payment"
+                            checked={isSelected}
+                            onChange={() => setPaymentMethod(method.id)}
+                            className="mt-1 accent-[#FF4D00]"
+                          />
+                          <div className="flex-1">
+                            <div className="flex items-center gap-2">
+                              <span className="text-xs font-semibold text-[#0A0A0A]">{method.title}</span>
+                              {method.id === 'bank_transfer' && (
+                                <span className="text-[10px] bg-emerald-50 text-emerald-700 font-semibold px-1.5 py-0.5 rounded">
+                                  RECOMMENDED FOR BULK
+                                </span>
+                              )}
+                            </div>
+                            <p className="text-[11px] text-[#6B6B6B] mt-0.5">{method.desc}</p>
                           </div>
-                          <p className="text-[11px] text-[#6B6B6B] mt-0.5">{method.desc}</p>
-                        </div>
-                        <Icon size={18} className="text-[#6B6B6B]" />
-                      </label>
+                          <Icon size={18} className="text-[#6B6B6B]" />
+                        </label>
+
+                        {/* Direct Bank Transfer Details Card */}
+                        {isSelected && method.id === 'bank_transfer' && (
+                          <div className="p-4 bg-white border border-[#EAEAEA] rounded-[4px] text-xs space-y-2 ml-4 animate-fadeIn">
+                            <div className="flex items-center justify-between border-b border-[#F2F2F2] pb-2">
+                              <span className="font-semibold text-[#0A0A0A] uppercase tracking-wider text-[10px]">
+                                Beneficiary Bank Details
+                              </span>
+                              <span className="text-[10px] font-mono bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded font-semibold">
+                                CURRENT A/C
+                              </span>
+                            </div>
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-[#6B6B6B]">
+                              <div>
+                                <span className="text-[10px] uppercase text-[#8A8A8A] block">Account Name</span>
+                                <strong className="text-[#0A0A0A]">TechBazaar Electronics Pvt Ltd</strong>
+                              </div>
+                              <div>
+                                <span className="text-[10px] uppercase text-[#8A8A8A] block">Bank & Branch</span>
+                                <strong className="text-[#0A0A0A]">HDFC Bank, Peenya Ind. Area</strong>
+                              </div>
+                              <div>
+                                <span className="text-[10px] uppercase text-[#8A8A8A] block">Account Number</span>
+                                <strong className="text-[#0A0A0A] font-mono text-sm">50200098765432</strong>
+                              </div>
+                              <div>
+                                <span className="text-[10px] uppercase text-[#8A8A8A] block">IFSC Code</span>
+                                <strong className="text-[#0A0A0A] font-mono text-sm">HDFC0001234</strong>
+                              </div>
+                            </div>
+                            <p className="text-[11px] text-[#8A8A8A] pt-1 border-t border-[#F2F2F2]">
+                              * Bank transfer instructions and auto-generated Tax Invoice will be sent instantly to <strong>{formData.email}</strong>.
+                            </p>
+                          </div>
+                        )}
+                      </div>
                     );
                   })}
+                </div>
+
+                {/* Wholesale 50% Advance Booking Card */}
+                <div className="p-4 bg-orange-50/60 border border-orange-200/80 rounded-[4px]">
+                  <label className="flex items-start gap-3 cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={isAdvancePayment}
+                      onChange={(e) => setIsAdvancePayment(e.target.checked)}
+                      className="mt-1 accent-[#FF4D00] w-4 h-4 rounded"
+                    />
+                    <div className="flex-1">
+                      <div className="flex items-center gap-2">
+                        <span className="text-xs font-bold text-[#0A0A0A] uppercase tracking-wider">
+                          Opt for 50% Advance Booking
+                        </span>
+                        <span className="bg-[#FF4D00] text-white text-[10px] font-bold px-1.5 py-0.5 rounded">
+                          B2B CREDIT
+                        </span>
+                      </div>
+                      <p className="text-xs text-[#6B6B6B] mt-1 leading-relaxed">
+                        Pay only <strong>₹{advanceAmount.toLocaleString('en-IN')}</strong> now to confirm order and lock stock. The remaining balance of <strong>₹{balanceAmount.toLocaleString('en-IN')}</strong> is payable upon dispatch notification before carrier handover.
+                      </p>
+                    </div>
+                  </label>
                 </div>
 
                 <div className="pt-4 border-t border-[#F2F2F2] flex items-center justify-between">
@@ -619,7 +762,7 @@ export default function CheckoutPage() {
                   <div className="p-4 bg-[#F7F7F7] border border-[#EAEAEA] rounded-[4px]">
                     <div className="flex justify-between items-center mb-1">
                       <span className="font-semibold uppercase tracking-wider text-[10px] text-[#8A8A8A]">
-                        Delivery Destination
+                        Delivery & Business Details
                       </span>
                       <button
                         type="button"
@@ -630,7 +773,15 @@ export default function CheckoutPage() {
                       </button>
                     </div>
                     <p className="font-semibold text-[#0A0A0A]">{formData.name}</p>
-                    <p className="text-[#6B6B6B]">{formData.addressLine}</p>
+                    {formData.businessName && (
+                      <p className="text-xs font-semibold text-[#0A0A0A] mt-0.5">{formData.businessName}</p>
+                    )}
+                    {formData.gstin && (
+                      <p className="text-[11px] font-mono text-[#0A0A0A] bg-white px-1.5 py-0.5 rounded border border-[#EAEAEA] inline-block mt-1">
+                        GSTIN: {formData.gstin}
+                      </p>
+                    )}
+                    <p className="text-[#6B6B6B] mt-1">{formData.addressLine}</p>
                     <p className="text-[#6B6B6B]">{formData.city}, {formData.pincode}</p>
                     <p className="text-[#8A8A8A] mt-1">Phone: {formData.phone}</p>
                   </div>
@@ -638,7 +789,7 @@ export default function CheckoutPage() {
                   <div className="p-4 bg-[#F7F7F7] border border-[#EAEAEA] rounded-[4px]">
                     <div className="flex justify-between items-center mb-1">
                       <span className="font-semibold uppercase tracking-wider text-[10px] text-[#8A8A8A]">
-                        Payment Option
+                        Payment Structure
                       </span>
                       <button
                         type="button"
@@ -649,10 +800,32 @@ export default function CheckoutPage() {
                       </button>
                     </div>
                     <p className="font-semibold text-[#0A0A0A] uppercase tracking-wider">
-                      {paymentMethod === 'cod' ? 'Cash on Delivery' : paymentMethod === 'upi' ? 'UPI Instant Pay' : 'Credit / Debit Card'}
+                      {paymentMethod === 'bank_transfer'
+                        ? 'Direct Bank Transfer (NEFT/RTGS)'
+                        : paymentMethod === 'cod'
+                        ? 'Cash on Delivery'
+                        : paymentMethod === 'upi'
+                        ? 'UPI Instant Pay'
+                        : 'Credit / Debit Card'}
                     </p>
-                    <p className="text-[#6B6B6B] mt-1">
-                      Receipt sent to: <strong className="text-[#0A0A0A]">{formData.email}</strong>
+                    {isAdvancePayment ? (
+                      <div className="mt-2 pt-2 border-t border-[#EAEAEA] space-y-1">
+                        <div className="flex justify-between text-xs font-semibold text-[#FF4D00]">
+                          <span>50% Advance Today:</span>
+                          <span className="tabular-nums">₹{advanceAmount.toLocaleString('en-IN')}</span>
+                        </div>
+                        <div className="flex justify-between text-[11px] text-[#6B6B6B]">
+                          <span>Balance on Dispatch:</span>
+                          <span className="tabular-nums">₹{balanceAmount.toLocaleString('en-IN')}</span>
+                        </div>
+                      </div>
+                    ) : (
+                      <p className="text-xs text-emerald-700 font-medium mt-1">
+                        Full Order Payment: ₹{cartTotal.toLocaleString('en-IN')}
+                      </p>
+                    )}
+                    <p className="text-[#8A8A8A] text-[11px] mt-1">
+                      Tax Invoice sent to: <strong className="text-[#0A0A0A]">{formData.email}</strong>
                     </p>
                   </div>
                 </div>
@@ -669,7 +842,7 @@ export default function CheckoutPage() {
                       <div className="flex-1 min-w-0">
                         <p className="text-xs font-semibold text-[#0A0A0A] truncate">{item.name}</p>
                         <p className="text-[11px] text-[#6B6B6B]">
-                          Qty: {item.quantity} × ₹{item.price.toLocaleString('en-IN')}
+                          Qty: {item.quantity} × ₹{item.price.toLocaleString('en-IN')} / unit
                         </p>
                       </div>
                       <span className="text-xs font-bold text-[#0A0A0A] tabular-nums">
@@ -697,12 +870,16 @@ export default function CheckoutPage() {
                     {isSubmitting ? (
                       <>
                         <Loader2 size={16} className="animate-spin" />
-                        <span>Reserving Inventory...</span>
+                        <span>Reserving Wholesale Stock...</span>
                       </>
                     ) : (
                       <>
                         <Lock size={14} />
-                        <span>Place Order (₹{cartTotal.toLocaleString('en-IN')})</span>
+                        <span>
+                          {isAdvancePayment
+                            ? `Confirm & Pay 50% Advance (₹${advanceAmount.toLocaleString('en-IN')})`
+                            : `Confirm Wholesale Order (₹${cartTotal.toLocaleString('en-IN')})`}
+                        </span>
                       </>
                     )}
                   </button>
@@ -716,7 +893,7 @@ export default function CheckoutPage() {
             <div className="bg-white border border-[#EAEAEA] rounded-[4px] p-6 shadow-sm">
               <div className="flex items-center justify-between border-b border-[#F2F2F2] pb-3 mb-4">
                 <span className="text-xs uppercase tracking-wider font-semibold text-[#0A0A0A]">
-                  Order Summary ({cart.reduce((s, i) => s + i.quantity, 0)} items)
+                  Wholesale Summary ({cart.reduce((s, i) => s + i.quantity, 0)} units)
                 </span>
                 <Link to="/cart" className="text-[11px] text-[#FF4D00] hover:underline font-medium">
                   Modify Bag
@@ -725,25 +902,43 @@ export default function CheckoutPage() {
 
               <div className="space-y-2 text-xs">
                 <div className="flex justify-between text-[#6B6B6B]">
-                  <span>Item Subtotal</span>
-                  <span className="tabular-nums">₹{cartSubtotal.toLocaleString('en-IN')}</span>
+                  <span>Wholesale Subtotal (excl. GST)</span>
+                  <span className="tabular-nums">₹{Math.round(cartSubtotal / 1.18).toLocaleString('en-IN')}</span>
                 </div>
                 <div className="flex justify-between text-[#6B6B6B]">
-                  <span>Express Pan-India Shipping</span>
+                  <span>GST (18% ITC Eligible)</span>
+                  <span className="tabular-nums">₹{Math.round(cartSubtotal - (cartSubtotal / 1.18)).toLocaleString('en-IN')}</span>
+                </div>
+                <div className="flex justify-between text-[#6B6B6B]">
+                  <span>Pallet Freight / Express Logistics</span>
                   <span className="tabular-nums">
                     {shippingFee === 0 ? (
-                      <span className="text-emerald-600 font-semibold uppercase text-[10px]">FREE</span>
+                      <span className="text-emerald-600 font-semibold uppercase text-[10px]">FREE FREIGHT</span>
                     ) : (
                       `₹${shippingFee}`
                     )}
                   </span>
                 </div>
                 <div className="pt-3 border-t border-[#F2F2F2] flex justify-between items-baseline font-bold text-sm text-[#0A0A0A]">
-                  <span>Total Payable</span>
+                  <span>Total Order Value</span>
                   <span className="text-base text-[#0A0A0A] tabular-nums">
                     ₹{cartTotal.toLocaleString('en-IN')}
                   </span>
                 </div>
+
+                {/* 50% Advance Breakdown */}
+                {isAdvancePayment && (
+                  <div className="mt-3 pt-3 border-t border-dashed border-[#EAEAEA] space-y-1.5 bg-[#FAFAFA] p-2.5 rounded-[4px]">
+                    <div className="flex justify-between text-xs font-bold text-[#FF4D00]">
+                      <span>50% Advance Due Today</span>
+                      <span className="tabular-nums">₹{advanceAmount.toLocaleString('en-IN')}</span>
+                    </div>
+                    <div className="flex justify-between text-[11px] text-[#6B6B6B]">
+                      <span>Balance Due on Dispatch</span>
+                      <span className="tabular-nums">₹{balanceAmount.toLocaleString('en-IN')}</span>
+                    </div>
+                  </div>
+                )}
               </div>
 
               {/* Guarantees */}
