@@ -10,7 +10,11 @@
     "build": "vite build",
     "preview": "vite preview",
     "seed": "node server/db/seed.js",
-    "backup": "node scripts/backup-db.mjs"
+    "backup": "node scripts/backup-db.mjs",
+    "test": "vitest run",
+    "test:e2e": "playwright test",
+    "lint": "eslint src server",
+    "verify": "npm run lint && npm test && npm run build"
   },
   "dependencies": {
     "@tanstack/react-query": "^5.108.2",
@@ -35,14 +39,22 @@
     "zustand": "^5.1.0"
   },
   "devDependencies": {
+    "@playwright/test": "^1.65.1",
+    "@testing-library/jest-dom": "^8.0.0",
+    "@testing-library/react": "^16.3.3",
     "@types/canvas-confetti": "^1.9.0",
     "@types/react": "^18.3.12",
     "@types/react-dom": "^18.3.1",
     "@vitejs/plugin-react": "^4.3.4",
     "autoprefixer": "^10.4.20",
+    "eslint": "^10.15.0",
+    "jsdom": "^29.1.1",
     "postcss": "^8.4.49",
+    "prettier": "^3.10.1",
     "sharp": "^0.35.5",
+    "supertest": "^7.3.2",
     "tailwindcss": "^3.4.16",
-    "vite": "^6.0.1"
+    "vite": "^6.0.1",
+    "vitest": "^5.1.1"
   }
 }

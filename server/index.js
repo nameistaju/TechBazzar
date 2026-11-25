@@ -43,7 +43,8 @@ app.use(helmet({
       connectSrc: ["'self'"],
       objectSrc: ["'none'"],
       baseUri: ["'self'"],
-      frameAncestors: ["'self'"]
+      frameAncestors: ["'self'"],
+      upgradeInsecureRequests: null
     }
   }
 }));
@@ -108,14 +109,16 @@ if (fs.existsSync(path.join(distDir, 'index.html'))) {
 // Central Error Handler
 app.use(errorHandler);
 
-// Start Server
-const serverInstance = app.listen(PORT, () => {
-  console.log(`🚀 TechBazaar Server running on port ${PORT}`);
-  console.log(`   Client URL: ${CLIENT_URL}`);
-  console.log(`   Database: SQLite (techbazaar.db) ready`);
-});
+// Start Server (skip listening during Vitest/Supertest imports)
+if (process.env.NODE_ENV !== 'test') {
+  app.listen(PORT, () => {
+    console.log(`🚀 TechBazaar Server running on port ${PORT}`);
+    console.log(`   Client URL: ${CLIENT_URL}`);
+    console.log(`   Database: SQLite (techbazaar.db) ready`);
+  });
 
-// Event loop keep-alive
-setInterval(() => {}, 1000 * 60 * 60);
+  // Event loop keep-alive
+  setInterval(() => {}, 1000 * 60 * 60);
+}
 
 export default app;
