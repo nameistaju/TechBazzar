@@ -1,4 +1,4 @@
-import './config/env.js';
+import '../config/env.js';
 
 import express from 'express';
 import helmet from 'helmet';
@@ -8,21 +8,21 @@ import rateLimit from 'express-rate-limit';
 import fs from 'node:fs';
 import path from 'node:path';
 
-import { UPLOADS_DIR, resolveDistDir } from './config/paths.js';
+import { UPLOADS_DIR, resolveDistDir } from '../config/paths.js';
 
-import authRoutes from './routes/auth.js';
-import productsRoutes from './routes/products.js';
-import cartRoutes from './routes/cart.js';
-import ordersRoutes from './routes/orders.js';
-import addressesRoutes from './routes/addresses.js';
-import adminRoutes from './routes/admin.js';
-import miscRoutes from './routes/misc.js';
-import bannersRoutes from './routes/banners.js';
-import quotesRoutes from './routes/quotes.js';
-import wholesaleRoutes from './routes/wholesale.js';
-import brandingRoutes from './routes/branding.js';
-import { errorHandler } from './middleware/error.js';
-import { getJwtSecret } from './middleware/auth.js';
+import authRoutes from '../routes/auth.js';
+import productsRoutes from '../routes/products.js';
+import cartRoutes from '../routes/cart.js';
+import ordersRoutes from '../routes/orders.js';
+import addressesRoutes from '../routes/addresses.js';
+import adminRoutes from '../routes/admin.js';
+import miscRoutes from '../routes/misc.js';
+import bannersRoutes from '../routes/banners.js';
+import quotesRoutes from '../routes/quotes.js';
+import wholesaleRoutes from '../routes/wholesale.js';
+import brandingRoutes from '../routes/branding.js';
+import { errorHandler } from '../middleware/error.js';
+import { getJwtSecret } from '../middleware/auth.js';
 
 // Validate JWT secret on startup (refuses to boot in production without strong JWT_SECRET)
 getJwtSecret();
@@ -109,17 +109,5 @@ if (fs.existsSync(path.join(distDir, 'index.html'))) {
 
 // Central Error Handler
 app.use(errorHandler);
-
-// Start Server (skip listening during Vitest/Supertest imports)
-if (process.env.NODE_ENV !== 'test') {
-  app.listen(PORT, () => {
-    console.log(`🚀 TechBazaar Server running on port ${PORT}`);
-    console.log(`   Client URL: ${CLIENT_URL}`);
-    console.log(`   Database: SQLite (techbazaar.db) ready`);
-  });
-
-  // Event loop keep-alive
-  setInterval(() => {}, 1000 * 60 * 60);
-}
 
 export default app;

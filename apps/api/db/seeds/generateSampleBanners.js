@@ -4,7 +4,7 @@
 
 import fs from 'fs';
 import path from 'path';
-import { UPLOADS_DIR } from '../config/paths.js';
+import { UPLOADS_DIR } from '../../config/paths.js';
 
 export function generateSampleBanners() {
   const uploadDir = path.join(UPLOADS_DIR, 'banners');

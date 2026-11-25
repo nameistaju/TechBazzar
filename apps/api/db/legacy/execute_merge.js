@@ -1,6 +1,6 @@
 // server/db/execute_merge.js
-import db from './index.js';
-import { findDuplicateGroups, mergeProductGroup } from '../services/dedupService.js';
+import db from '../index.js';
+import { findDuplicateGroups, mergeProductGroup } from '../../services/dedupService.js';
 
 console.log('🚀 Executing Database Product Deduplication...');
 

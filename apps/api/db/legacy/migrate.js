@@ -1,5 +1,5 @@
-import db from './index.js';
-import { generateSampleBanners } from './generateSampleBanners.js';
+import db from '../index.js';
+import { generateSampleBanners } from '../seeds/generateSampleBanners.js';
 
 console.log('🔄 Starting TechBazaar Database Migration...');
 

@@ -1,7 +1,7 @@
 import bcrypt from 'bcryptjs';
-import db from './index.js';
-import { products } from '../../src/data/products.js';
-import { computeNormalizedName } from '../services/dedupService.js';
+import db from '../index.js';
+import { products } from '../../../web/src/data/products.js';
+import { computeNormalizedName } from '../../services/dedupService.js';
 
 console.log('🌱 Starting TechBazaar Database Seeding...');
 

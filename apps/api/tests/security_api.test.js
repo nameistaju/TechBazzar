@@ -3,7 +3,7 @@ import request from 'supertest';
 import { setupTempDb } from './testDb.js';
 
 const { cleanup } = setupTempDb('tb-sec-api-');
-const { default: app } = await import('../index.js');
+const { default: app } = await import('../src/app.js');
 const { default: db } = await import('../db/index.js');
 const { getJwtSecret } = await import('../middleware/auth.js');
 

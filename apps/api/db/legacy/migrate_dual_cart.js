@@ -1,7 +1,7 @@
 // server/db/migrate_dual_cart.js
 // Migration for Dual Cart System & Wholesale Buyer Ecosystem
 
-import db from './index.js';
+import db from '../index.js';
 
 console.log('🔄 Starting Dual Cart & Wholesale Buyer Database Migration...');
 

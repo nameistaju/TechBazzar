@@ -1,7 +1,7 @@
 // server/db/migrate_dedup.js
 // Migration for Product Deduplication, Canonical Merging, and Unique SKU enforcement
 
-import db from './index.js';
+import db from '../index.js';
 
 console.log('🔄 Starting Product Deduplication & Canonical Merging Migration...');
 

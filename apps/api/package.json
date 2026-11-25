@@ -4,10 +4,10 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "node --watch index.js",
-    "start": "node index.js",
-    "seed": "node db/seed.js",
-    "migrate": "node db/migrate.js",
+    "dev": "node --watch src/server.js",
+    "start": "node src/server.js",
+    "seed": "node db/seeds/seed.js",
+    "migrate": "node db/legacy/migrate.js",
     "test": "vitest run --config ../../vitest.config.js tests"
   }
 }

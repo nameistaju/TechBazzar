@@ -1,8 +1,8 @@
 // server/db/seedAdmin.js
 // Seeds complete business settings, sample customers, sample discounts, estimates, invoices, and activity logs
 
-import db from './index.js';
-import { calculateDocumentTotals } from '../services/calculation.js';
+import db from '../index.js';
+import { calculateDocumentTotals } from '../../services/calculation.js';
 
 console.log('🌱 Seeding Admin Back-Office Data...');
 

@@ -4,7 +4,7 @@ import bcrypt from 'bcryptjs';
 import { setupTempDb } from './testDb.js';
 
 const { cleanup } = setupTempDb('tb-admin-hard-');
-const { default: app } = await import('../index.js');
+const { default: app } = await import('../src/app.js');
 const { default: db } = await import('../db/index.js');
 
 async function getReadyAdminCookie() {
