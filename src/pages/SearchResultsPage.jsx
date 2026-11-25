@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useSearchParams, Link } from 'react-router-dom';
-import { products } from '../data/products';
+import { useQuery } from '@tanstack/react-query';
+import productsApi from '../api/productsApi';
 import ProductCard from '../components/common/ProductCard';
 import Breadcrumbs from '../components/common/Breadcrumbs';
 import { Search, ArrowRight } from 'lucide-react';
@@ -10,16 +11,18 @@ export default function SearchResultsPage() {
   const query = searchParams.get('q') || '';
   const [currentSort, setCurrentSort] = useState('popularity');
 
-  const filtered = products.filter((p) => {
-    if (!query.trim()) return true;
-    const q = query.toLowerCase();
-    return (
-      p.name.toLowerCase().includes(q) ||
-      p.brand.toLowerCase().includes(q) ||
-      p.category.toLowerCase().includes(q) ||
-      p.tags.some((t) => t.toLowerCase().includes(q))
-    );
+  const { data: searchData, isLoading } = useQuery({
+    queryKey: ['search', query],
+    queryFn: async () => {
+      const res = query.trim()
+        ? await productsApi.searchProducts(query.trim())
+        : await productsApi.getProducts({ limit: 48 });
+      return res.data?.products || [];
+    },
+    staleTime: 60 * 1000
   });
+
+  const filtered = searchData || [];
 
   const sorted = [...filtered].sort((a, b) => {
     if (currentSort === 'price-low') return a.price - b.price;

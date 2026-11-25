@@ -1,11 +1,12 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowRight, ThumbsUp } from 'lucide-react';
-import { products } from '../../data/products';
+import { useProducts } from '../../hooks/useCatalog';
 import ProductCard from '../common/ProductCard';
 
 export default function RecommendedSection() {
-  const recommendedProducts = products.filter(p => p.isRecommended).slice(0, 8);
+  const { data } = useProducts({ flag: 'recommended', limit: 8 });
+  const recommendedProducts = data?.products || [];
 
   return (
     <section className="py-16 bg-[#FAFAFA] border-t border-[#EAEAEA]">

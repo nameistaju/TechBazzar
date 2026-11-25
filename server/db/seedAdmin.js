@@ -185,7 +185,7 @@ const sampleDiscounts = [
     rule_flat: null,
     rule_mode: null,
     scope: 'categories',
-    scope_values: JSON.stringify(['Headphones', 'Earbuds', 'Speakers']),
+    scope_values: JSON.stringify(['headphones', 'earbuds', 'speakers']),
     min_cart_amount: 150000,
     min_quantity: 1,
     first_order_only: 0,

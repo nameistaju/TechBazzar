@@ -120,7 +120,7 @@ router.get('/', optionalAuth, (req, res) => {
   const params = [];
 
   if (category) {
-    conditions.push('category = ?');
+    conditions.push('LOWER(category) = LOWER(?)');
     params.push(category);
   }
 
@@ -269,10 +269,10 @@ router.get('/search', (req, res) => {
 // GET /api/products/categories
 router.get('/categories', (req, res) => {
   const rows = db.prepare(`
-    SELECT category as id, COUNT(*) as count
+    SELECT LOWER(category) as id, COUNT(*) as count
     FROM products
     WHERE deleted_at IS NULL
-    GROUP BY category
+    GROUP BY LOWER(category)
     ORDER BY count DESC
   `).all();
 

@@ -1,11 +1,12 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowRight, Flame } from 'lucide-react';
-import { products } from '../../data/products';
+import { useProducts } from '../../hooks/useCatalog';
 import ProductCard from '../common/ProductCard';
 
 export default function TrendingSection() {
-  const trendingProducts = products.filter(p => p.isTrending).slice(0, 8);
+  const { data } = useProducts({ flag: 'trending', limit: 8 });
+  const trendingProducts = data?.products || [];
 
   return (
     <section className="py-16 bg-white border-t border-[#EAEAEA]">

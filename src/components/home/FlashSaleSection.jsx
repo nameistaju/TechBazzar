@@ -1,11 +1,12 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { Zap, ChevronLeft, ChevronRight, Clock, ArrowRight } from 'lucide-react';
-import { products } from '../../data/products';
+import { useProducts } from '../../hooks/useCatalog';
 import ProductCard from '../common/ProductCard';
 
 export default function FlashSaleSection() {
-  const flashProducts = products.filter(p => p.isFlashSale);
+  const { data } = useProducts({ flag: 'flashSale', limit: 20 });
+  const flashProducts = data?.products || [];
   const carouselRef = useRef(null);
 
   // Live countdown timer (calculating till midnight or rolling 14h window)

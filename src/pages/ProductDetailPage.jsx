@@ -18,42 +18,38 @@ import {
   AlertCircle
 } from 'lucide-react';
 import { useStore } from '../context/StoreContext';
-import { products as localProducts } from '../data/products';
-import { categories } from '../data/categories';
+import { useCategories, useProduct, useProducts } from '../hooks/useCatalog';
 import Breadcrumbs from '../components/common/Breadcrumbs';
 import ProductCard from '../components/common/ProductCard';
 import BannerSlot from '../components/common/BannerSlot';
 import { getWholesaleTier } from '../utils/wholesaleCalculation';
-import productsApi from '../api/productsApi';
 import miscApi from '../api/miscApi';
 
 export default function ProductDetailPage() {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { addToCart, toggleWishlist, isInWishlist, recordViewedProduct, showToast } = useStore();
+  const { mode, switchMode, addToCart, toggleWishlist, isInWishlist, recordViewedProduct, showToast } = useStore();
 
-  const [product, setProduct] = useState(() => {
-    return localProducts.find((p) => p.id === id) || null;
-  });
-  const [loading, setLoading] = useState(false);
+  const isWholesale = mode === 'wholesale';
 
-  // Fetch live product from API
+  const { data: productData, isLoading: loading } = useProduct(id);
+  const { data: categories = [] } = useCategories();
+  const product = productData?.product || null;
+
   useEffect(() => {
-    let isMounted = true;
-    async function loadLiveProduct() {
-      if (!id) return;
-      const res = await productsApi.getProductById(id);
-      if (isMounted && res.data?.product) {
-        setProduct(res.data.product);
-      }
+    if (productData?.redirectedFrom && productData?.canonicalId && productData.canonicalId !== id) {
+      navigate(`/product/${productData.canonicalId}`, { replace: true });
     }
-    loadLiveProduct();
-    return () => { isMounted = false; };
-  }, [id]);
+  }, [productData, id, navigate]);
+
+  const { data: relatedData } = useProducts(
+    { category: product?.category, limit: 5 },
+    { enabled: Boolean(product?.category) }
+  );
 
   const moq = Number(product?.moq || 10);
   const packSize = Number(product?.packSize || 5);
-  const [quantity, setQuantity] = useState(moq);
+  const [quantity, setQuantity] = useState(isWholesale ? moq : 1);
   const [isAdded, setIsAdded] = useState(false);
   const [activeTab, setActiveTab] = useState('specs'); // 'specs', 'description', 'reviews'
   const [pincode, setPincode] = useState('');
@@ -61,11 +57,14 @@ export default function ProductDetailPage() {
   const [isZoomed, setIsZoomed] = useState(false);
   const [mousePos, setMousePos] = useState({ x: 50, y: 50 });
 
+  // Sync quantity with mode switch
   useEffect(() => {
-    if (product?.moq) {
-      setQuantity(prev => Math.max(Number(product.moq), prev));
+    if (isWholesale) {
+      setQuantity(prev => Math.max(moq, prev));
+    } else {
+      setQuantity(prev => (prev > 10 ? 1 : Math.max(1, prev)));
     }
-  }, [product?.moq]);
+  }, [isWholesale, moq]);
 
   // Notify Me state for out-of-stock items
   const [notifyEmail, setNotifyEmail] = useState('');
@@ -78,6 +77,15 @@ export default function ProductDetailPage() {
       recordViewedProduct(product);
     }
   }, [id, product]);
+
+  if (loading) {
+    return (
+      <div className="min-h-[70vh] flex flex-col items-center justify-center p-6 text-center">
+        <div className="w-8 h-8 border-2 border-[#FF4D00] border-t-transparent rounded-full animate-spin mb-4" />
+        <p className="text-xs font-mono text-[#6B6B6B]">Loading product details...</p>
+      </div>
+    );
+  }
 
   if (!product) {
     return (
@@ -122,7 +130,11 @@ export default function ProductDetailPage() {
   const handleBuyNow = () => {
     if (isOutOfStock) return;
     addToCart(product, quantity, false);
-    navigate('/checkout');
+    if (isWholesale) {
+      navigate('/wholesale-checkout');
+    } else {
+      navigate('/checkout');
+    }
   };
 
   const handleCheckPincode = (e) => {
@@ -164,9 +176,9 @@ export default function ProductDetailPage() {
     setMousePos({ x, y });
   };
 
-  const categoryObj = categories.find((c) => c.id === product.category);
-  const relatedProducts = localProducts
-    .filter((p) => p.category === product.category && p.id !== product.id)
+  const categoryObj = categories.find((c) => c.id === String(product.category || '').toLowerCase());
+  const relatedProducts = (relatedData?.products || [])
+    .filter((p) => p.id !== product.id)
     .slice(0, 4);
 
   return (
@@ -282,89 +294,151 @@ export default function ProductDetailPage() {
               </div>
             </div>
 
-            {/* Wholesale Pricing & Volume Tiers Box */}
-            {(() => {
-              const tierInfo = getWholesaleTier(product, quantity);
-              const mrp = Number(product.mrp || product.originalPrice || Math.round((product.price || 1000) * 1.35));
-              return (
-                <div className="p-4 bg-[#FAFAFA] border border-[#EAEAEA] rounded-[4px] space-y-3">
-                  <div className="flex flex-wrap items-baseline justify-between gap-2">
-                    <div>
-                      <div className="text-[10px] uppercase tracking-wider text-[#6B6B6B] font-semibold">
-                        Wholesale Unit Price
+            {/* Mode-Aware Pricing Block */}
+            {isWholesale ? (
+              /* Wholesale Pricing & Volume Tiers Box */
+              (() => {
+                const tierInfo = getWholesaleTier(product, quantity);
+                const mrp = Number(product.mrp || product.originalPrice || Math.round((product.price || 1000) * 1.35));
+                return (
+                  <div className="p-4 bg-[#FAFAFA] border border-[#EAEAEA] rounded-[4px] space-y-3">
+                    <div className="flex flex-wrap items-baseline justify-between gap-2">
+                      <div>
+                        <div className="text-[10px] uppercase tracking-wider text-[#6B6B6B] font-semibold">
+                          Wholesale Unit Price
+                        </div>
+                        <div className="flex items-baseline gap-2.5">
+                          <span className="text-3xl font-bold text-[#0A0A0A] tabular-nums">
+                            ₹{tierInfo.unitPrice.toLocaleString('en-IN')}
+                          </span>
+                          <span className="text-xs text-[#8A8A8A] line-through tabular-nums">
+                            MRP ₹{mrp.toLocaleString('en-IN')}
+                          </span>
+                        </div>
                       </div>
-                      <div className="flex items-baseline gap-2.5">
-                        <span className="text-3xl font-bold text-[#0A0A0A] tabular-nums">
-                          ₹{tierInfo.unitPrice.toLocaleString('en-IN')}
-                        </span>
-                        <span className="text-xs text-[#8A8A8A] line-through tabular-nums">
-                          MRP ₹{mrp.toLocaleString('en-IN')}
-                        </span>
+                      <div className="text-right">
+                        <div className="text-[10px] uppercase tracking-wider text-[#6B6B6B] font-semibold">
+                          Line Total ({quantity} units)
+                        </div>
+                        <div className="text-xl font-bold text-[#FF4D00] tabular-nums">
+                          ₹{tierInfo.lineTotal.toLocaleString('en-IN')}
+                        </div>
                       </div>
                     </div>
-                    <div className="text-right">
-                      <div className="text-[10px] uppercase tracking-wider text-[#6B6B6B] font-semibold">
-                        Line Total ({quantity} units)
-                      </div>
-                      <div className="text-xl font-bold text-[#FF4D00] tabular-nums">
-                        ₹{tierInfo.lineTotal.toLocaleString('en-IN')}
-                      </div>
+
+                    {/* Volume Discount Tiers Table */}
+                    <div className="grid grid-cols-3 gap-2 pt-2 border-t border-[#EAEAEA]">
+                      {tierInfo.tiers.map((t, idx) => (
+                        <div
+                          key={idx}
+                          onClick={() => setQuantity(t.minQty)}
+                          className={`p-2 rounded-[3px] border cursor-pointer text-center transition-all ${
+                            t.active
+                              ? 'bg-[#FFF0EB] border-[#FF4D00] shadow-xs'
+                              : 'bg-white border-[#EAEAEA] hover:border-[#BDBDBD]'
+                          }`}
+                        >
+                          <div className={`text-[10px] font-semibold uppercase tracking-wider ${t.active ? 'text-[#FF4D00]' : 'text-[#6B6B6B]'}`}>
+                            {t.label}
+                          </div>
+                          <div className={`text-sm font-bold tabular-nums mt-0.5 ${t.active ? 'text-[#FF4D00]' : 'text-[#0A0A0A]'}`}>
+                            ₹{t.price.toLocaleString('en-IN')}
+                          </div>
+                          <div className="text-[9px] text-[#8A8A8A] mt-0.5">
+                            {mrp > 0 ? `${Math.round(((mrp - t.price) / mrp) * 100)}% off MRP` : ''}
+                          </div>
+                        </div>
+                      ))}
                     </div>
-                  </div>
 
-                  {/* Volume Discount Tiers Table */}
-                  <div className="grid grid-cols-3 gap-2 pt-2 border-t border-[#EAEAEA]">
-                    {tierInfo.tiers.map((t, idx) => (
-                      <div
-                        key={idx}
-                        onClick={() => setQuantity(t.minQty)}
-                        className={`p-2 rounded-[3px] border cursor-pointer text-center transition-all ${
-                          t.active
-                            ? 'bg-[#FFF0EB] border-[#FF4D00] shadow-xs'
-                            : 'bg-white border-[#EAEAEA] hover:border-[#BDBDBD]'
-                        }`}
-                      >
-                        <div className={`text-[10px] font-semibold uppercase tracking-wider ${t.active ? 'text-[#FF4D00]' : 'text-[#6B6B6B]'}`}>
-                          {t.label}
-                        </div>
-                        <div className={`text-sm font-bold tabular-nums mt-0.5 ${t.active ? 'text-[#FF4D00]' : 'text-[#0A0A0A]'}`}>
-                          ₹{t.price.toLocaleString('en-IN')}
-                        </div>
-                        <div className="text-[9px] text-[#8A8A8A] mt-0.5">
-                          {mrp > 0 ? `${Math.round(((mrp - t.price) / mrp) * 100)}% off MRP` : ''}
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-
-                  {/* Margin and Savings pill */}
-                  <div className="flex flex-wrap items-center justify-between gap-2 pt-1 text-[11px]">
-                    <span className="text-emerald-700 font-semibold bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">
-                      You save ₹{tierInfo.savingsVsMrp.toLocaleString('en-IN')} vs MRP ({tierInfo.savingsPercent}%)
-                    </span>
-                    <span className="text-[#0A0A0A] font-medium bg-neutral-100 px-2 py-0.5 rounded border border-neutral-200">
-                      Est. Resale Margin: <strong className="text-[#FF4D00] font-bold">{tierInfo.resaleMarginPercent}%</strong>
-                    </span>
-                  </div>
-
-                  {/* Next Tier Upsell Nudge */}
-                  {tierInfo.nextTier && (
-                    <div className="p-2 bg-white border border-dashed border-[#FF4D00]/60 rounded text-[11px] text-[#0A0A0A] flex items-center justify-between">
-                      <span>
-                        Add <strong className="text-[#FF4D00]">{tierInfo.nextTier.unitsNeeded} more</strong> to unlock <strong>Tier {tierInfo.nextTier.targetTier} (₹{tierInfo.nextTier.targetUnitPrice}/unit)</strong>
+                    {/* Margin and Savings pill */}
+                    <div className="flex flex-wrap items-center justify-between gap-2 pt-1 text-[11px]">
+                      <span className="text-emerald-700 font-semibold bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">
+                        You save ₹{tierInfo.savingsVsMrp.toLocaleString('en-IN')} vs MRP ({tierInfo.savingsPercent}%)
                       </span>
+                      <span className="text-[#0A0A0A] font-medium bg-neutral-100 px-2 py-0.5 rounded border border-neutral-200">
+                        Est. Resale Margin: <strong className="text-[#FF4D00] font-bold">{tierInfo.resaleMarginPercent}%</strong>
+                      </span>
+                    </div>
+
+                    {/* Next Tier Upsell Nudge */}
+                    {tierInfo.nextTier && (
+                      <div className="p-2 bg-white border border-dashed border-[#FF4D00]/60 rounded text-[11px] text-[#0A0A0A] flex items-center justify-between">
+                        <span>
+                          Add <strong className="text-[#FF4D00]">{tierInfo.nextTier.unitsNeeded} more</strong> to unlock <strong>Tier {tierInfo.nextTier.targetTier} (₹{tierInfo.nextTier.targetUnitPrice}/unit)</strong>
+                        </span>
+                        <button
+                          type="button"
+                          onClick={() => setQuantity(tierInfo.nextTier.targetQty)}
+                          className="text-[10px] font-bold text-[#FF4D00] hover:underline uppercase tracking-wider ml-2 cursor-pointer"
+                        >
+                          Upgrade
+                        </button>
+                      </div>
+                    )}
+                  </div>
+                );
+              })()
+            ) : (
+              /* Retail Pricing Box */
+              (() => {
+                const retailPrice = Number(product.price || 1000);
+                const mrp = Number(product.mrp || product.originalPrice || Math.round(retailPrice * 1.35));
+                const savings = mrp - retailPrice;
+                const savingsPercent = mrp > 0 ? Math.round((savings / mrp) * 100) : 0;
+                const lineTotal = retailPrice * quantity;
+
+                return (
+                  <div className="p-4 bg-[#FAFAFA] border border-[#EAEAEA] rounded-[4px] space-y-3">
+                    <div className="flex flex-wrap items-baseline justify-between gap-2">
+                      <div>
+                        <div className="text-[10px] uppercase tracking-wider text-[#6B6B6B] font-semibold">
+                          Retail Price
+                        </div>
+                        <div className="flex items-baseline gap-2.5">
+                          <span className="text-3xl font-bold text-[#0A0A0A] tabular-nums">
+                            ₹{retailPrice.toLocaleString('en-IN')}
+                          </span>
+                          {mrp > retailPrice && (
+                            <span className="text-sm text-[#8A8A8A] line-through tabular-nums">
+                              ₹{mrp.toLocaleString('en-IN')}
+                            </span>
+                          )}
+                          {savingsPercent > 0 && (
+                            <span className="text-[11px] font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">
+                              Save {savingsPercent}%
+                            </span>
+                          )}
+                        </div>
+                      </div>
+
+                      {quantity > 1 && (
+                        <div className="text-right">
+                          <div className="text-[10px] uppercase tracking-wider text-[#6B6B6B] font-semibold">
+                            Total ({quantity} items)
+                          </div>
+                          <div className="text-xl font-bold text-[#0A0A0A] tabular-nums">
+                            ₹{lineTotal.toLocaleString('en-IN')}
+                          </div>
+                        </div>
+                      )}
+                    </div>
+
+                    {/* Subtle wholesale teaser */}
+                    <div className="p-2.5 bg-white border border-[#EAEAEA] rounded text-[11px] text-[#6B6B6B] flex items-center justify-between">
+                      <span>Buying in bulk for business or resale?</span>
                       <button
                         type="button"
-                        onClick={() => setQuantity(tierInfo.nextTier.targetQty)}
-                        className="text-[10px] font-bold text-[#FF4D00] hover:underline uppercase tracking-wider ml-2"
+                        onClick={() => switchMode('wholesale')}
+                        className="text-[#FF4D00] font-semibold hover:underline inline-flex items-center gap-1 cursor-pointer"
                       >
-                        Upgrade
+                        Switch to Wholesale <ArrowRight size={11} />
                       </button>
                     </div>
-                  )}
-                </div>
-              );
-            })()}
+                  </div>
+                );
+              })()
+            )}
 
             {/* Spec Highlights Chips */}
             <div className="flex flex-wrap gap-2">
@@ -394,9 +468,15 @@ export default function ProductDetailPage() {
                     <div className="flex items-center border border-[#EAEAEA] rounded-[4px] bg-white">
                       <button
                         type="button"
-                        onClick={() => setQuantity(Math.max(moq, quantity - packSize))}
-                        disabled={quantity <= moq}
-                        className="p-2 hover:bg-[#F7F7F7] text-[#0A0A0A] transition-colors disabled:opacity-30"
+                        onClick={() => {
+                          if (isWholesale) {
+                            setQuantity(Math.max(moq, quantity - packSize));
+                          } else {
+                            setQuantity(Math.max(1, quantity - 1));
+                          }
+                        }}
+                        disabled={isWholesale ? quantity <= moq : quantity <= 1}
+                        className="p-2 hover:bg-[#F7F7F7] text-[#0A0A0A] transition-colors disabled:opacity-30 cursor-pointer"
                       >
                         <Minus size={14} />
                       </button>
@@ -405,16 +485,29 @@ export default function ProductDetailPage() {
                       </span>
                       <button
                         type="button"
-                        onClick={() => setQuantity(Math.min(stock, quantity + packSize))}
-                        className="p-2 hover:bg-[#F7F7F7] text-[#0A0A0A] transition-colors disabled:opacity-40"
+                        onClick={() => {
+                          if (isWholesale) {
+                            setQuantity(Math.min(stock, quantity + packSize));
+                          } else {
+                            setQuantity(Math.min(stock, quantity + 1));
+                          }
+                        }}
+                        className="p-2 hover:bg-[#F7F7F7] text-[#0A0A0A] transition-colors disabled:opacity-40 cursor-pointer"
                         disabled={quantity >= stock}
                       >
                         <Plus size={14} />
                       </button>
                     </div>
-                    <span className="text-[11px] text-[#6B6B6B]">
-                      MOQ: <strong className="text-[#0A0A0A]">{moq}</strong> (Pack: {packSize})
-                    </span>
+
+                    {isWholesale ? (
+                      <span className="text-[11px] text-[#6B6B6B]">
+                        MOQ: <strong className="text-[#0A0A0A]">{moq}</strong> (Pack: {packSize})
+                      </span>
+                    ) : (
+                      <span className="text-[11px] text-[#6B6B6B]">
+                        Single unit purchase
+                      </span>
+                    )}
                   </div>
 
                   {/* Action Buttons: Add to Cart, Buy Now, Wishlist */}
@@ -434,7 +527,8 @@ export default function ProductDetailPage() {
                         </>
                       ) : (
                         <>
-                          <ShoppingBag size={16} strokeWidth={1.75} /> Add {quantity} Units
+                          <ShoppingBag size={16} strokeWidth={1.75} />
+                          <span>{isWholesale ? `Add ${quantity} Units` : 'Add to Bag'}</span>
                         </>
                       )}
                     </button>
@@ -444,7 +538,8 @@ export default function ProductDetailPage() {
                       onClick={handleBuyNow}
                       className="flex-1 py-4 px-6 rounded-[4px] text-xs font-semibold uppercase tracking-widest bg-[#FF4D00] hover:bg-[#E04400] text-white transition-colors flex items-center justify-center gap-2 shadow-sm cursor-pointer"
                     >
-                      Bulk Checkout <ArrowRight size={15} />
+                      <span>{isWholesale ? 'Bulk Checkout' : 'Buy Now'}</span>
+                      <ArrowRight size={15} />
                     </button>
 
                     <button
@@ -459,14 +554,16 @@ export default function ProductDetailPage() {
                     </button>
                   </div>
 
-                  {/* Request Custom Quote Secondary CTA */}
-                  <button
-                    type="button"
-                    onClick={() => navigate(`/quote?productId=${product.id}&qty=${quantity}`)}
-                    className="w-full py-2.5 px-4 rounded-[4px] border border-[#0A0A0A] text-[#0A0A0A] hover:bg-[#0A0A0A] hover:text-white text-xs font-semibold uppercase tracking-wider transition-colors flex items-center justify-center gap-2 mt-2"
-                  >
-                    Request Custom Bulk Quote →
-                  </button>
+                  {/* Wholesale Quote CTA */}
+                  {isWholesale && (
+                    <button
+                      type="button"
+                      onClick={() => navigate(`/quote?productId=${product.id}&qty=${quantity}`)}
+                      className="w-full py-2.5 px-4 rounded-[4px] border border-[#0A0A0A] text-[#0A0A0A] hover:bg-[#0A0A0A] hover:text-white text-xs font-semibold uppercase tracking-wider transition-colors flex items-center justify-center gap-2 mt-2 cursor-pointer"
+                    >
+                      Request Custom Bulk Quote →
+                    </button>
+                  )}
                 </>
               ) : (
                 /* Out of stock: disabled buttons + Notify Me form */

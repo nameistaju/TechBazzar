@@ -8,12 +8,15 @@ import ProductCard from '../components/common/ProductCard';
 import ProductListRow from '../components/shop/ProductListRow';
 import ProductTableView from '../components/shop/ProductTableView';
 import BannerSlot from '../components/common/BannerSlot';
-import { products } from '../data/products';
-import { categories } from '../data/categories';
+import { useProducts, useCategories } from '../hooks/useCatalog';
+import { formatMoney } from '../utils/formatters';
 import { RotateCcw, PackageOpen } from 'lucide-react';
 
 export default function ShopPage() {
   const [searchParams, setSearchParams] = useSearchParams();
+  const { data: catalogData, isLoading: catalogLoading } = useProducts({ limit: 100 });
+  const { data: categories = [] } = useCategories();
+  const products = catalogData?.products || [];
 
   // URL state
   const initialCategory = searchParams.get('category') || 'all';
@@ -26,7 +29,7 @@ export default function ShopPage() {
   const [selectedBrands, setSelectedBrands] = useState(
     initialBrand && initialBrand !== 'all' ? [initialBrand] : []
   );
-  const [priceRange, setPriceRange] = useState([0, 80000]);
+  const [priceRange, setPriceRange] = useState([0, 8000000]);
   const [minRating, setMinRating] = useState(0);
   const [inStockOnly, setInStockOnly] = useState(false);
   const [currentSort, setCurrentSort] = useState('popularity');
@@ -73,7 +76,7 @@ export default function ShopPage() {
   const handleResetFilters = () => {
     setSelectedCategory('all');
     setSelectedBrands([]);
-    setPriceRange([0, 80000]);
+    setPriceRange([0, 8000000]);
     setMinRating(0);
     setInStockOnly(false);
     setCurrentSort('popularity');
@@ -84,15 +87,19 @@ export default function ShopPage() {
   // Filter logic
   const filteredProducts = useMemo(() => {
     return products.filter((p) => {
-      // Category filter
-      if (selectedCategory !== 'all' && p.category !== selectedCategory) {
+      // Category filter (case-insensitive)
+      if (selectedCategory !== 'all' && String(p.category || '').toLowerCase() !== selectedCategory.toLowerCase()) {
         return false;
       }
       // Brand filter
       if (selectedBrands.length > 0 && !selectedBrands.includes(p.brand)) {
         return false;
       }
-      // Price range
+      // In-stock filter
+      if (inStockOnly && Number(p.stock || 0) <= 0) {
+        return false;
+      }
+      // Price range (paise)
       if (p.price < priceRange[0] || p.price > priceRange[1]) {
         return false;
       }
@@ -114,7 +121,7 @@ export default function ShopPage() {
       }
       return true;
     });
-  }, [selectedCategory, selectedBrands, priceRange, minRating, initialSale, initialFilter]);
+  }, [products, selectedCategory, selectedBrands, inStockOnly, priceRange, minRating, initialSale, initialFilter]);
 
   // Sort logic
   const sortedProducts = useMemo(() => {
@@ -149,10 +156,10 @@ export default function ShopPage() {
   selectedBrands.forEach((b) => {
     activePills.push({ id: `brand-${b}`, label: `Brand: ${b}`, type: 'brand', value: b });
   });
-  if (priceRange[1] < 80000) {
+  if (priceRange[1] < 8000000) {
     activePills.push({
       id: 'price',
-      label: `Max Price: ₹${priceRange[1].toLocaleString('en-IN')}`,
+      label: `Max Price: ${formatMoney(priceRange[1])}`,
       type: 'price'
     });
   }
@@ -163,7 +170,7 @@ export default function ShopPage() {
   const handleRemovePill = (pill) => {
     if (pill.type === 'category') handleSelectCategory('all');
     if (pill.type === 'brand') handleToggleBrand(pill.value);
-    if (pill.type === 'price') setPriceRange([0, 80000]);
+    if (pill.type === 'price') setPriceRange([0, 8000000]);
     if (pill.type === 'rating') setMinRating(0);
   };
 

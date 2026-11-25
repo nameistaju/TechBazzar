@@ -17,7 +17,7 @@ import {
 } from 'lucide-react';
 import Breadcrumbs from '../components/common/Breadcrumbs';
 import { useStore } from '../context/StoreContext';
-import { products } from '../data/products';
+import productsApi from '../api/productsApi';
 
 export default function QuoteRequestPage() {
   const [searchParams] = useSearchParams();
@@ -25,18 +25,8 @@ export default function QuoteRequestPage() {
 
   const [activeTab, setActiveTab] = useState('new'); // 'new', 'track'
 
-  // Pre-fill item from query or cart
+  // Pre-fill item from cart or sample
   const [items, setItems] = useState(() => {
-    const queryProdId = searchParams.get('productId');
-    const queryQty = parseInt(searchParams.get('qty'), 10) || 50;
-
-    if (queryProdId) {
-      const p = products.find(prod => prod.id === queryProdId);
-      if (p) {
-        return [{ id: 1, productId: p.id, name: p.name, quantity: queryQty, targetPrice: p.price }];
-      }
-    }
-
     if (cart.length > 0) {
       return cart.map((it, idx) => ({
         id: idx + 1,
@@ -48,9 +38,21 @@ export default function QuoteRequestPage() {
     }
 
     return [
-      { id: 1, productId: '', name: 'High-Durability Braided USB-C Cables (Sample)', quantity: 100, targetPrice: 120 }
+      { id: 1, productId: '', name: 'High-Durability Braided USB-C Cables (Sample)', quantity: 100, targetPrice: 12000 }
     ];
   });
+
+  React.useEffect(() => {
+    const queryProdId = searchParams.get('productId');
+    const queryQty = parseInt(searchParams.get('qty'), 10) || 50;
+    if (!queryProdId) return;
+    productsApi.getProductById(queryProdId).then((res) => {
+      const p = res.data?.product;
+      if (p) {
+        setItems([{ id: 1, productId: p.id, name: p.name, quantity: queryQty, targetPrice: p.price }]);
+      }
+    });
+  }, [searchParams]);
 
   // Form Fields
   const [businessName, setBusinessName] = useState('');

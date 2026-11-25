@@ -27,8 +27,7 @@ import {
 } from 'lucide-react';
 import adminApi from '../../api/adminApi';
 import useToastStore from '../../store/toastStore';
-import { categories } from '../../data/categories';
-import { products } from '../../data/products';
+import { useCategories, useProducts } from '../../hooks/useCatalog';
 
 const SLOTS = [
   { id: 'home-mid-1', name: 'Home Mid 1', location: 'After Promo Tiles', page: 'Home' },
@@ -41,6 +40,9 @@ const SLOTS = [
 
 export default function BannersView() {
   const addToast = useToastStore((s) => s.addToast);
+  const { data: categories = [] } = useCategories();
+  const { data: catalogData } = useProducts({ limit: 50 });
+  const products = catalogData?.products || [];
 
   const [banners, setBanners] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -73,6 +75,9 @@ export default function BannersView() {
   const [cropModalOpen, setCropModalOpen] = useState(false);
   const [cropTargetDevice, setCropTargetDevice] = useState('desktop'); // 'desktop' (3:1) | 'mobile' (4:3)
   const [cropSourceImg, setCropSourceImg] = useState(null);
+  const [rawSourceDataUrl, setRawSourceDataUrl] = useState(null);
+  const [rawSourceExt, setRawSourceExt] = useState('png');
+  const [uploadingCrop, setUploadingCrop] = useState(false);
   const [cropZoom, setCropZoom] = useState(1);
   const [cropPan, setCropPan] = useState({ x: 0, y: 0 });
   const [cropFocalPoint, setCropFocalPoint] = useState('center'); // 'top', 'center', 'bottom'
@@ -104,9 +109,10 @@ export default function BannersView() {
     setFormData({
       title: '',
       slot: defaultSlot || (selectedSlotFilter !== 'all' ? selectedSlotFilter : 'home-mid-1'),
+      audience: 'both',
       label_pill: '',
-      image_desktop: '/uploads/banners/sample_desktop.svg',
-      image_mobile: '/uploads/banners/sample_mobile.svg',
+      image_desktop: '/uploads/banners/Festive Bulk Deals Banner.png',
+      image_mobile: '/uploads/banners/Festive Bulk Deals Banner.png',
       link_type: 'category',
       link_target: 'smartphones',
       new_tab: false,
@@ -115,6 +121,7 @@ export default function BannersView() {
       priority: 0,
       is_active: 1
     });
+    setPreviewDevice('desktop');
     setIsDrawerOpen(true);
   };
 
@@ -123,25 +130,28 @@ export default function BannersView() {
     setFormData({
       title: banner.title || '',
       slot: banner.slot || 'home-mid-1',
-      label_pill: banner.label_pill || '',
-      image_desktop: banner.image_desktop || '',
-      image_mobile: banner.image_mobile || '',
+      audience: banner.audience || 'both',
+      label_pill: banner.label_pill || banner.label || '',
+      image_desktop: banner.image_desktop || banner.desktop_image || '',
+      image_mobile: banner.image_mobile || banner.mobile_image || '',
       link_type: banner.link_type || 'none',
       link_target: banner.link_target || '',
       new_tab: !!banner.new_tab,
       starts_at: banner.starts_at ? banner.starts_at.slice(0, 16) : '',
       ends_at: banner.ends_at ? banner.ends_at.slice(0, 16) : '',
-      priority: banner.priority ?? 0,
-      is_active: banner.is_active ?? 1
+      priority: banner.priority ?? banner.sort_order ?? 0,
+      is_active: banner.is_active ?? banner.active ?? 1
     });
+    setPreviewDevice('desktop');
     setIsDrawerOpen(true);
   };
 
   const handleToggle = async (banner) => {
-    const newStatus = banner.is_active ? 0 : 1;
+    const currentActive = banner.is_active ?? banner.active ?? 1;
+    const newStatus = currentActive ? 0 : 1;
     const res = await adminApi.toggleBanner(banner.id, newStatus);
     if (!res.error) {
-      setBanners(banners.map(b => b.id === banner.id ? { ...b, is_active: newStatus } : b));
+      setBanners(banners.map(b => b.id === banner.id ? { ...b, is_active: newStatus, active: newStatus } : b));
       addToast(newStatus ? 'Banner activated' : 'Banner paused', 'success');
     }
   };
@@ -156,7 +166,11 @@ export default function BannersView() {
         label: 'Undo',
         onClick: async () => {
           setBanners(prevBanners);
-          await adminApi.createBanner(banner);
+          await adminApi.createBanner({
+            ...banner,
+            desktop_image: banner.desktop_image || banner.image_desktop,
+            mobile_image: banner.mobile_image || banner.image_mobile
+          });
         }
       }
     });
@@ -165,8 +179,14 @@ export default function BannersView() {
   };
 
   const handleDuplicate = async (banner) => {
+    const desktopImg = banner.desktop_image || banner.image_desktop;
+    const mobileImg = banner.mobile_image || banner.image_mobile || desktopImg;
     const copyPayload = {
       ...banner,
+      desktop_image: desktopImg,
+      image_desktop: desktopImg,
+      mobile_image: mobileImg,
+      image_mobile: mobileImg,
       title: `${banner.title} (Copy)`,
       id: undefined,
       impressions: 0,
@@ -174,22 +194,26 @@ export default function BannersView() {
     };
     const res = await adminApi.createBanner(copyPayload);
     if (res.data?.banner) {
-      setBanners([...banners, res.data.banner]);
+      setBanners([...banners, {
+        ...res.data.banner,
+        image_desktop: res.data.banner.desktop_image,
+        image_mobile: res.data.banner.mobile_image,
+        is_active: res.data.banner.active,
+        priority: res.data.banner.sort_order
+      }]);
       addToast('Banner duplicated', 'success');
     }
   };
 
   const handleMoveOrder = async (banner, direction) => {
-    const slotBanners = banners.filter(b => b.slot === banner.slot).sort((a, b) => a.priority - b.priority);
+    const slotBanners = banners.filter(b => b.slot === banner.slot).sort((a, b) => ((a.priority ?? a.sort_order ?? 0) - (b.priority ?? b.sort_order ?? 0)));
     const idx = slotBanners.findIndex(b => b.id === banner.id);
     if (direction === 'up' && idx > 0) {
-      const target = slotBanners[idx - 1];
       const newIds = slotBanners.map(b => b.id);
       [newIds[idx], newIds[idx - 1]] = [newIds[idx - 1], newIds[idx]];
       await adminApi.reorderBanners(banner.slot, newIds);
       fetchBanners();
     } else if (direction === 'down' && idx < slotBanners.length - 1) {
-      const target = slotBanners[idx + 1];
       const newIds = slotBanners.map(b => b.id);
       [newIds[idx], newIds[idx + 1]] = [newIds[idx + 1], newIds[idx]];
       await adminApi.reorderBanners(banner.slot, newIds);
@@ -203,8 +227,12 @@ export default function BannersView() {
     if (!file) return;
 
     setCropTargetDevice(deviceType);
+    const ext = file.name ? file.name.split('.').pop().toLowerCase() : 'png';
+    setRawSourceExt(ext);
     const reader = new FileReader();
     reader.onload = (event) => {
+      const dataUrl = event.target.result;
+      setRawSourceDataUrl(dataUrl);
       const img = new Image();
       img.onload = () => {
         setCropSourceImg(img);
@@ -213,7 +241,7 @@ export default function BannersView() {
         setCropFocalPoint('center');
         setCropModalOpen(true);
       };
-      img.src = event.target.result;
+      img.src = dataUrl;
     };
     reader.readAsDataURL(file);
     e.target.value = '';
@@ -259,14 +287,18 @@ export default function BannersView() {
 
   const handleApplyCrop = async () => {
     if (!canvasRef.current) return;
+    setUploadingCrop(true);
     const canvas = canvasRef.current;
     const base64 = canvas.toDataURL('image/webp', 0.92);
 
     const res = await adminApi.uploadBannerImage({
+      base64: base64,
       imageBase64: base64,
       filename: `banner_${cropTargetDevice}_${Date.now()}.webp`,
-      deviceType: cropTargetDevice
+      deviceType: cropTargetDevice,
+      type: cropTargetDevice
     });
+    setUploadingCrop(false);
 
     if (res.data?.url) {
       if (cropTargetDevice === 'desktop') {
@@ -277,28 +309,70 @@ export default function BannersView() {
       addToast(`Cropped & uploaded ${cropTargetDevice} WebP banner`, 'success');
       setCropModalOpen(false);
     } else {
-      addToast('Upload failed', 'error');
+      addToast(res.error || 'Upload failed', 'error');
+    }
+  };
+
+  const handleUploadOriginal = async () => {
+    if (!rawSourceDataUrl) return;
+    setUploadingCrop(true);
+    const ext = rawSourceExt || 'png';
+    const res = await adminApi.uploadBannerImage({
+      base64: rawSourceDataUrl,
+      imageBase64: rawSourceDataUrl,
+      filename: `banner_${cropTargetDevice}_raw_${Date.now()}.${ext}`,
+      deviceType: cropTargetDevice,
+      type: cropTargetDevice
+    });
+    setUploadingCrop(false);
+
+    if (res.data?.url) {
+      if (cropTargetDevice === 'desktop') {
+        setFormData(prev => ({ ...prev, image_desktop: res.data.url }));
+      } else {
+        setFormData(prev => ({ ...prev, image_mobile: res.data.url }));
+      }
+      addToast(`Uploaded ${cropTargetDevice} banner directly`, 'success');
+      setCropModalOpen(false);
+    } else {
+      addToast(res.error || 'Upload failed', 'error');
     }
   };
 
   const handleSaveBanner = async (e) => {
-    e.preventDefault();
-    if (!formData.title.trim()) {
+    e?.preventDefault?.();
+    if (!formData.title?.trim()) {
       addToast('Banner title is required', 'error');
       return;
     }
-    if (!formData.image_desktop) {
+    const desktopImg = formData.image_desktop?.trim();
+    if (!desktopImg) {
       addToast('Desktop banner image is required', 'error');
       return;
     }
 
     setSaving(true);
+    const mobileImg = formData.image_mobile?.trim() || desktopImg;
     const payload = {
-      ...formData,
-      image_mobile: formData.image_mobile || formData.image_desktop,
+      title: formData.title.trim(),
+      slot: formData.slot,
+      audience: formData.audience || 'both',
+      label: formData.label_pill?.trim() || null,
+      label_pill: formData.label_pill?.trim() || null,
+      desktop_image: desktopImg,
+      image_desktop: desktopImg,
+      mobile_image: mobileImg,
+      image_mobile: mobileImg,
+      thumb: mobileImg || desktopImg,
+      link_type: formData.link_type || 'none',
+      link_target: formData.link_target || '',
+      new_tab: formData.new_tab ? 1 : 0,
       priority: Number(formData.priority) || 0,
-      is_active: formData.is_active ? 1 : 0,
-      new_tab: formData.new_tab ? 1 : 0
+      sort_order: Number(formData.priority) || 0,
+      starts_at: formData.starts_at || null,
+      ends_at: formData.ends_at || null,
+      active: formData.is_active ? 1 : 0,
+      is_active: formData.is_active ? 1 : 0
     };
 
     let res;
@@ -310,7 +384,7 @@ export default function BannersView() {
     setSaving(false);
 
     if (!res.error) {
-      addToast(editingBanner ? 'Banner updated' : 'Banner created successfully', 'success');
+      addToast(editingBanner ? 'Banner updated successfully' : 'Banner created successfully', 'success');
       setIsDrawerOpen(false);
       fetchBanners();
     } else {
@@ -488,28 +562,38 @@ export default function BannersView() {
                   </tr>
                 ) : (
                   filteredBanners.map((banner) => {
-                    const ctr = banner.impressions > 0 
-                      ? ((banner.clicks / banner.impressions) * 100).toFixed(1) 
-                      : '0.0';
+                    const impressions = banner.impressions ?? banner.total_impressions ?? 0;
+                    const clicks = banner.clicks ?? banner.total_clicks ?? 0;
+                    const ctr = banner.ctr ?? (impressions > 0 
+                      ? ((clicks / impressions) * 100).toFixed(1) 
+                      : '0.0');
+                    const isActive = !!(banner.is_active ?? banner.active ?? 1);
+                    const bannerImg = banner.image_desktop || banner.desktop_image || banner.image_mobile || banner.mobile_image;
+                    const label = banner.label_pill || banner.label;
+                    const priority = banner.priority ?? banner.sort_order ?? 0;
 
                     return (
                       <tr key={banner.id} className="hover:bg-[#FAFAFA] transition-colors">
                         <td className="py-3 px-4">
                           <div className="flex items-center gap-3">
                             <div className="w-16 h-8 bg-[#F7F7F7] border border-[#EAEAEA] rounded overflow-hidden shrink-0 flex items-center justify-center">
-                              <img
-                                src={banner.image_desktop || banner.image_mobile}
-                                alt={banner.title}
-                                className="w-full h-full object-cover"
-                              />
+                              {bannerImg ? (
+                                <img
+                                  src={bannerImg}
+                                  alt={banner.title}
+                                  className="w-full h-full object-cover"
+                                />
+                              ) : (
+                                <ImageIcon size={14} className="text-[#8A8A8A]" />
+                              )}
                             </div>
                             <div className="min-w-0">
                               <div className="font-bold text-[#0A0A0A] truncate max-w-xs">
                                 {banner.title}
                               </div>
-                              {banner.label_pill && (
+                              {label && (
                                 <span className="inline-block bg-[#FF4D00] text-white text-[9px] font-bold px-1.5 py-0.2 rounded mt-0.5">
-                                  {banner.label_pill}
+                                  {label}
                                 </span>
                               )}
                             </div>
@@ -532,7 +616,7 @@ export default function BannersView() {
 
                         <td className="py-3 px-3 text-center">
                           <div className="inline-flex items-center gap-1">
-                            <span className="font-bold">{banner.priority}</span>
+                            <span className="font-bold">{priority}</span>
                             <div className="flex flex-col">
                               <button
                                 type="button"
@@ -555,11 +639,11 @@ export default function BannersView() {
                         </td>
 
                         <td className="py-3 px-3 text-right tabular-nums">
-                          {banner.impressions?.toLocaleString('en-IN') || 0}
+                          {impressions.toLocaleString('en-IN')}
                         </td>
 
                         <td className="py-3 px-3 text-right tabular-nums font-bold">
-                          {banner.clicks?.toLocaleString('en-IN') || 0}
+                          {clicks.toLocaleString('en-IN')}
                         </td>
 
                         <td className="py-3 px-3 text-right tabular-nums text-emerald-700 font-bold">
@@ -571,12 +655,12 @@ export default function BannersView() {
                             type="button"
                             onClick={() => handleToggle(banner)}
                             className={`px-2 py-0.5 rounded text-[10px] font-bold uppercase transition-colors ${
-                              banner.is_active
+                              isActive
                                 ? 'bg-emerald-100 text-emerald-800 hover:bg-emerald-200'
                                 : 'bg-zinc-200 text-zinc-600 hover:bg-zinc-300'
                             }`}
                           >
-                            {banner.is_active ? 'Active' : 'Paused'}
+                            {isActive ? 'Active' : 'Paused'}
                           </button>
                         </td>
 

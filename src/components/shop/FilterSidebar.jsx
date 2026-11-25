@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Search, X, RotateCcw, Star, Check } from 'lucide-react';
-import { categories } from '../../data/categories';
+import { useCategories } from '../../hooks/useCatalog';
+import { formatMoney } from '../../utils/formatters';
 import { brands } from '../../data/brands';
 
 export default function FilterSidebar({
@@ -17,6 +18,7 @@ export default function FilterSidebar({
   onResetFilters,
   totalProductsCount
 }) {
+  const { data: categories = [] } = useCategories();
   const [brandSearch, setBrandSearch] = useState('');
 
   const filteredBrands = brands.filter(b => 
@@ -137,15 +139,15 @@ export default function FilterSidebar({
           <input
             type="range"
             min={0}
-            max={80000}
-            step={500}
+            max={8000000}
+            step={50000}
             value={priceRange[1]}
             onChange={(e) => onChangePriceRange([priceRange[0], Number(e.target.value)])}
             className="w-full accent-[#FF4D00] cursor-pointer"
           />
           <div className="flex items-center justify-between text-[11px] text-[#6B6B6B] mt-2 font-mono tabular-nums">
-            <span>₹{priceRange[0].toLocaleString('en-IN')}</span>
-            <span className="font-semibold text-[#0A0A0A]">Up to ₹{priceRange[1].toLocaleString('en-IN')}</span>
+            <span>{formatMoney(priceRange[0])}</span>
+            <span className="font-semibold text-[#0A0A0A]">Up to {formatMoney(priceRange[1])}</span>
           </div>
         </div>
       </div>

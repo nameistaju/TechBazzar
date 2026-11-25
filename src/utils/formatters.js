@@ -43,3 +43,12 @@ export function formatDate(dateStr) {
     return String(dateStr);
   }
 }
+
+export function getResponsiveImageSrcSet(src) {
+  if (!src || typeof src !== 'string' || !src.startsWith('/images/')) return undefined;
+  if (src.endsWith('.svg')) return undefined;
+  const dotIdx = src.lastIndexOf('.');
+  if (dotIdx === -1) return undefined;
+  const base = src.slice(0, dotIdx);
+  return `${base}-200.webp 200w, ${base}-480.webp 480w, ${base}-1000.webp 1000w`;
+}

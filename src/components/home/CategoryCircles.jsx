@@ -1,9 +1,10 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { categories } from '../../data/categories';
+import { useCategories } from '../../hooks/useCatalog';
 import { ArrowRight } from 'lucide-react';
 
 export default function CategoryCircles() {
+  const { data: categories = [] } = useCategories();
   return (
     <section className="py-12 border-b border-[#EAEAEA] bg-white">
       <div className="max-w-site mx-auto px-4 sm:px-6 lg:px-8">
