@@ -15,6 +15,7 @@ import * as adminSchemas from '../validators/adminSchemas.js';
 import { formatProduct } from './products.js';
 import { 
   formatINR, 
+  formatMoney,
   numberToWordsIndian, 
   calculateLineItem, 
   calculateDocumentTotals, 
@@ -1111,26 +1112,36 @@ router.patch('/orders/:id', validateBody(adminSchemas.updateOrderSchema), (req, 
     });
     updates.push('status_history = ?');
     params.push(JSON.stringify(history));
+  }
 
-    // If order transitioned to Cancelled, restore stock!
+  const applyUpdate = db.transaction(() => {
     if (status === 'Cancelled' && existing.status !== 'Cancelled') {
-      const items = db.prepare('SELECT product_id, quantity FROM order_items WHERE order_id = ?').all(existing.id);
-      for (const item of items) {
-        db.prepare('UPDATE products SET stock = stock + ? WHERE id = ?').run(item.quantity, item.product_id);
-        const curStock = db.prepare('SELECT stock FROM products WHERE id = ?').get(item.product_id);
-        db.prepare(`
-          INSERT INTO stock_movements (product_id, quantity_change, stock_before, stock_after, reason, reference_id, notes)
-          VALUES (?, ?, ?, ?, 'return', ?, 'Order cancelled - stock restored')
-        `).run(item.product_id, item.quantity, curStock.stock - item.quantity, curStock.stock, existing.order_number);
+      const linkedInv = db.prepare('SELECT invoice_number FROM invoices WHERE order_id = ?').get(existing.id);
+      const alreadyRestored = db.prepare(`
+        SELECT id FROM stock_movements
+        WHERE reason IN ('return', 'void') AND reference_id IN (?, ?)
+        LIMIT 1
+      `).get(existing.order_number, linkedInv?.invoice_number || '');
+
+      if (!alreadyRestored) {
+        const items = db.prepare('SELECT product_id, quantity FROM order_items WHERE order_id = ?').all(existing.id);
+        for (const item of items) {
+          db.prepare('UPDATE products SET stock = stock + ? WHERE id = ?').run(item.quantity, item.product_id);
+          const curStock = db.prepare('SELECT stock FROM products WHERE id = ?').get(item.product_id);
+          db.prepare(`
+            INSERT INTO stock_movements (product_id, quantity_change, stock_before, stock_after, reason, reference_id, notes)
+            VALUES (?, ?, ?, ?, 'return', ?, 'Order cancelled - stock restored')
+          `).run(item.product_id, item.quantity, curStock.stock - item.quantity, curStock.stock, existing.order_number);
+        }
       }
     }
-  }
 
-  if (updates.length > 0) {
-    params.push(req.params.id);
-    db.prepare(`UPDATE orders SET ${updates.join(', ')} WHERE id = ?`).run(...params);
-  }
+    if (updates.length > 0) {
+      db.prepare(`UPDATE orders SET ${updates.join(', ')} WHERE id = ?`).run(...params, req.params.id);
+    }
+  });
 
+  applyUpdate();
   logActivity('status_change', 'order', req.params.id, `Updated order ${existing.order_number} to ${status || existing.status}`);
   return res.json({ data: { message: 'Order updated successfully' }, error: null });
 });
@@ -1858,7 +1869,7 @@ router.post('/invoices/:id/payments', validateBody(adminSchemas.recordPaymentSch
     WHERE id = ?
   `).run(newPaid, newBalance, newStatus, inv.id);
 
-  logActivity('update', 'invoice', inv.id, `Recorded payment of ₹${payAmt} for Invoice ${inv.invoice_number} (Balance: ₹${newBalance})`);
+  logActivity('update', 'invoice', inv.id, `Recorded payment of ${formatMoney(payAmt)} for Invoice ${inv.invoice_number} (Balance: ${formatMoney(newBalance)})`);
   return res.json({ data: { amountPaid: newPaid, balanceDue: newBalance, status: newStatus }, error: null });
 });
 
@@ -1876,23 +1887,40 @@ router.post('/invoices/:id/void', validateBody(adminSchemas.voidInvoiceSchema), 
     return res.status(400).json({ data: null, error: 'Invoice is already void.' });
   }
 
-  // Restore stock for items
-  const items = db.prepare('SELECT product_id, quantity FROM invoice_items WHERE invoice_id = ?').all(inv.id);
-  for (const it of items) {
-    if (it.product_id) {
-      const cur = db.prepare('SELECT stock FROM products WHERE id = ?').get(it.product_id);
-      if (cur) {
-        db.prepare('UPDATE products SET stock = stock + ? WHERE id = ?').run(it.quantity, it.product_id);
-        const curAfter = db.prepare('SELECT stock FROM products WHERE id = ?').get(it.product_id);
-        db.prepare(`
-          INSERT INTO stock_movements (product_id, quantity_change, stock_before, stock_after, reason, reference_id, notes)
-          VALUES (?, ?, ?, ?, 'void', ?, 'Invoice voided - stock restored')
-        `).run(it.product_id, it.quantity, cur.stock, curAfter.stock, inv.invoice_number);
+  const voidTx = db.transaction(() => {
+    const linkedOrder = inv.order_id
+      ? db.prepare('SELECT id, order_number, status FROM orders WHERE id = ?').get(inv.order_id)
+      : null;
+
+    const alreadyRestored = (linkedOrder && linkedOrder.status === 'Cancelled') || Boolean(
+      db.prepare(`
+        SELECT id FROM stock_movements
+        WHERE reason IN ('return', 'void') AND reference_id IN (?, ?)
+        LIMIT 1
+      `).get(inv.invoice_number, linkedOrder?.order_number || '')
+    );
+
+    if (!alreadyRestored) {
+      const items = db.prepare('SELECT product_id, quantity FROM invoice_items WHERE invoice_id = ?').all(inv.id);
+      for (const it of items) {
+        if (it.product_id) {
+          const cur = db.prepare('SELECT stock FROM products WHERE id = ?').get(it.product_id);
+          if (cur) {
+            db.prepare('UPDATE products SET stock = stock + ? WHERE id = ?').run(it.quantity, it.product_id);
+            const curAfter = db.prepare('SELECT stock FROM products WHERE id = ?').get(it.product_id);
+            db.prepare(`
+              INSERT INTO stock_movements (product_id, quantity_change, stock_before, stock_after, reason, reference_id, notes)
+              VALUES (?, ?, ?, ?, 'void', ?, 'Invoice voided - stock restored')
+            `).run(it.product_id, it.quantity, cur.stock, curAfter.stock, inv.invoice_number);
+          }
+        }
       }
     }
-  }
 
-  db.prepare("UPDATE invoices SET status = 'Void', void_reason = ? WHERE id = ?").run(voidReason, inv.id);
+    db.prepare("UPDATE invoices SET status = 'Void', void_reason = ? WHERE id = ?").run(voidReason, inv.id);
+  });
+
+  voidTx();
   logActivity('void', 'invoice', inv.id, `Voided Invoice ${inv.invoice_number} (${voidReason})`);
 
   return res.json({ data: { message: 'Invoice voided and inventory restored.' }, error: null });

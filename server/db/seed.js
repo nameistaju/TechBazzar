@@ -102,32 +102,34 @@ const seedProducts = () => {
         stock = 10 + ((index * 7) % 35);
       }
 
-      const basePrice = Number(p.price || 0);
-      const mrp = Number(p.mrp || p.originalPrice || Math.round(basePrice * 1.35));
+      const basePrice = Math.round(Number(p.price || 0) * 100);
+      const origPrice = Math.round(Number(p.originalPrice || 0) * 100);
+      const mrp = Math.round(Number(p.mrp || 0) * 100) || origPrice || Math.round(basePrice * 1.35);
       const moq = Number(p.moq || 10);
       const packSize = Number(p.pack_size || p.packSize || 5);
-      const t1Price = Number(p.tier1_price || p.tier1Price || basePrice);
-      const t2Price = Number(p.tier2_price || p.tier2Price || Math.round(basePrice * 0.9));
-      const t3Price = Number(p.tier3_price || p.tier3Price || Math.round(basePrice * 0.8));
+      const t1Price = Math.round(Number(p.tier1_price || p.tier1Price || 0) * 100) || basePrice;
+      const t2Price = Math.round(Number(p.tier2_price || p.tier2Price || 0) * 100) || Math.round(basePrice * 0.9);
+      const t3Price = Math.round(Number(p.tier3_price || p.tier3Price || 0) * 100) || Math.round(basePrice * 0.8);
+      const srp = Math.round(Number(p.suggestedRetailPrice || 0) * 100) || mrp;
       const imagesJson = JSON.stringify(p.images && p.images.length > 0 ? p.images : [p.image]);
       const variantsJson = JSON.stringify(p.variants || []);
 
       if (existingById || existingByNorm) {
         updateStmt.run(
-          p.name, brand, p.category, basePrice, p.originalPrice || mrp, mrp,
+          p.name, brand, p.category, basePrice, origPrice || mrp, mrp,
           p.rating || 4.5, p.reviewsCount || 0, p.image, imagesJson, variantsJson, stock,
           p.isFlashSale ? 1 : 0, p.isTrending ? 1 : 0, p.isBestseller ? 1 : 0, p.isNew ? 1 : 0, p.isRecommended ? 1 : 0,
           JSON.stringify(p.tags || []), JSON.stringify(p.specs || {}), p.shortDescription || '',
-          p.sku, normName, moq, packSize, moq, t1Price, 50, t2Price, 100, t3Price, p.suggestedRetailPrice || mrp,
+          p.sku, normName, moq, packSize, moq, t1Price, 50, t2Price, 100, t3Price, srp,
           targetId
         );
       } else {
         insertStmt.run(
-          p.id, p.name, brand, p.category, basePrice, p.originalPrice || mrp, mrp,
+          p.id, p.name, brand, p.category, basePrice, origPrice || mrp, mrp,
           p.rating || 4.5, p.reviewsCount || 0, p.image, imagesJson, variantsJson, stock,
           p.isFlashSale ? 1 : 0, p.isTrending ? 1 : 0, p.isBestseller ? 1 : 0, p.isNew ? 1 : 0, p.isRecommended ? 1 : 0,
           JSON.stringify(p.tags || []), JSON.stringify(p.specs || {}), p.shortDescription || '',
-          p.sku, normName, moq, packSize, moq, t1Price, 50, t2Price, 100, t3Price, p.suggestedRetailPrice || mrp
+          p.sku, normName, moq, packSize, moq, t1Price, 50, t2Price, 100, t3Price, srp
         );
       }
       count++;

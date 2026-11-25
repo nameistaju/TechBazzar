@@ -6,7 +6,7 @@ import db from '../db/index.js';
 import { optionalAuth, requireAuth } from '../middleware/auth.js';
 import { validateBody } from '../middleware/validate.js';
 import PaymentService from '../services/payment.js';
-import { evaluateDiscount, getWholesaleTier } from '../services/calculation.js';
+import { evaluateDiscount, getWholesaleTier, isIntraStateSupply, numberToWordsIndian, formatMoney } from '../services/calculation.js';
 import { generateDocumentPDF } from '../services/pdfGenerator.js';
 
 const router = Router();
@@ -132,7 +132,9 @@ router.post('/', orderLimiter, optionalAuth, validateBody(createOrderSchema), as
         }
 
         const taxRate = product.gst_rate !== undefined ? Number(product.gst_rate) : 18;
-        const taxAmount = Math.round(lineTotal * (taxRate / 100));
+        const isTaxInclusive = product.is_tax_inclusive !== undefined ? Boolean(product.is_tax_inclusive) : true;
+        const taxableLine = isTaxInclusive ? Math.round(lineTotal / (1 + taxRate / 100)) : lineTotal;
+        const taxAmount = isTaxInclusive ? (lineTotal - taxableLine) : Math.round(taxableLine * (taxRate / 100));
 
         subtotal += lineTotal;
 
@@ -147,6 +149,7 @@ router.post('/', orderLimiter, optionalAuth, validateBody(createOrderSchema), as
           tierApplied,
           unitPrice: unitPrice,
           taxRate: taxRate,
+          isTaxInclusive,
           taxAmount: taxAmount,
           lineTotal: lineTotal
         });
@@ -162,9 +165,9 @@ router.post('/', orderLimiter, optionalAuth, validateBody(createOrderSchema), as
       // Check Minimum Order Value (MOV) ONLY for wholesale channel
       if (isWholesaleChannel) {
         const movRow = db.prepare("SELECT value FROM settings WHERE key = 'min_order_value'").get();
-        const minOrderValue = movRow ? Number(movRow.value) : 2500;
+        const minOrderValue = movRow ? Number(movRow.value) : 250000;
         if (subtotal < minOrderValue) {
-          throw new Error(`Minimum Wholesale Order Value is ₹${minOrderValue.toLocaleString('en-IN')}. Your subtotal is ₹${subtotal.toLocaleString('en-IN')}.`);
+          throw new Error(`Minimum Wholesale Order Value is ${formatMoney(minOrderValue)}. Your subtotal is ${formatMoney(subtotal)}.`);
         }
       }
 
@@ -183,14 +186,14 @@ router.post('/', orderLimiter, optionalAuth, validateBody(createOrderSchema), as
         }
       }
 
-      // Shipping threshold: Retail free over ₹1,499, else ₹99. Wholesale free over ₹10,000, else ₹250
+      // Shipping threshold: Retail free over ₹1,499 (149900), else ₹99 (9900). Wholesale free over ₹10,000 (1000000), else ₹250 (25000)
       let shipping = 0;
       if (isWholesaleChannel) {
         const freeShipRow = db.prepare("SELECT value FROM settings WHERE key = 'free_shipping_threshold'").get();
-        const freeShippingThreshold = freeShipRow ? Number(freeShipRow.value) : 10000;
-        shipping = subtotal >= freeShippingThreshold ? 0 : 250;
+        const freeShippingThreshold = freeShipRow ? Number(freeShipRow.value) : 1000000;
+        shipping = subtotal >= freeShippingThreshold ? 0 : 25000;
       } else {
-        shipping = subtotal >= 1499 ? 0 : 99;
+        shipping = subtotal >= 149900 ? 0 : 9900;
       }
 
       const total = Math.max(0, subtotal - discountAmount + shipping);
@@ -308,38 +311,63 @@ router.post('/', orderLimiter, optionalAuth, validateBody(createOrderSchema), as
         }
         invoiceNumber = `INV-2026-${String(invSeq).padStart(4, '0')}`;
 
+        const sellerStateRow = db.prepare("SELECT value FROM settings WHERE key = 'business_state'").get();
+        const sellerCodeRow = db.prepare("SELECT value FROM settings WHERE key = 'business_state_code'").get();
+        const companyState = sellerCodeRow?.value
+          ? `${sellerStateRow?.value || 'Karnataka'} (${sellerCodeRow.value})`
+          : (sellerStateRow?.value || 'Karnataka (29)');
+        const placeOfSupply = shippingAddress?.state || companyState;
+        const isIntraState = isIntraStateSupply(placeOfSupply, companyState);
+
         let taxableValue = 0;
         let totalTax = 0;
-        for (const oi of orderItemsToInsert) {
-          taxableValue += oi.lineTotal;
-          totalTax += oi.taxAmount;
-        }
-        const cgst = Math.round(totalTax / 2);
-        const sgst = totalTax - cgst;
+        let remainingDiscount = Math.min(subtotal, discountAmount);
+        orderItemsToInsert.forEach((oi, idx) => {
+          const share = idx === orderItemsToInsert.length - 1
+            ? remainingDiscount
+            : (subtotal > 0 ? Math.round((Math.min(subtotal, discountAmount) * oi.lineTotal) / subtotal) : 0);
+          remainingDiscount = Math.max(0, remainingDiscount - share);
+          const postDiscountLine = Math.max(0, oi.lineTotal - share);
+          if (oi.isTaxInclusive) {
+            const tv = Math.round(postDiscountLine / (1 + (oi.taxRate || 18) / 100));
+            taxableValue += tv;
+            totalTax += (postDiscountLine - tv);
+          } else {
+            const tv = postDiscountLine;
+            taxableValue += tv;
+            totalTax += Math.round((tv * (oi.taxRate || 18)) / 100);
+          }
+        });
+        const cgst = isIntraState ? Math.round(totalTax / 2) : 0;
+        const sgst = isIntraState ? (totalTax - cgst) : 0;
+        const igst = isIntraState ? 0 : totalTax;
+        const invoiceTotal = taxableValue + totalTax + shipping;
 
         const invInsert = db.prepare(`
           INSERT INTO invoices (
-            invoice_number, customer_id, customer_name, customer_email, customer_phone,
+            invoice_number, order_id, customer_id, customer_name, customer_email, customer_phone,
             customer_gstin, place_of_supply, billing_address, shipping_address,
             invoice_date, due_date, payment_terms, status, subtotal, discount_amount,
             taxable_value, cgst_amount, sgst_amount, igst_amount, shipping_amount,
             round_off, total, amount_paid, balance_due, amount_in_words, notes, terms, template,
             channel, invoice_type
           ) VALUES (
-            ?, ?, ?, ?, ?,
-            ?, 'Karnataka (29)', ?, ?,
             ?, ?, ?, ?, ?, ?,
-            ?, ?, ?, 0, ?,
-            0, ?, ?, ?, 'Rupees Only', ?, 'Standard 1-year bulk manufacturer warranty.', 'standard',
+            ?, ?, ?, ?,
+            ?, ?, ?, ?, ?, ?,
+            ?, ?, ?, ?, ?,
+            0, ?, ?, ?, ?, ?, 'Standard 1-year bulk manufacturer warranty.', 'standard',
             ?, ?
           )
         `).run(
           invoiceNumber,
+          orderId,
           userId,
           customer.businessName || customer.name.trim(),
           customer.email.trim(),
           customer.phone.trim(),
           customer.gstin ? customer.gstin.trim().toUpperCase() : null,
+          placeOfSupply,
           JSON.stringify(billingAddress || shippingAddress),
           JSON.stringify(shippingAddress),
           now.split('T')[0],
@@ -351,10 +379,12 @@ router.post('/', orderLimiter, optionalAuth, validateBody(createOrderSchema), as
           taxableValue,
           cgst,
           sgst,
+          igst,
           shipping,
-          total,
+          invoiceTotal,
           paymentMethod === 'cod' ? 0 : advanceAmount,
-          paymentMethod === 'cod' ? total : balanceAmount,
+          paymentMethod === 'cod' ? invoiceTotal : balanceAmount,
+          numberToWordsIndian(invoiceTotal),
           isWholesaleChannel ? 'Wholesale commercial tax invoice.' : 'Retail consumer invoice.',
           channel,
           isWholesaleChannel ? 'gst' : 'retail'

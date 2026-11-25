@@ -113,11 +113,11 @@ const sampleDiscounts = [
     type: 'rule_higher',
     value: 0,
     rule_percentage: 25,
-    rule_flat: 200,
+    rule_flat: 20000,
     rule_mode: 'higher',
     scope: 'cart',
     scope_values: null,
-    min_cart_amount: 1000,
+    min_cart_amount: 100000,
     min_quantity: 2,
     first_order_only: 0,
     stackable: 0,
@@ -140,7 +140,7 @@ const sampleDiscounts = [
     rule_mode: null,
     scope: 'cart',
     scope_values: null,
-    min_cart_amount: 500,
+    min_cart_amount: 50000,
     min_quantity: 1,
     first_order_only: 1,
     stackable: 0,
@@ -157,13 +157,13 @@ const sampleDiscounts = [
     title: 'Flat ₹500 Mega Saving',
     description: 'Flat ₹500 instant discount on high-value orders above ₹4,000.',
     type: 'flat',
-    value: 500,
+    value: 50000,
     rule_percentage: null,
     rule_flat: null,
     rule_mode: null,
     scope: 'cart',
     scope_values: null,
-    min_cart_amount: 4000,
+    min_cart_amount: 400000,
     min_quantity: 1,
     first_order_only: 0,
     stackable: 1,
@@ -186,7 +186,7 @@ const sampleDiscounts = [
     rule_mode: null,
     scope: 'categories',
     scope_values: JSON.stringify(['Headphones', 'Earbuds', 'Speakers']),
-    min_cart_amount: 1500,
+    min_cart_amount: 150000,
     min_quantity: 1,
     first_order_only: 0,
     stackable: 0,
@@ -332,7 +332,7 @@ if (rohanCustomer && sampleProduct1 && sampleProduct2) {
       invTotals.sgstAmount,
       invTotals.roundOff,
       invTotals.total,
-      Math.max(0, invTotals.total - 1000),
+      Math.max(0, invTotals.total - 100000),
       invTotals.amountInWords
     );
 
@@ -345,7 +345,7 @@ if (rohanCustomer && sampleProduct1 && sampleProduct2) {
     // Record partial payment
     db.prepare(`
       INSERT INTO payments (invoice_id, amount, payment_method, payment_date, reference_number, notes)
-      VALUES (?, 1000, 'upi', '2026-11-21', 'UPI/20261121/981293', 'Advance UPI transfer')
+      VALUES (?, 100000, 'upi', '2026-11-21', 'UPI/20261121/981293', 'Advance UPI transfer')
     `).run(invId);
 
     console.log('  ✓ Seeded sample Invoice INV-2026-0001 with partial payment');

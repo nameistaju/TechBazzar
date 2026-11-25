@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useLocation, Link, useNavigate } from 'react-router-dom';
 import confetti from 'canvas-confetti';
+import { formatMoney } from '../utils/formatters';
 import { 
   CheckCircle2, 
   Package, 
@@ -162,15 +163,15 @@ export default function OrderSuccessPage() {
                   {order.balanceDue && order.balanceDue > 0 ? (
                     <div>
                       <span className="text-[#FF4D00] font-bold">
-                        50% Advance Paid (₹{(order.advancePaid ? order.advancePaid / 100 : Math.round(order.total / 200)).toLocaleString('en-IN')})
+                        50% Advance Paid ({formatMoney(order.advancePaid || Math.round((order.total || 0) / 2))})
                       </span>
                       <span className="block text-[11px] text-[#6B6B6B]">
-                        Balance on dispatch: ₹{(order.balanceDue / 100).toLocaleString('en-IN')}
+                        Balance on dispatch: {formatMoney(order.balanceDue || 0)}
                       </span>
                     </div>
                   ) : (
                     <span className="text-emerald-700 font-semibold">
-                      Full Payment Recorded (₹{((order.total || 0) / 100).toLocaleString('en-IN')})
+                      Full Payment Recorded ({formatMoney(order.total || 0)})
                     </span>
                   )}
                 </div>

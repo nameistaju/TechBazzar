@@ -1,19 +1,22 @@
 // server/services/calculation.js
-// Shared calculation engine with Indian GST rules, paise/integer precision, and currency formatting.
+// Shared calculation engine with Indian GST rules, paise/integer precision, currency formatting,
+// dual-cart pricing (Retail & Wholesale), wholesale group discounts, volume brackets, and coupon audience filtering.
 
 /**
- * Format amount in INR using Indian numbering format (e.g. 1,24,999)
- * @param {number} amount - Amount in Rupees
+ * Format integer paise in INR using Indian numbering format (e.g. 149900 -> ₹1,499, 149950 -> ₹1,499.50)
+ * @param {number} paise - Amount in integer Paise
  * @param {boolean} showSymbol - Whether to prepend ₹
  */
-export function formatINR(amount, showSymbol = true) {
-  if (amount === undefined || amount === null || isNaN(amount)) {
+export function formatMoney(paise, showSymbol = true) {
+  if (paise === undefined || paise === null || isNaN(paise)) {
     return showSymbol ? '₹0' : '0';
   }
-  const isNegative = amount < 0;
-  const absVal = Math.abs(amount);
-  const rounded = Math.round(absVal);
-  const str = rounded.toString();
+  const roundedPaise = Math.round(Number(paise));
+  const isNegative = roundedPaise < 0;
+  const absPaise = Math.abs(roundedPaise);
+  const wholeRupees = Math.floor(absPaise / 100);
+  const remPaise = absPaise % 100;
+  const str = wholeRupees.toString();
 
   let formatted = '';
   if (str.length > 3) {
@@ -24,17 +27,26 @@ export function formatINR(amount, showSymbol = true) {
     formatted = str;
   }
 
+  const decimal = remPaise > 0 ? `.${String(remPaise).padStart(2, '0')}` : '';
   const prefix = isNegative ? '-' : '';
-  return `${prefix}${showSymbol ? '₹' : ''}${formatted}`;
+  return `${prefix}${showSymbol ? '₹' : ''}${formatted}${decimal}`;
+}
+
+export function formatINR(paise, showSymbol = true) {
+  return formatMoney(paise, showSymbol);
 }
 
 /**
- * Convert number to Indian numbering words (Lakhs, Crores)
- * e.g. 124999 -> "One Lakh Twenty-Four Thousand Nine Hundred and Ninety-Nine Rupees Only"
+ * Convert integer paise to Indian numbering words (Lakhs, Crores)
+ * e.g. 12499900 -> "One Lakh Twenty-Four Thousand Nine Hundred and Ninety-Nine Rupees Only"
  */
-export function numberToWordsIndian(num) {
-  if (num === 0) return 'Zero Rupees Only';
-  if (!num || isNaN(num)) return '';
+export function numberToWordsIndian(paiseAmount) {
+  if (paiseAmount === 0) return 'Zero Rupees Only';
+  if (!paiseAmount || isNaN(paiseAmount)) return '';
+
+  const absPaise = Math.round(Math.abs(Number(paiseAmount)));
+  const rupees = Math.floor(absPaise / 100);
+  const paise = absPaise % 100;
 
   const ones = [
     '', 'One', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight', 'Nine',
@@ -65,9 +77,6 @@ export function numberToWordsIndian(num) {
     }
     return result;
   }
-
-  const rupees = Math.floor(Math.abs(num));
-  const paise = Math.round((Math.abs(num) - rupees) * 100);
 
   let words = '';
   const crore = Math.floor(rupees / 10000000);
@@ -131,12 +140,10 @@ export function calculateLineItem({
   let lineTotal = 0;
 
   if (isTaxInclusive) {
-    // Price includes tax: base = total / (1 + rate)
     taxableValue = Math.round(afterDiscount / (1 + parsedTaxRate / 100));
     taxAmount = afterDiscount - taxableValue;
     lineTotal = afterDiscount;
   } else {
-    // Price excludes tax
     taxableValue = afterDiscount;
     taxAmount = Math.round((taxableValue * parsedTaxRate) / 100);
     lineTotal = taxableValue + taxAmount;
@@ -158,6 +165,20 @@ export function calculateLineItem({
 /**
  * Calculate full document totals (for Estimates & Invoices)
  */
+export function isIntraStateSupply(placeOfSupply = 'Karnataka (29)', companyState = 'Karnataka (29)') {
+  const norm = (s) => String(s || '').trim().toLowerCase();
+  const a = norm(placeOfSupply);
+  const b = norm(companyState);
+  if (!a || !b) return true;
+  if (a === b) return true;
+  const codeA = a.match(/\b(\d{2})\b/)?.[1];
+  const codeB = b.match(/\b(\d{2})\b/)?.[1];
+  if (codeA && codeB) return codeA === codeB;
+  const nameA = a.replace(/\(\d+\)/g, '').trim();
+  const nameB = b.replace(/\(\d+\)/g, '').trim();
+  return nameA === nameB;
+}
+
 export function calculateDocumentTotals({
   items = [],
   discountAmount = 0,
@@ -179,12 +200,10 @@ export function calculateDocumentTotals({
     return { ...item, ...calc };
   });
 
-  const parsedDocDiscount = Math.min(totalTaxable, Math.max(0, Number(discountAmount) || 0));
-  const parsedShipping = Math.max(0, Number(shippingAmount) || 0);
+  const parsedDocDiscount = Math.min(totalTaxable, Math.max(0, Math.round(Number(discountAmount) || 0)));
+  const parsedShipping = Math.max(0, Math.round(Number(shippingAmount) || 0));
 
-  // If intra-state (same state code): 50% CGST + 50% SGST
-  // If inter-state: 100% IGST
-  const isIntraState = placeOfSupply.trim().toLowerCase() === companyState.trim().toLowerCase();
+  const isIntraState = isIntraStateSupply(placeOfSupply, companyState);
 
   let cgstAmount = 0;
   let sgstAmount = 0;
@@ -199,7 +218,7 @@ export function calculateDocumentTotals({
 
   const rawTotal = (totalTaxable - parsedDocDiscount) + totalTax + parsedShipping;
   const roundedTotal = Math.round(rawTotal);
-  const roundOff = Math.round((roundedTotal - rawTotal) * 100) / 100;
+  const roundOff = roundedTotal - rawTotal;
 
   return {
     items: calculatedItems,
@@ -219,11 +238,49 @@ export function calculateDocumentTotals({
 }
 
 /**
- * Evaluate Discount Rule against Cart
+ * Evaluate Discount Rule against Cart (Channel, Group, Buyer, Volume aware)
+ * @param {Object} discount - discount row from DB
+ * @param {Object} cart - { items: [...] }
+ * @param {Object} user - optional user object
+ * @param {string} channel - 'retail' | 'wholesale'
  */
-export function evaluateDiscount(discount, cart) {
+export function evaluateDiscount(discount, cart, user = null, channel = 'retail') {
   if (!discount || !discount.active) {
     return { valid: false, reason: 'Discount code is inactive or expired' };
+  }
+
+  // 1. Channel / Audience check
+  const audience = discount.audience || 'both';
+  if (audience === 'retail' && channel === 'wholesale') {
+    return { valid: false, reason: 'This coupon is valid for retail orders only' };
+  }
+  if (audience === 'wholesale' && channel === 'retail') {
+    return { valid: false, reason: 'This coupon is valid for wholesale business orders only' };
+  }
+
+  // 2. Group restriction (for wholesale)
+  if (discount.group_ids && channel === 'wholesale') {
+    try {
+      const allowedGroups = typeof discount.group_ids === 'string' ? JSON.parse(discount.group_ids) : discount.group_ids;
+      if (Array.isArray(allowedGroups) && allowedGroups.length > 0) {
+        const userGroupId = user?.group_id || user?.groupId;
+        if (!userGroupId || !allowedGroups.includes(Number(userGroupId))) {
+          return { valid: false, reason: 'This coupon is restricted to specific wholesale buyer groups' };
+        }
+      }
+    } catch {}
+  }
+
+  // 3. Buyer restriction
+  if (discount.buyer_ids) {
+    try {
+      const allowedBuyers = typeof discount.buyer_ids === 'string' ? JSON.parse(discount.buyer_ids) : discount.buyer_ids;
+      if (Array.isArray(allowedBuyers) && allowedBuyers.length > 0) {
+        if (!user?.id || !allowedBuyers.includes(Number(user.id))) {
+          return { valid: false, reason: 'This coupon is exclusive to select accounts' };
+        }
+      }
+    } catch {}
   }
 
   // Check validity dates
@@ -241,8 +298,8 @@ export function evaluateDiscount(discount, cart) {
   }
 
   const cartItems = cart.items || [];
-  const cartSubtotal = cartItems.reduce((acc, item) => acc + (item.price * item.quantity), 0);
-  const cartQty = cartItems.reduce((acc, item) => acc + item.quantity, 0);
+  const cartSubtotal = cartItems.reduce((acc, item) => acc + (Number(item.price || item.unitPrice || 0) * (Number(item.quantity) || 1)), 0);
+  const cartQty = cartItems.reduce((acc, item) => acc + (Number(item.quantity) || 1), 0);
 
   // Check minimum cart amount
   if (discount.min_cart_amount && cartSubtotal < discount.min_cart_amount) {
@@ -268,7 +325,7 @@ export function evaluateDiscount(discount, cart) {
       allowedValues = typeof discount.scope_values === 'string' 
         ? JSON.parse(discount.scope_values) 
         : discount.scope_values;
-    } catch (e) {
+    } catch {
       allowedValues = [];
     }
 
@@ -287,7 +344,7 @@ export function evaluateDiscount(discount, cart) {
     return { valid: false, reason: `No eligible items in cart for this discount (${discount.scope})` };
   }
 
-  const eligibleAmount = eligibleItems.reduce((acc, i) => acc + (i.price * i.quantity), 0);
+  const eligibleAmount = eligibleItems.reduce((acc, i) => acc + (Number(i.price || i.unitPrice || 0) * (Number(i.quantity) || 1)), 0);
 
   let discountAmount = 0;
   if (discount.type === 'percentage') {
@@ -295,7 +352,6 @@ export function evaluateDiscount(discount, cart) {
   } else if (discount.type === 'flat') {
     discountAmount = Math.min(discount.value, eligibleAmount);
   } else if (discount.type === 'rule_higher' || discount.type === 'rule_lower') {
-    // E.g. "25% OR ₹200 whichever is higher/lower"
     const pctVal = Math.round((eligibleAmount * (discount.rule_percentage || 0)) / 100);
     const flatVal = discount.rule_flat || 0;
 
@@ -307,14 +363,104 @@ export function evaluateDiscount(discount, cart) {
     discountAmount = Math.min(discountAmount, eligibleAmount);
   }
 
+  // Volume-based discount tier check (extra wholesale discount)
+  let volumeDiscountAmount = 0;
+  if (discount.volume_tiers) {
+    try {
+      const tiers = typeof discount.volume_tiers === 'string' ? JSON.parse(discount.volume_tiers) : discount.volume_tiers;
+      if (Array.isArray(tiers)) {
+        // Find highest qualifying tier
+        const sorted = [...tiers].sort((a, b) => b.min_amount - a.min_amount);
+        const match = sorted.find(t => cartSubtotal >= t.min_amount);
+        if (match) {
+          volumeDiscountAmount = Math.round((cartSubtotal * match.extra_percent) / 100);
+        }
+      }
+    } catch {}
+  }
+
   return {
     valid: true,
     discountId: discount.id,
     code: discount.code,
     title: discount.title,
     discountAmount,
+    volumeDiscountAmount,
     eligibleAmount,
-    savingsText: formatINR(discountAmount)
+    savingsText: formatINR(discountAmount + volumeDiscountAmount)
+  };
+}
+
+// ==========================================
+// RETAIL CART PRICING ENGINE
+// ==========================================
+
+/**
+ * Calculate full retail cart (B2C, guest-first, no MOQs, no wholesale tiers)
+ */
+export function calculateRetailCart({
+  items = [],
+  discount = null,
+  freeShippingThreshold = 149900,
+  shippingFee = 9900
+}) {
+  let subtotal = 0;
+  let totalMrp = 0;
+
+  const processedItems = items.map(item => {
+    const product = item.product || item;
+    const qty = Math.max(1, Number(item.quantity) || 1);
+    const unitPrice = Math.round(Number(product.price || 0));
+    const mrp = Math.round(Number(product.original_price || product.originalPrice || product.mrp || Math.round(unitPrice * 1.3)));
+    const lineTotal = unitPrice * qty;
+    const lineMrpTotal = mrp * qty;
+
+    subtotal += lineTotal;
+    totalMrp += lineMrpTotal;
+
+    return {
+      ...item,
+      quantity: qty,
+      unitPrice,
+      retailPrice: unitPrice,
+      mrp,
+      lineTotal,
+      savingsVsMrp: Math.max(0, lineMrpTotal - lineTotal)
+    };
+  });
+
+  // Evaluate retail discount if provided
+  let discountAmount = 0;
+  let appliedDiscount = null;
+  if (discount) {
+    const evalRes = evaluateDiscount(discount, { items: processedItems }, null, 'retail');
+    if (evalRes.valid) {
+      discountAmount = evalRes.discountAmount;
+      appliedDiscount = evalRes;
+    }
+  }
+
+  const isFreeShippingMet = subtotal >= freeShippingThreshold || subtotal === 0;
+  const shipping = isFreeShippingMet ? 0 : shippingFee;
+  const freeShippingProgress = Math.min(100, Math.round((subtotal / freeShippingThreshold) * 100));
+  const amountToFreeShipping = Math.max(0, freeShippingThreshold - subtotal);
+
+  const total = Math.max(0, subtotal - discountAmount) + shipping;
+  const totalSavingsVsMrp = Math.max(0, totalMrp - total);
+
+  return {
+    items: processedItems,
+    subtotal,
+    totalMrp,
+    discountAmount,
+    appliedDiscount,
+    shipping,
+    total,
+    freeShippingThreshold,
+    freeShippingProgress,
+    amountToFreeShipping,
+    isFreeShippingMet,
+    totalSavingsVsMrp
   };
 }
 
@@ -323,47 +469,70 @@ export function evaluateDiscount(discount, cart) {
 // ==========================================
 
 /**
- * Determine the wholesale tier price and volume discounts based on order quantity.
- * @param {Object} product - Product object with moq, pack_size, tier1/2/3 qty and prices
+ * Determine wholesale tier price, custom price lists, and group discounts.
+ * @param {Object} product - Product object with moq, pack_size, tier1-4 prices
  * @param {number} quantity - Desired order quantity
+ * @param {Object} group - Wholesale group (e.g. Gold with extra_discount_percent: 5)
+ * @param {number} customPrice - Optional buyer-specific price override from price_lists table
  */
-export function getWholesaleTier(product, quantity = 0) {
+export function getWholesaleTier(product, quantity = 0, group = null, customPrice = null) {
   const qty = Number(quantity) || 0;
   const moq = Number(product.moq || 10);
   const packSize = Number(product.pack_size || 5);
-  const basePrice = Number(product.price || 1000);
-  const mrp = Number(product.mrp || product.original_price || product.suggested_retail_price || Math.round(basePrice * 1.35));
+  const baseWholesalePrice = Number(product.wholesale_price || product.price || 1000);
+  const retailPrice = Number(product.price || 1000);
+  const mrp = Number(product.mrp || product.original_price || product.suggested_retail_price || Math.round(retailPrice * 1.35));
 
   const t1Qty = Number(product.tier1_qty || moq);
-  const t1Price = Number(product.tier1_price || basePrice);
+  const t1Price = Number(product.tier1_price || baseWholesalePrice);
 
   const t2Qty = Number(product.tier2_qty || 50);
-  const t2Price = Number(product.tier2_price || Math.round(basePrice * 0.9));
+  const t2Price = Number(product.tier2_price || Math.round(t1Price * 0.9));
 
   const t3Qty = Number(product.tier3_qty || 100);
-  const t3Price = Number(product.tier3_price || Math.round(basePrice * 0.8));
+  const t3Price = Number(product.tier3_price || Math.round(t1Price * 0.8));
+
+  const t4Qty = product.tier4_qty ? Number(product.tier4_qty) : null;
+  const t4Price = product.tier4_price ? Number(product.tier4_price) : null;
 
   let activeTier = 1;
-  let unitPrice = t1Price;
+  let tierUnitPrice = t1Price;
 
-  if (qty >= t3Qty) {
+  if (t4Qty && t4Price && qty >= t4Qty) {
+    activeTier = 4;
+    tierUnitPrice = t4Price;
+  } else if (qty >= t3Qty) {
     activeTier = 3;
-    unitPrice = t3Price;
+    tierUnitPrice = t3Price;
   } else if (qty >= t2Qty) {
     activeTier = 2;
-    unitPrice = t2Price;
+    tierUnitPrice = t2Price;
   } else {
     activeTier = 1;
-    unitPrice = t1Price;
+    tierUnitPrice = t1Price;
   }
 
+  // Buyer-specific price list override
+  let hasCustomPrice = false;
+  if (customPrice !== null && customPrice !== undefined && Number(customPrice) > 0) {
+    tierUnitPrice = Number(customPrice);
+    hasCustomPrice = true;
+  }
+
+  // Group extra discount % (e.g. 5% for Gold)
+  const groupDiscountPercent = group?.extra_discount_percent ? Number(group.extra_discount_percent) : 0;
+  const groupDiscountUnit = groupDiscountPercent > 0 ? Math.round((tierUnitPrice * groupDiscountPercent) / 100) : 0;
+  const finalUnitPrice = Math.max(1, tierUnitPrice - groupDiscountUnit);
+
   const isBelowMoq = qty < moq;
-  const lineTotal = unitPrice * qty;
+  const lineTotal = finalUnitPrice * qty;
+  const lineRetailTotal = retailPrice * qty;
   const lineMrpTotal = mrp * qty;
   const savingsVsMrp = Math.max(0, lineMrpTotal - lineTotal);
-  const savingsPercent = mrp > 0 ? Math.round(((mrp - unitPrice) / mrp) * 100) : 0;
+  const savingsVsRetail = Math.max(0, lineRetailTotal - lineTotal);
+  const savingsPercent = mrp > 0 ? Math.round(((mrp - finalUnitPrice) / mrp) * 100) : 0;
   const resaleMarginPercent = product.suggested_retail_price && product.suggested_retail_price > 0
-    ? Math.round(((product.suggested_retail_price - unitPrice) / product.suggested_retail_price) * 100)
+    ? Math.round(((product.suggested_retail_price - finalUnitPrice) / product.suggested_retail_price) * 100)
     : savingsPercent;
 
   // Next tier upsell nudge
@@ -377,7 +546,7 @@ export function getWholesaleTier(product, quantity = 0) {
       targetUnitPrice: t2Price,
       qtyNeeded,
       unitSavings,
-      nudgeText: `Add ${qtyNeeded} more units to unlock ₹${unitSavings} lower unit price (Tier 2: ₹${t2Price.toLocaleString('en-IN')}/unit)`
+      nudgeText: `Add ${qtyNeeded} more units to unlock Tier 2 price (Save ₹${unitSavings}/unit)`
     };
   } else if (activeTier === 2) {
     const qtyNeeded = Math.max(0, t3Qty - qty);
@@ -388,50 +557,94 @@ export function getWholesaleTier(product, quantity = 0) {
       targetUnitPrice: t3Price,
       qtyNeeded,
       unitSavings,
-      nudgeText: `Add ${qtyNeeded} more units to unlock Tier-3 bulk rate (Save ₹${unitSavings} more / unit)`
+      nudgeText: `Add ${qtyNeeded} more units to unlock Tier 3 price (Save ₹${unitSavings}/unit)`
     };
+  } else if (activeTier === 3 && t4Qty && t4Price) {
+    const qtyNeeded = Math.max(0, t4Qty - qty);
+    const unitSavings = Math.max(0, t3Price - t4Price);
+    nextTier = {
+      targetTier: 4,
+      targetQty: t4Qty,
+      targetUnitPrice: t4Price,
+      qtyNeeded,
+      unitSavings,
+      nudgeText: `Add ${qtyNeeded} more units to unlock Tier 4 master-distributor rate (Save ₹${unitSavings}/unit)`
+    };
+  }
+
+  const tiersList = [
+    { tier: 1, minQty: t1Qty, maxQty: t2Qty - 1, price: t1Price, label: `${t1Qty}+ pcs`, active: activeTier === 1 },
+    { tier: 2, minQty: t2Qty, maxQty: t3Qty - 1, price: t2Price, label: `${t2Qty}+ pcs`, active: activeTier === 2 },
+    { tier: 3, minQty: t3Qty, maxQty: t4Qty ? t4Qty - 1 : null, price: t3Price, label: `${t3Qty}+ pcs`, active: activeTier === 3 }
+  ];
+  if (t4Qty && t4Price) {
+    tiersList.push({ tier: 4, minQty: t4Qty, maxQty: null, price: t4Price, label: `${t4Qty}+ pcs`, active: activeTier === 4 });
   }
 
   return {
     moq,
     packSize,
     activeTier,
-    unitPrice,
-    basePrice,
+    tierUnitPrice,
+    groupDiscountPercent,
+    groupDiscountUnit,
+    finalUnitPrice,
+    unitPrice: finalUnitPrice,
+    basePrice: baseWholesalePrice,
+    retailPrice,
     mrp,
+    hasCustomPrice,
     isBelowMoq,
     lineTotal,
     savingsVsMrp,
+    savingsVsRetail,
     savingsPercent,
     resaleMarginPercent,
-    tiers: [
-      { tier: 1, minQty: t1Qty, maxQty: t2Qty - 1, price: t1Price, label: `${t1Qty}+ pcs`, active: activeTier === 1 },
-      { tier: 2, minQty: t2Qty, maxQty: t3Qty - 1, price: t2Price, label: `${t2Qty}+ pcs`, active: activeTier === 2 },
-      { tier: 3, minQty: t3Qty, maxQty: null, price: t3Price, label: `${t3Qty}+ pcs`, active: activeTier === 3 }
-    ],
+    tiers: tiersList,
     nextTier
   };
 }
 
 /**
- * Calculate full wholesale cart including tier prices, MOQ checks, GST breakdown, and minimum order values.
+ * Calculate full wholesale cart including tier prices, group extra discount, volume tiers, GST, and MOV.
  */
 export function calculateWholesaleCart({
   items = [],
-  discountCode = null,
+  user = null,
+  group = null,
+  priceLists = [], // array of { product_id, custom_price, min_qty }
+  discount = null,
   placeOfSupply = 'Karnataka (29)',
-  minOrderValue = 2500,
-  freeShippingThreshold = 10000
+  companyState = 'Karnataka (29)',
+  minOrderValue = 250000,
+  freeShippingThreshold = 1000000
 }) {
   let subtotal = 0;
   let totalMrp = 0;
+  let totalRetail = 0;
+  let totalGroupDiscount = 0;
   let hasMoqViolations = false;
 
+  // Effective MOV & Free shipping from group (all in integer paise)
+  const effMinOrderValue = group?.min_order_value !== undefined && group?.min_order_value !== null
+    ? Number(group.min_order_value)
+    : minOrderValue;
+  const effFreeShippingThreshold = group?.free_shipping_threshold !== undefined && group?.free_shipping_threshold !== null
+    ? Number(group.free_shipping_threshold)
+    : freeShippingThreshold;
+
   const processedItems = items.map(item => {
-    const qty = Number(item.quantity) || 1;
-    const tier = getWholesaleTier(item.product || item, qty);
-    const taxRate = Number(item.taxRate || item.gst_rate || 18);
-    const isTaxInclusive = item.isTaxInclusive !== undefined ? Boolean(item.isTaxInclusive) : true;
+    const product = item.product || item;
+    const qty = Math.max(1, Number(item.quantity) || product.moq || 10);
+    const prodId = product.id || item.productId;
+
+    // Check custom price list
+    const customMatch = priceLists.find(pl => (pl.product_id === prodId || pl.productId === prodId) && qty >= (pl.min_qty || 1));
+    const customPrice = customMatch ? customMatch.custom_price || customMatch.customPrice : null;
+
+    const tier = getWholesaleTier(product, qty, group, customPrice);
+    const taxRate = Number(product.gst_rate || product.taxRate || 18);
+    const isTaxInclusive = product.is_tax_inclusive !== undefined ? Boolean(product.is_tax_inclusive) : true;
 
     if (tier.isBelowMoq) {
       hasMoqViolations = true;
@@ -439,6 +652,8 @@ export function calculateWholesaleCart({
 
     subtotal += tier.lineTotal;
     totalMrp += tier.mrp * qty;
+    totalRetail += tier.retailPrice * qty;
+    totalGroupDiscount += tier.groupDiscountUnit * qty;
 
     // GST calculation per line item
     let taxableValue = tier.lineTotal;
@@ -454,7 +669,10 @@ export function calculateWholesaleCart({
     return {
       ...item,
       quantity: qty,
-      unitPrice: tier.unitPrice,
+      unitPrice: tier.finalUnitPrice,
+      tierUnitPrice: tier.tierUnitPrice,
+      groupDiscountUnit: tier.groupDiscountUnit,
+      groupDiscountPercent: tier.groupDiscountPercent,
       tierApplied: tier.activeTier,
       isBelowMoq: tier.isBelowMoq,
       moq: tier.moq,
@@ -464,33 +682,111 @@ export function calculateWholesaleCart({
       taxRate,
       taxAmount,
       savingsVsMrp: tier.savingsVsMrp,
+      savingsVsRetail: tier.savingsVsRetail,
       nextTier: tier.nextTier
     };
   });
 
-  const totalSavingsVsMrp = Math.max(0, totalMrp - subtotal);
-  const meetsMinOrderValue = subtotal >= minOrderValue;
-  const amountToMinOrder = Math.max(0, minOrderValue - subtotal);
+  // Evaluate coupon discount if applicable
+  let couponDiscountAmount = 0;
+  let appliedDiscount = null;
+  if (discount) {
+    const evalRes = evaluateDiscount(discount, { items: processedItems }, user, 'wholesale');
+    if (evalRes.valid) {
+      couponDiscountAmount = evalRes.discountAmount;
+      appliedDiscount = evalRes;
+    }
+  }
 
-  const shipping = subtotal >= freeShippingThreshold || subtotal === 0 ? 0 : 199;
-  const freeShippingProgress = Math.min(100, Math.round((subtotal / freeShippingThreshold) * 100));
-  const amountToFreeShipping = Math.max(0, freeShippingThreshold - subtotal);
+  // Automatic wholesale volume tier discount: >= ₹1,00,000 (10000000 paise) -> 5%, >= ₹50,000 (5000000 paise) -> 3%
+  let volumeDiscountAmount = 0;
+  let volumeDiscountPercent = 0;
+  if (subtotal >= 10000000) {
+    volumeDiscountPercent = 5;
+    volumeDiscountAmount = Math.round((subtotal * 5) / 100);
+  } else if (subtotal >= 5000000) {
+    volumeDiscountPercent = 3;
+    volumeDiscountAmount = Math.round((subtotal * 3) / 100);
+  }
 
-  const total = subtotal + shipping;
+  const totalDiscount = Math.min(subtotal, couponDiscountAmount + volumeDiscountAmount);
+
+  // Per-item GST calculation on post-discount line totals (honoring each item's gst_rate & is_tax_inclusive)
+  let totalTaxableValue = 0;
+  let totalTax = 0;
+  let remainingDiscount = totalDiscount;
+
+  processedItems.forEach((item, idx) => {
+    const share = idx === processedItems.length - 1
+      ? remainingDiscount
+      : (subtotal > 0 ? Math.round((totalDiscount * item.lineTotal) / subtotal) : 0);
+    remainingDiscount = Math.max(0, remainingDiscount - share);
+    const postDiscountLine = Math.max(0, item.lineTotal - share);
+    const isTaxInclusive = item.product?.is_tax_inclusive !== undefined
+      ? Boolean(item.product.is_tax_inclusive)
+      : (item.is_tax_inclusive !== undefined ? Boolean(item.is_tax_inclusive) : true);
+
+    if (isTaxInclusive) {
+      const itemTaxable = Math.round(postDiscountLine / (1 + item.taxRate / 100));
+      const itemTax = postDiscountLine - itemTaxable;
+      totalTaxableValue += itemTaxable;
+      totalTax += itemTax;
+    } else {
+      const itemTaxable = postDiscountLine;
+      const itemTax = Math.round((itemTaxable * item.taxRate) / 100);
+      totalTaxableValue += itemTaxable;
+      totalTax += itemTax;
+    }
+  });
+
+  const isIntraState = isIntraStateSupply(placeOfSupply, companyState);
+  const cgstAmount = isIntraState ? Math.round(totalTax / 2) : 0;
+  const sgstAmount = isIntraState ? (totalTax - cgstAmount) : 0;
+  const igstAmount = isIntraState ? 0 : totalTax;
+
+  const meetsMinOrderValue = subtotal >= effMinOrderValue;
+  const amountToMinOrder = Math.max(0, effMinOrderValue - subtotal);
+
+  const shipping = subtotal >= effFreeShippingThreshold || subtotal === 0 ? 0 : 25000;
+  const freeShippingProgress = effFreeShippingThreshold <= 0
+    ? 100
+    : Math.min(100, Math.round((subtotal / effFreeShippingThreshold) * 100));
+  const amountToFreeShipping = Math.max(0, effFreeShippingThreshold - subtotal);
+
+  const rawTotal = totalTaxableValue + totalTax + shipping;
+  const total = Math.round(rawTotal);
+  const roundOff = total - rawTotal;
+
+  const totalSavingsVsMrp = Math.max(0, totalMrp - total);
+  const totalSavingsVsRetail = Math.max(0, totalRetail - total);
 
   return {
     items: processedItems,
     subtotal,
     totalMrp,
-    totalSavingsVsMrp,
+    totalRetail,
+    groupDiscountTotal: totalGroupDiscount,
+    couponDiscountAmount,
+    volumeDiscountAmount,
+    volumeDiscountPercent,
+    totalDiscount,
+    appliedDiscount,
+    taxableValue: totalTaxableValue,
+    totalTax,
+    cgstAmount,
+    sgstAmount,
+    igstAmount,
     shipping,
+    roundOff,
     total,
-    minOrderValue,
+    minOrderValue: effMinOrderValue,
     meetsMinOrderValue,
     amountToMinOrder,
-    freeShippingThreshold,
+    freeShippingThreshold: effFreeShippingThreshold,
     freeShippingProgress,
     amountToFreeShipping,
-    hasMoqViolations
+    hasMoqViolations,
+    totalSavingsVsMrp,
+    totalSavingsVsRetail
   };
 }

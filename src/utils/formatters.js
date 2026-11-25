@@ -1,14 +1,16 @@
 // src/utils/formatters.js
 // Client formatting utilities for TechBazaar
 
-export function formatINR(amount, showSymbol = true) {
-  if (amount === undefined || amount === null || isNaN(amount)) {
+export function formatMoney(paise, showSymbol = true) {
+  if (paise === undefined || paise === null || isNaN(paise)) {
     return showSymbol ? '₹0' : '0';
   }
-  const isNegative = amount < 0;
-  const absVal = Math.abs(amount);
-  const rounded = Math.round(absVal);
-  const str = rounded.toString();
+  const roundedPaise = Math.round(Number(paise));
+  const isNegative = roundedPaise < 0;
+  const absPaise = Math.abs(roundedPaise);
+  const wholeRupees = Math.floor(absPaise / 100);
+  const remPaise = absPaise % 100;
+  const str = wholeRupees.toString();
 
   let formatted = '';
   if (str.length > 3) {
@@ -19,8 +21,13 @@ export function formatINR(amount, showSymbol = true) {
     formatted = str;
   }
 
+  const decimal = remPaise > 0 ? `.${String(remPaise).padStart(2, '0')}` : '';
   const prefix = isNegative ? '-' : '';
-  return `${prefix}${showSymbol ? '₹' : ''}${formatted}`;
+  return `${prefix}${showSymbol ? '₹' : ''}${formatted}${decimal}`;
+}
+
+export function formatINR(paise, showSymbol = true) {
+  return formatMoney(paise, showSymbol);
 }
 
 export function formatDate(dateStr) {

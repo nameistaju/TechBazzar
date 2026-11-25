@@ -27,7 +27,7 @@ const syncWishlistSchema = z.object({
   productIds: z.array(z.string())
 });
 
-// POST /api/cart/validate (Public - checks guest or user cart against live DB)
+// POST /api/cart/validate (Public / Retail - checks guest or user cart against live DB)
 router.post('/validate', validateBody(validateCartSchema), (req, res) => {
   const { items } = req.body;
   const validatedItems = [];
@@ -47,29 +47,24 @@ router.post('/validate', validateBody(validateCartSchema), (req, res) => {
       continue;
     }
 
-    let actualQty = item.quantity;
+    let actualQty = Math.max(1, item.quantity);
     if (actualQty > product.stock) {
       actualQty = product.stock;
       warnings.push(`Only ${product.stock} units of "${product.name}" available. Cart quantity adjusted.`);
     }
 
-    const moq = product.moq ? Number(product.moq) : 1;
-    if (actualQty < moq) {
-      warnings.push(`Minimum wholesale order for "${product.name}" is ${moq} units.`);
-    }
-
-    const tierInfo = getWholesaleTier(product, actualQty);
-    const unitPrice = tierInfo.unitPrice;
-    const itemTotal = tierInfo.lineTotal;
+    const unitPrice = Number(product.price || 0);
+    const itemTotal = unitPrice * actualQty;
     subtotal += itemTotal;
+
+    const mrp = Number(product.mrp || product.original_price || Math.round(unitPrice * 1.3));
 
     validatedItems.push({
       product: formatProduct(product),
       quantity: actualQty,
       price: unitPrice,
       total: itemTotal,
-      tierApplied: tierInfo.tierIndex,
-      savingsVsMrp: tierInfo.savingsVsMrp
+      savingsVsMrp: Math.max(0, (mrp * actualQty) - itemTotal)
     });
   }
 
@@ -84,9 +79,10 @@ router.post('/validate', validateBody(validateCartSchema), (req, res) => {
   });
 });
 
-// POST /api/cart/apply-discount (Public / Guest)
-router.post('/apply-discount', (req, res) => {
-  const { code, items } = req.body;
+// POST /api/cart/apply-discount (Retail/Wholesale Cart Coupon Evaluation)
+router.post('/apply-discount', optionalAuth, (req, res) => {
+  const { code, items, channel } = req.body;
+  const targetChannel = channel === 'wholesale' ? 'wholesale' : 'retail';
   if (!code || !code.trim()) {
     return res.status(400).json({ data: null, error: 'Discount code is required.' });
   }
@@ -109,13 +105,14 @@ router.post('/apply-discount', (req, res) => {
     };
   });
 
-  const evaluation = evaluateDiscount(discount, { items: resolvedItems });
+  const evaluation = evaluateDiscount(discount, { items: resolvedItems }, req.user, targetChannel);
   if (!evaluation.valid) {
     return res.status(400).json({ data: null, error: evaluation.reason });
   }
 
   return res.json({
     data: {
+      valid: true,
       code: discount.code,
       title: discount.title,
       discountAmount: evaluation.discountAmount,

@@ -19,13 +19,15 @@ import {
   Plus
 } from 'lucide-react';
 import { useStore } from '../context/StoreContext';
+import { formatMoney } from '../utils/formatters';
 import useAuthStore from '../store/authStore';
 import ordersApi from '../api/ordersApi';
 import addressesApi from '../api/addressesApi';
 import Breadcrumbs from '../components/common/Breadcrumbs';
 
 export default function CheckoutPage() {
-  const { cart, cartItems, cartSubtotal, shippingFee, cartTotal, minOrderValue, meetsMinOrderValue, clearCart } = useStore();
+  const { mode, cart, cartItems, cartSubtotal, shippingFee, cartTotal, minOrderValue, meetsMinOrderValue, appliedCoupon, couponDiscountAmount, clearCart } = useStore();
+  const isWholesale = mode === 'wholesale';
   const { user, isAuthenticated, openAuthModal } = useAuthStore();
   const navigate = useNavigate();
 
@@ -161,8 +163,8 @@ export default function CheckoutPage() {
 
   const handleNextToPayment = (e) => {
     e.preventDefault();
-    if (!meetsMinOrderValue) {
-      setStockError(`Minimum Wholesale Order Value is ₹${minOrderValue.toLocaleString('en-IN')}. Your cart subtotal is ₹${cartSubtotal.toLocaleString('en-IN')}.`);
+    if (isWholesale && !meetsMinOrderValue) {
+      setStockError(`Minimum Wholesale Order Value is ${formatMoney(minOrderValue)}. Your cart subtotal is ${formatMoney(cartSubtotal)}.`);
       return;
     }
     if (validateAddressStep()) {
@@ -213,7 +215,9 @@ export default function CheckoutPage() {
         quantity: i.quantity
       })),
       paymentMethod,
-      isAdvancePayment
+      isAdvancePayment: isWholesale ? isAdvancePayment : false,
+      discountCode: appliedCoupon?.code || undefined,
+      channel: isWholesale ? 'wholesale' : 'retail'
     };
 
     const res = await ordersApi.createOrder(payload);
@@ -450,7 +454,7 @@ export default function CheckoutPage() {
 
                     <div>
                       <label className="block text-[11px] font-semibold uppercase tracking-wider text-[#6B6B6B] mb-1.5">
-                        GSTIN (For 18% Input Tax Credit)
+                        {isWholesale ? 'GSTIN (For 18% Input Tax Credit)' : 'GSTIN (Optional — for tax invoice)'}
                       </label>
                       <input
                         type="text"
@@ -693,7 +697,7 @@ export default function CheckoutPage() {
                   })}
                 </div>
 
-                {/* Wholesale 50% Advance Booking Card */}
+                {isWholesale && (
                 <div className="p-4 bg-orange-50/60 border border-orange-200/80 rounded-[4px]">
                   <label className="flex items-start gap-3 cursor-pointer">
                     <input
@@ -712,11 +716,12 @@ export default function CheckoutPage() {
                         </span>
                       </div>
                       <p className="text-xs text-[#6B6B6B] mt-1 leading-relaxed">
-                        Pay only <strong>₹{advanceAmount.toLocaleString('en-IN')}</strong> now to confirm order and lock stock. The remaining balance of <strong>₹{balanceAmount.toLocaleString('en-IN')}</strong> is payable upon dispatch notification before carrier handover.
+                        Pay only <strong>{formatMoney(advanceAmount)}</strong> now to confirm order and lock stock. The remaining balance of <strong>{formatMoney(balanceAmount)}</strong> is payable upon dispatch notification before carrier handover.
                       </p>
                     </div>
                   </label>
                 </div>
+                )}
 
                 <div className="pt-4 border-t border-[#F2F2F2] flex items-center justify-between">
                   <button
@@ -842,11 +847,11 @@ export default function CheckoutPage() {
                       <div className="flex-1 min-w-0">
                         <p className="text-xs font-semibold text-[#0A0A0A] truncate">{item.name}</p>
                         <p className="text-[11px] text-[#6B6B6B]">
-                          Qty: {item.quantity} × ₹{item.price.toLocaleString('en-IN')} / unit
+                          Qty: {item.quantity} × {formatMoney(item.price)} / unit
                         </p>
                       </div>
                       <span className="text-xs font-bold text-[#0A0A0A] tabular-nums">
-                        ₹{(item.price * item.quantity).toLocaleString('en-IN')}
+                        {formatMoney(item.price * item.quantity)}
                       </span>
                     </div>
                   ))}
@@ -870,15 +875,15 @@ export default function CheckoutPage() {
                     {isSubmitting ? (
                       <>
                         <Loader2 size={16} className="animate-spin" />
-                        <span>Reserving Wholesale Stock...</span>
+                        <span>{isWholesale ? 'Reserving Wholesale Stock...' : 'Placing Your Order...'}</span>
                       </>
                     ) : (
                       <>
                         <Lock size={14} />
                         <span>
-                          {isAdvancePayment
-                            ? `Confirm & Pay 50% Advance (₹${advanceAmount.toLocaleString('en-IN')})`
-                            : `Confirm Wholesale Order (₹${cartTotal.toLocaleString('en-IN')})`}
+                          {isWholesale && isAdvancePayment
+                            ? `Confirm & Pay 50% Advance (${formatMoney(advanceAmount)})`
+                            : `Confirm Order (${formatMoney(cartTotal)})`}
                         </span>
                       </>
                     )}
@@ -893,7 +898,7 @@ export default function CheckoutPage() {
             <div className="bg-white border border-[#EAEAEA] rounded-[4px] p-6 shadow-sm">
               <div className="flex items-center justify-between border-b border-[#F2F2F2] pb-3 mb-4">
                 <span className="text-xs uppercase tracking-wider font-semibold text-[#0A0A0A]">
-                  Wholesale Summary ({cart.reduce((s, i) => s + i.quantity, 0)} units)
+                  {isWholesale ? 'Wholesale Summary' : 'Order Summary'} ({cart.reduce((s, i) => s + i.quantity, 0)} {cart.reduce((s, i) => s + i.quantity, 0) === 1 ? 'item' : 'items'})
                 </span>
                 <Link to="/cart" className="text-[11px] text-[#FF4D00] hover:underline font-medium">
                   Modify Bag
@@ -902,40 +907,48 @@ export default function CheckoutPage() {
 
               <div className="space-y-2 text-xs">
                 <div className="flex justify-between text-[#6B6B6B]">
-                  <span>Wholesale Subtotal (excl. GST)</span>
-                  <span className="tabular-nums">₹{Math.round(cartSubtotal / 1.18).toLocaleString('en-IN')}</span>
+                  <span>{isWholesale ? 'Wholesale Subtotal (excl. GST)' : 'Subtotal (incl. GST)'}</span>
+                  <span className="tabular-nums">{formatMoney(isWholesale ? Math.round(cartSubtotal / 1.18) : cartSubtotal)}</span>
                 </div>
+                {isWholesale && (
                 <div className="flex justify-between text-[#6B6B6B]">
                   <span>GST (18% ITC Eligible)</span>
-                  <span className="tabular-nums">₹{Math.round(cartSubtotal - (cartSubtotal / 1.18)).toLocaleString('en-IN')}</span>
+                  <span className="tabular-nums">{formatMoney(Math.round(cartSubtotal - (cartSubtotal / 1.18)))}</span>
                 </div>
+                )}
+                {couponDiscountAmount > 0 && (
+                <div className="flex justify-between text-emerald-700 font-medium">
+                  <span>Coupon ({appliedCoupon?.code})</span>
+                  <span className="tabular-nums">-{formatMoney(couponDiscountAmount)}</span>
+                </div>
+                )}
                 <div className="flex justify-between text-[#6B6B6B]">
-                  <span>Pallet Freight / Express Logistics</span>
+                  <span>{isWholesale ? 'Pallet Freight / Express Logistics' : 'Standard Shipping'}</span>
                   <span className="tabular-nums">
                     {shippingFee === 0 ? (
-                      <span className="text-emerald-600 font-semibold uppercase text-[10px]">FREE FREIGHT</span>
+                      <span className="text-emerald-600 font-semibold uppercase text-[10px]">FREE</span>
                     ) : (
-                      `₹${shippingFee}`
+                      formatMoney(shippingFee)
                     )}
                   </span>
                 </div>
                 <div className="pt-3 border-t border-[#F2F2F2] flex justify-between items-baseline font-bold text-sm text-[#0A0A0A]">
                   <span>Total Order Value</span>
                   <span className="text-base text-[#0A0A0A] tabular-nums">
-                    ₹{cartTotal.toLocaleString('en-IN')}
+                    {formatMoney(cartTotal)}
                   </span>
                 </div>
 
                 {/* 50% Advance Breakdown */}
-                {isAdvancePayment && (
+                {isWholesale && isAdvancePayment && (
                   <div className="mt-3 pt-3 border-t border-dashed border-[#EAEAEA] space-y-1.5 bg-[#FAFAFA] p-2.5 rounded-[4px]">
                     <div className="flex justify-between text-xs font-bold text-[#FF4D00]">
                       <span>50% Advance Due Today</span>
-                      <span className="tabular-nums">₹{advanceAmount.toLocaleString('en-IN')}</span>
+                      <span className="tabular-nums">{formatMoney(advanceAmount)}</span>
                     </div>
                     <div className="flex justify-between text-[11px] text-[#6B6B6B]">
                       <span>Balance Due on Dispatch</span>
-                      <span className="tabular-nums">₹{balanceAmount.toLocaleString('en-IN')}</span>
+                      <span className="tabular-nums">{formatMoney(balanceAmount)}</span>
                     </div>
                   </div>
                 )}
@@ -949,7 +962,7 @@ export default function CheckoutPage() {
                 </div>
                 <div className="flex items-center gap-2">
                   <Truck size={14} className="text-[#0A0A0A]" />
-                  <span>Free Express Air Shipping over ₹999</span>
+                  <span>{isWholesale ? 'Free Freight over ₹10,000' : 'Free Express Shipping over ₹1,499'}</span>
                 </div>
               </div>
             </div>
