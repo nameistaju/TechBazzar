@@ -40,8 +40,8 @@ export default function DiscountsView() {
   const [firstOrderOnly, setFirstOrderOnly] = useState(false);
   const [stackable, setStackable] = useState(false);
   const [usageLimit, setUsageLimit] = useState('');
-  const [startsAt, setStartsAt] = useState('');
-  const [endsAt, setEndsAt] = useState('');
+  const [_startsAt, _setStartsAt] = useState('');
+  const [_endsAt, _setEndsAt] = useState('');
 
   // Simulator Panel State
   const [testCode, setTestCode] = useState('FESTIVE25');
@@ -51,7 +51,7 @@ export default function DiscountsView() {
   ]);
   const [simulationResult, setSimulationResult] = useState(null);
   const [simulating, setSimulating] = useState(false);
-  const [catalogProducts, setCatalogProducts] = useState([]);
+  const [_catalogProducts, setCatalogProducts] = useState([]);
 
   const fetchDiscounts = async () => {
     setLoading(true);

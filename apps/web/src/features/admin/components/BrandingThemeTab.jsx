@@ -1,5 +1,5 @@
 // src/components/admin/BrandingThemeTab.jsx
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
   Palette, 
   Upload, 
@@ -36,7 +36,7 @@ const PRESET_COLORS = [
 
 export default function BrandingThemeTab() {
   const addToast = useToastStore((s) => s.addToast);
-  const { branding, setLiveBranding, refetchBranding } = useBranding();
+  const { branding, setLiveBranding, refetchBranding: _refetchBranding } = useBranding();
 
   // Local form state
   const [formData, setFormData] = useState({ ...branding });

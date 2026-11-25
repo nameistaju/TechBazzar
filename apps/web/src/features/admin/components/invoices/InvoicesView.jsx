@@ -22,7 +22,7 @@ export default function InvoicesView() {
 
   // Detail & Action Modal State
   const [selectedInvoice, setSelectedInvoice] = useState(null);
-  const [loadingDetail, setLoadingDetail] = useState(false);
+  const [_loadingDetail, setLoadingDetail] = useState(false);
 
   // Record Payment Modal State
   const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
@@ -50,13 +50,13 @@ export default function InvoicesView() {
   const [placeOfSupply, setPlaceOfSupply] = useState('Karnataka (29)');
   const [invoiceDate, setInvoiceDate] = useState(new Date().toISOString().split('T')[0]);
   const [dueDate, setDueDate] = useState(new Date(Date.now() + 7 * 86400000).toISOString().split('T')[0]);
-  const [paymentTerms, setPaymentTerms] = useState('Due on receipt');
+  const [paymentTerms, _setPaymentTerms] = useState('Due on receipt');
   const [templateChoice, setTemplateChoice] = useState('standard');
   const [lineItems, setLineItems] = useState([
     { productId: '', itemName: '', quantity: 1, rate: 1000, discountPercent: 0, taxRate: 18, isTaxInclusive: true }
   ]);
-  const [docDiscount, setDocDiscount] = useState(0);
-  const [docShipping, setDocShipping] = useState(0);
+  const [docDiscount, _setDocDiscount] = useState(0);
+  const [docShipping, _setDocShipping] = useState(0);
   const [savingInvoice, setSavingInvoice] = useState(false);
 
   const fetchInvoices = async () => {

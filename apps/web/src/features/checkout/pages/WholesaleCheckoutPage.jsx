@@ -44,7 +44,7 @@ export default function WholesaleCheckoutPage() {
 
   // Credit and Wholesale Status State
   const [creditData, setCreditData] = useState(null);
-  const [loadingCredit, setLoadingCredit] = useState(false);
+  const [_loadingCredit, setLoadingCredit] = useState(false);
 
   // Form State
   const [formData, setFormData] = useState({
@@ -68,7 +68,7 @@ export default function WholesaleCheckoutPage() {
 
   const [savedAddresses, setSavedAddresses] = useState([]);
   const [selectedAddressId, setSelectedAddressId] = useState(null);
-  const [isAddingNewAddress, setIsAddingNewAddress] = useState(false);
+  const [isAddingNewAddress, _setIsAddingNewAddress] = useState(false);
 
   // Payment method selection
   const [paymentMethod, setPaymentMethod] = useState('bank_transfer'); // 'bank_transfer', 'credit_terms', 'advance_50', 'card'

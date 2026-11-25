@@ -27,7 +27,7 @@ export default function OrdersView({ initialOrderId, onClearInitialOrder, onNavi
 
   // Detail Modal State
   const [selectedOrder, setSelectedOrder] = useState(null);
-  const [loadingDetail, setLoadingDetail] = useState(false);
+  const [_loadingDetail, setLoadingDetail] = useState(false);
 
   // Editable fields in detail modal
   const [courierName, setCourierName] = useState('');
@@ -42,7 +42,7 @@ export default function OrdersView({ initialOrderId, onClearInitialOrder, onNavi
   // Manual Walk-in Order Modal
   const [isManualModalOpen, setIsManualModalOpen] = useState(false);
   const [manualCustomer, setManualCustomer] = useState({ name: '', email: '', phone: '' });
-  const [manualAddress, setManualAddress] = useState({ line1: 'Store Walk-in', city: 'Bengaluru', state: 'Karnataka', pincode: '560034' });
+  const [manualAddress, _setManualAddress] = useState({ line1: 'Store Walk-in', city: 'Bengaluru', state: 'Karnataka', pincode: '560034' });
   const [manualItems, setManualItems] = useState([{ productId: '', quantity: 1 }]);
   const [manualPaymentMethod, setManualPaymentMethod] = useState('cash');
   const [catalogProducts, setCatalogProducts] = useState([]);

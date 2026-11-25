@@ -20,7 +20,7 @@ const GSTIN_REGEX = /^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1}$/;
 
 export default function WholesaleAccessSheet({ isOpen, onClose, initialTab = 'apply' }) {
   const [activeTab, setActiveTab] = useState(initialTab);
-  const { user, login } = useAuthStore();
+  const { user: _user, login } = useAuthStore();
   const { setModeDirect, showToast } = useStore();
 
   // Sign In Form State

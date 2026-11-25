@@ -124,7 +124,7 @@ export default function ProductDetailPage() {
     ? Math.round(((product.originalPrice - product.price) / product.originalPrice) * 100)
     : null;
 
-  const savingsAmount = product.originalPrice && product.originalPrice > product.price
+  const _savingsAmount = product.originalPrice && product.originalPrice > product.price
     ? product.originalPrice - product.price
     : 0;
 

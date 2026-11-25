@@ -19,12 +19,12 @@ import ordersApi from '@shared/api/ordersApi';
 export default function OrderSuccessPage() {
   const { orderNumber } = useParams();
   const location = useLocation();
-  const navigate = useNavigate();
-  const { user, isAuthenticated, register } = useAuthStore();
-  const { wishlist } = useStore();
+  const _navigate = useNavigate();
+  const { user: _user, isAuthenticated, register } = useAuthStore();
+  const { wishlist: _wishlist } = useStore();
 
   const [order, setOrder] = useState(location.state?.order || null);
-  const [loading, setLoading] = useState(!order);
+  const [_loading, setLoading] = useState(!order);
   const [password, setPassword] = useState('');
   const [claiming, setClaiming] = useState(false);
   const [claimSuccess, setClaimSuccess] = useState(false);

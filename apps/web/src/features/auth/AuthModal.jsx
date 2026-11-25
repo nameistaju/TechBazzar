@@ -4,7 +4,7 @@ import useAuthStore from '@shared/store/authStore';
 import { useStore } from '@app/providers/StoreContext';
 
 export default function AuthModal() {
-  const { isAuthModalOpen, closeAuthModal, authModalTab, setAuthModalTab, login, register, pendingGuestOrder } = useAuthStore();
+  const { isAuthModalOpen, closeAuthModal, authModalTab, setAuthModalTab: _setAuthModalTab, login, register, pendingGuestOrder } = useAuthStore();
   const { cart, wishlist } = useStore();
 
   const [tab, setTab] = useState(authModalTab || 'login');

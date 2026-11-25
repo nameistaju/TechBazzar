@@ -68,12 +68,12 @@ export default function BannersView() {
   const [cropSourceImg, setCropSourceImg] = useState(null);
   const [rawSourceDataUrl, setRawSourceDataUrl] = useState(null);
   const [rawSourceExt, setRawSourceExt] = useState('png');
-  const [uploadingCrop, setUploadingCrop] = useState(false);
+  const [_uploadingCrop, setUploadingCrop] = useState(false);
   const [cropZoom, setCropZoom] = useState(1);
   const [cropPan, setCropPan] = useState({ x: 0, y: 0 });
   const [cropFocalPoint, setCropFocalPoint] = useState('center'); // 'top', 'center', 'bottom'
   const canvasRef = useRef(null);
-  const fileInputRef = useRef(null);
+  const _fileInputRef = useRef(null);
 
   const fetchBanners = async () => {
     setLoading(true);
@@ -304,7 +304,7 @@ export default function BannersView() {
     }
   };
 
-  const handleUploadOriginal = async () => {
+  const _handleUploadOriginal = async () => {
     if (!rawSourceDataUrl) return;
     setUploadingCrop(true);
     const ext = rawSourceExt || 'png';

@@ -24,7 +24,7 @@ import { formatINR } from '@shared/utils/formatters';
 export default function QuickOrderPage() {
   const { mode, addToCart, showToast, setIsCartOpen, isApprovedWholesaleUser } = useStore();
   const { user } = useAuthStore();
-  const navigate = useNavigate();
+  const _navigate = useNavigate();
 
   const { data: catalogData } = useProducts({ limit: 100 });
   const products = catalogData?.products || [];

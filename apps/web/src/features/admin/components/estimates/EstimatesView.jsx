@@ -38,8 +38,8 @@ export default function EstimatesView({ onNavigate }) {
   ]);
   const [discountAmount, setDiscountAmount] = useState(0);
   const [shippingAmount, setShippingAmount] = useState(0);
-  const [notes, setNotes] = useState('Quotation valid for 15 days from issue date. Subject to stock availability.');
-  const [terms, setTerms] = useState('1. 100% advance against proforma invoice. 2. Standard manufacturer warranty applies.');
+  const [notes, _setNotes] = useState('Quotation valid for 15 days from issue date. Subject to stock availability.');
+  const [terms, _setTerms] = useState('1. 100% advance against proforma invoice. 2. Standard manufacturer warranty applies.');
 
   const fetchEstimates = async () => {
     setLoading(true);

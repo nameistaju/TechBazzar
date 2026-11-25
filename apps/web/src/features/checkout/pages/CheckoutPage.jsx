@@ -16,7 +16,7 @@ import CheckoutStep3Review from '@features/checkout/components/CheckoutStep3Revi
 import CheckoutOrderSummary from '@features/checkout/components/CheckoutOrderSummary';
 
 export default function CheckoutPage() {
-  const { mode, cart, cartItems, cartSubtotal, shippingFee, cartTotal, minOrderValue, meetsMinOrderValue, appliedCoupon, couponDiscountAmount, clearCart } = useStore();
+  const { mode, cart, cartItems: _cartItems, cartSubtotal, shippingFee, cartTotal, minOrderValue, meetsMinOrderValue, appliedCoupon, couponDiscountAmount, clearCart } = useStore();
   const isWholesale = mode === 'wholesale';
   const { user, isAuthenticated, openAuthModal } = useAuthStore();
   const navigate = useNavigate();
@@ -77,7 +77,7 @@ export default function CheckoutPage() {
   const [errors, setErrors] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [stockError, setStockError] = useState(null);
-  const [isMobileSummaryOpen, setIsMobileSummaryOpen] = useState(false);
+  const [_isMobileSummaryOpen, _setIsMobileSummaryOpen] = useState(false);
 
   // Validation
   const validateField = (field, val) => {

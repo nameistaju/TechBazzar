@@ -11,7 +11,7 @@ export default function SearchResultsPage() {
   const query = searchParams.get('q') || '';
   const [currentSort, setCurrentSort] = useState('popularity');
 
-  const { data: searchData, isLoading } = useQuery({
+  const { data: searchData, isLoading: _isLoading } = useQuery({
     queryKey: ['search', query],
     queryFn: async () => {
       const res = query.trim()

@@ -14,7 +14,7 @@ import { RotateCcw, PackageOpen } from 'lucide-react';
 
 export default function ShopPage() {
   const [searchParams, setSearchParams] = useSearchParams();
-  const { data: catalogData, isLoading: catalogLoading } = useProducts({ limit: 100 });
+  const { data: catalogData, isLoading: _catalogLoading } = useProducts({ limit: 100 });
   const { data: categories = [] } = useCategories();
   const products = catalogData?.products || [];
 

@@ -35,11 +35,11 @@ export default function CustomersView({ initialCustomerId, onClearInitialCustome
 
   // Wholesale Groups State
   const [groups, setGroups] = useState([]);
-  const [loadingGroups, setLoadingGroups] = useState(false);
+  const [_loadingGroups, setLoadingGroups] = useState(false);
 
   // Customer Detail Drawer
-  const [selectedCustomer, setSelectedCustomer] = useState(null);
-  const [loadingDetail, setLoadingDetail] = useState(false);
+  const [_selectedCustomer, setSelectedCustomer] = useState(null);
+  const [_loadingDetail, setLoadingDetail] = useState(false);
 
   // Convert to Wholesale Modal
   const [convertModalUser, setConvertModalUser] = useState(null);

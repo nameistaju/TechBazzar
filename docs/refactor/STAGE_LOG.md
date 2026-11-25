@@ -23,3 +23,21 @@
 - Chunk sizes vs Stage 1: identical (`AdminPage` `313,153 B`, `index-1dQBd0hF.css` `65,898 B`).
 - Playwright E2E (`npm run test:e2e`): `4 passed (12.5s)` against `:5000`.
 - `npm run dev` smoke check: `:5000/api/health` -> `200`, `:3000/api/products?limit=1` -> `200`, `:3000/` & `/images/image-149.png` -> `200`.
+
+## Stage 3 — Web Structure & Component Splits (`696407d`, `2dc1df5`, `a1174e3`, `ef41519`, `8880c6c`)
+- Web reorganization (`696407d`): Moved 83 frontend files into `apps/web/src/app/`, `apps/web/src/shared/`, and `apps/web/src/features/` with `@app`, `@features`, `@shared` path aliases.
+- Storefront splits (`2dc1df5`, `a1174e3`): Extracted `NavbarAccountMenu`, `NavbarMobileDrawer`, `CartDrawerFooter`, `CartThresholdBanners`, `CartOrderSummary`, `ProductDetailGallery`, `ProductDetailPricingBox`, `ProductDetailPurchaseActions`, `ProductDetailTabs`, `CheckoutStep1Address`, `CheckoutStep2Payment`, `CheckoutStep3Review`, `CheckoutOrderSummary`; fixed missing `PackageCheck` icon import in `Navbar.jsx`.
+- Admin view splits (`ef41519`, `8880c6c`): Extracted `WholesaleApplicationsTab`, `WholesaleGroupsTab`, `CustomerModals`, `BannerDrawerModal`, `BannerCropModal`, `InvoiceDetailDrawer`, `InvoiceModals`, `ProductFormDrawer`, `ProductImagePickerModal`, `ProductDuplicatesModal`.
+- `npm run verify`: ESLint `0` errors (`48` warnings); Vitest `7` files, `63/63` passed (`3.11s`); Vite build (`11.83s`, `AdminPage` `318,350 B` <= baseline `677,718 B`).
+- Route dump vs baseline: `routesIdentical: true` (`128` routes).
+- Schema dump vs baseline: `schemaIdentical: true` (`33` tables, `16` indexes).
+- Playwright E2E (`npm run test:e2e`): `4 passed (9.6s)` against `:5000`.
+- `npm run dev` smoke check: `:5000/api/health` -> `200`, `:3000/api/products?limit=1` -> `200`, `:3000/` & `/images/image-149.png` -> `200`.
+
+## Stage 4 — Shared Packages
+- Skipped per user instruction (`packages/shared` remains empty).
+
+## Stage 5 — Lint Cleanup & Documentation
+- Resolved all `48` pre-existing ESLint `no-unused-vars` warnings across `19` frontend files (`0` errors, `0` warnings).
+- Added `docs/refactor/STRUCTURE.md` documenting the monorepo layout and path aliases.
+- `npm run verify`: ESLint `0` errors / `0` warnings; Vitest `7` files, `63/63` passed (`2.42s`); Vite build (`9.96s`).

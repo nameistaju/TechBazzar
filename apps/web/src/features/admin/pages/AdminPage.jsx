@@ -48,12 +48,12 @@ import {
 
 export default function AdminPage() {
   const { user, isAuthenticated, isLoading, openAuthModal, logout, checkAuth } = useAuthStore();
-  const navigate = useNavigate();
+  const _navigate = useNavigate();
   const addToast = useToastStore((s) => s.addToast);
 
   // Active Module Tab
   const [activeTab, setActiveTab] = useState('dashboard');
-  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+  const [_isSidebarOpen, _setIsSidebarOpen] = useState(true);
 
   // Navigation Deep-link Parameters
   const [targetProductId, setTargetProductId] = useState(null);
@@ -63,9 +63,9 @@ export default function AdminPage() {
 
   // Global UI State
   const [isSearchOpen, setIsSearchOpen] = useState(false);
-  const [isQuickCreateOpen, setIsQuickCreateOpen] = useState(false);
-  const [isNotificationsOpen, setIsNotificationsOpen] = useState(false);
-  const [isAccountMenuOpen, setIsAccountMenuOpen] = useState(false);
+  const [_isQuickCreateOpen, setIsQuickCreateOpen] = useState(false);
+  const [_isNotificationsOpen, setIsNotificationsOpen] = useState(false);
+  const [_isAccountMenuOpen, setIsAccountMenuOpen] = useState(false);
   const [isSessionTimeoutOpen, setIsSessionTimeoutOpen] = useState(false);
 
   // Live Notification Badge Counts

@@ -34,7 +34,7 @@ export default function ProductsView({ initialEditId, onClearInitialEdit }) {
   const [stockFilter, setStockFilter] = useState('all');
   const [flagFilter, setFlagFilter] = useState('all');
   const [includeDeleted, setIncludeDeleted] = useState(false);
-  const [sortField, setSortField] = useState('created_at_desc');
+  const [sortField, _setSortField] = useState('created_at_desc');
 
   // Bulk Selection
   const [selectedIds, setSelectedIds] = useState([]);

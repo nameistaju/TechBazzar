@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useSearchParams, Link } from 'react-router-dom';
 import { 
   Send, 
@@ -54,7 +54,7 @@ export default function QuoteRequestPage() {
   const [phone, setPhone] = useState('');
   const [gstin, setGstin] = useState('');
   const [pincode, setPincode] = useState('');
-  const [targetPrice, setTargetPrice] = useState('');
+  const [targetPrice, _setTargetPrice] = useState('');
   const [notes, setNotes] = useState('');
 
   const [submitting, setSubmitting] = useState(false);

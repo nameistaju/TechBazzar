@@ -20,13 +20,13 @@ import Breadcrumbs from '@shared/ui/Breadcrumbs';
 export default function AccountPage() {
   const { user, isAuthenticated, isLoading, logout, openAuthModal } = useAuthStore();
   const { addToCart, wishlist, removeFromWishlist, setIsCartOpen } = useStore();
-  const navigate = useNavigate();
+  const _navigate = useNavigate();
 
   const [activeTab, setActiveTab] = useState('orders'); // 'overview', 'orders', 'wishlist', 'addresses', 'profile'
   const [orders, setOrders] = useState([]);
   const [addresses, setAddresses] = useState([]);
   const [selectedOrder, setSelectedOrder] = useState(null);
-  const [loadingOrders, setLoadingOrders] = useState(false);
+  const [_loadingOrders, setLoadingOrders] = useState(false);
 
   // New address form state
   const [isAddingAddress, setIsAddingAddress] = useState(false);
