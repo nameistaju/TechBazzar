@@ -33,7 +33,7 @@ export async function apiClient(endpoint, { method = 'GET', body, headers = {}, 
 
     if (!response.ok) {
       return {
-        data: null,
+        data: json.data ?? null,
         error: json.error || `Request failed with status ${response.status}`,
         status: response.status
       };

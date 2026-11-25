@@ -12,7 +12,10 @@ import {
   Smartphone, 
   Monitor, 
   Layers, 
-  RefreshCw
+  RefreshCw,
+  AlertTriangle,
+  GripVertical,
+  X
 } from 'lucide-react';
 import adminApi from '@shared/api/adminApi';
 import useToastStore from '@shared/store/toastStore';
@@ -49,10 +52,13 @@ export default function BannersView() {
   // Drawer Form State
   const [formData, setFormData] = useState({
     title: '',
+    alt: '',
     slot: 'home-mid-1',
     label_pill: '',
     image_desktop: '',
     image_mobile: '',
+    focal_x: 50,
+    focal_y: 50,
     link_type: 'product',
     link_target: '',
     new_tab: false,
@@ -61,19 +67,23 @@ export default function BannersView() {
     priority: 0,
     is_active: 1
   });
+  const [initialFormData, setInitialFormData] = useState(null);
+  const [formErrors, setFormErrors] = useState({});
+  const [imageMeta, setImageMeta] = useState({ desktop: null, mobile: null });
+  const [draggedBannerId, setDraggedBannerId] = useState(null);
 
   // Canvas Crop State
   const [cropModalOpen, setCropModalOpen] = useState(false);
   const [cropTargetDevice, setCropTargetDevice] = useState('desktop'); // 'desktop' (3:1) | 'mobile' (4:3)
   const [cropSourceImg, setCropSourceImg] = useState(null);
-  const [rawSourceDataUrl, setRawSourceDataUrl] = useState(null);
-  const [rawSourceExt, setRawSourceExt] = useState('png');
-  const [_uploadingCrop, setUploadingCrop] = useState(false);
+  const [uploadingCrop, setUploadingCrop] = useState(false);
   const [cropZoom, setCropZoom] = useState(1);
   const [cropPan, setCropPan] = useState({ x: 0, y: 0 });
   const [cropFocalPoint, setCropFocalPoint] = useState('center'); // 'top', 'center', 'bottom'
+  const [showSafeZone, setShowSafeZone] = useState(true);
   const canvasRef = useRef(null);
-  const _fileInputRef = useRef(null);
+
+  const hasUnsavedChanges = isDrawerOpen && initialFormData && JSON.stringify(formData) !== JSON.stringify(initialFormData);
 
   const fetchBanners = async () => {
     setLoading(true);
@@ -97,34 +107,44 @@ export default function BannersView() {
 
   const handleOpenAdd = (defaultSlot) => {
     setEditingBanner(null);
-    setFormData({
+    const initial = {
       title: '',
+      alt: '',
       slot: defaultSlot || (selectedSlotFilter !== 'all' ? selectedSlotFilter : 'home-mid-1'),
       audience: 'both',
       label_pill: '',
-      image_desktop: '/uploads/banners/Festive Bulk Deals Banner.png',
-      image_mobile: '/uploads/banners/Festive Bulk Deals Banner.png',
+      image_desktop: '',
+      image_mobile: '',
+      focal_x: 50,
+      focal_y: 50,
       link_type: 'category',
-      link_target: 'smartphones',
+      link_target: 'Earbuds',
       new_tab: false,
       starts_at: '',
       ends_at: '',
       priority: 0,
       is_active: 1
-    });
+    };
+    setFormData(initial);
+    setInitialFormData(initial);
+    setFormErrors({});
+    setImageMeta({ desktop: null, mobile: null });
     setPreviewDevice('desktop');
     setIsDrawerOpen(true);
   };
 
   const handleOpenEdit = (banner) => {
     setEditingBanner(banner);
-    setFormData({
+    const initial = {
       title: banner.title || '',
+      alt: banner.alt || banner.title || '',
       slot: banner.slot || 'home-mid-1',
       audience: banner.audience || 'both',
       label_pill: banner.label_pill || banner.label || '',
       image_desktop: banner.image_desktop || banner.desktop_image || '',
       image_mobile: banner.image_mobile || banner.mobile_image || '',
+      focal_x: banner.focal_x ?? 50,
+      focal_y: banner.focal_y ?? 50,
       link_type: banner.link_type || 'none',
       link_target: banner.link_target || '',
       new_tab: !!banner.new_tab,
@@ -132,9 +152,20 @@ export default function BannersView() {
       ends_at: banner.ends_at ? banner.ends_at.slice(0, 16) : '',
       priority: banner.priority ?? banner.sort_order ?? 0,
       is_active: banner.is_active ?? banner.active ?? 1
-    });
+    };
+    setFormData(initial);
+    setInitialFormData(initial);
+    setFormErrors({});
+    setImageMeta({ desktop: null, mobile: null });
     setPreviewDevice('desktop');
     setIsDrawerOpen(true);
+  };
+
+  const handleCloseDrawer = () => {
+    if (hasUnsavedChanges && !window.confirm('Discard unsaved changes to this banner?')) {
+      return;
+    }
+    setIsDrawerOpen(false);
   };
 
   const handleToggle = async (banner) => {
@@ -151,22 +182,26 @@ export default function BannersView() {
     const prevBanners = [...banners];
     setBanners(banners.filter(b => b.id !== banner.id));
 
-    addToast(`Banner "${banner.title}" deleted. Click to undo.`, 'warning', {
-      duration: 5000,
+    await adminApi.deleteBanner(banner.id);
+    addToast(`Banner "${banner.title}" deleted. Click Undo to restore.`, 'warning', {
+      duration: 6000,
       action: {
         label: 'Undo',
         onClick: async () => {
-          setBanners(prevBanners);
-          await adminApi.createBanner({
+          const restoreRes = await adminApi.createBanner({
             ...banner,
             desktop_image: banner.desktop_image || banner.image_desktop,
             mobile_image: banner.mobile_image || banner.image_mobile
           });
+          if (!restoreRes.error) {
+            await fetchBanners();
+            addToast('Banner restored', 'success');
+          } else {
+            setBanners(prevBanners);
+          }
         }
       }
     });
-
-    await adminApi.deleteBanner(banner.id);
   };
 
   const handleDuplicate = async (banner) => {
@@ -212,30 +247,87 @@ export default function BannersView() {
     }
   };
 
-  // Image Upload & Crop Handler
+  // Image Upload & Smart Ratio / Crop Handler
   const handleFileSelect = (e, deviceType) => {
     const file = e.target.files?.[0];
     if (!file) return;
 
+    if (file.type === 'image/svg+xml' || file.name?.toLowerCase().endsWith('.svg')) {
+      addToast('SVG uploads are not allowed. Use JPG, PNG, or WebP.', 'error');
+      if (e.target) e.target.value = '';
+      return;
+    }
+
+    if (file.size > 5 * 1024 * 1024) {
+      addToast('File exceeds 5 MB maximum limit.', 'error');
+      if (e.target) e.target.value = '';
+      return;
+    }
+
     setCropTargetDevice(deviceType);
-    const ext = file.name ? file.name.split('.').pop().toLowerCase() : 'png';
-    setRawSourceExt(ext);
     const reader = new FileReader();
-    reader.onload = (event) => {
+    reader.onload = async (event) => {
       const dataUrl = event.target.result;
-      setRawSourceDataUrl(dataUrl);
-      const img = new Image();
-      img.onload = () => {
-        setCropSourceImg(img);
-        setCropZoom(1);
-        setCropPan({ x: 0, y: 0 });
-        setCropFocalPoint('center');
-        setCropModalOpen(true);
-      };
-      img.src = dataUrl;
+      // Try direct upload first; server validates magic bytes, converts with sharp, and returns 422 if outside 15% ratio
+      const uploadRes = await adminApi.uploadBannerImage({
+        base64: dataUrl,
+        imageBase64: dataUrl,
+        filename: file.name || `banner_${deviceType}.webp`,
+        deviceType,
+        type: deviceType
+      });
+
+      if (uploadRes.data?.url) {
+        setFormData((prev) => ({
+          ...prev,
+          [deviceType === 'desktop' ? 'image_desktop' : 'image_mobile']: uploadRes.data.url
+        }));
+        setImageMeta((prev) => ({
+          ...prev,
+          [deviceType]: {
+            width: uploadRes.data.width,
+            height: uploadRes.data.height,
+            size: uploadRes.data.size
+          }
+        }));
+        addToast(`Uploaded ${deviceType} WebP (${uploadRes.data.width}×${uploadRes.data.height})`, 'success');
+        return;
+      }
+
+      if (uploadRes.data?.cropNeeded || uploadRes.status === 422) {
+        addToast(uploadRes.error || 'Image ratio differs by >15%. Opening crop tool.', 'info');
+        const img = new Image();
+        img.onload = () => {
+          setCropSourceImg(img);
+          setCropZoom(1);
+          setCropPan({ x: 0, y: 0 });
+          setCropFocalPoint('center');
+          setCropModalOpen(true);
+        };
+        img.src = dataUrl;
+        return;
+      }
+
+      addToast(uploadRes.error || 'Image upload failed', 'error');
     };
     reader.readAsDataURL(file);
-    e.target.value = '';
+    if (e.target) e.target.value = '';
+  };
+
+  const handleOpenCropForExisting = (deviceType, imageUrl) => {
+    if (!imageUrl) return;
+    setCropTargetDevice(deviceType);
+    const img = new Image();
+    img.crossOrigin = 'anonymous';
+    img.onload = () => {
+      setCropSourceImg(img);
+      setCropZoom(1);
+      setCropPan({ x: 0, y: 0 });
+      setCropFocalPoint('center');
+      setCropModalOpen(true);
+    };
+    img.onerror = () => addToast('Could not load image for cropping.', 'error');
+    img.src = imageUrl;
   };
 
   // Render crop preview on canvas
@@ -246,8 +338,8 @@ export default function BannersView() {
     const isDesktop = cropTargetDevice === 'desktop';
 
     // Target dimensions: Desktop = 1800x600 (3:1), Mobile = 1200x900 (4:3)
-    const targetW = isDesktop ? 900 : 600;
-    const targetH = isDesktop ? 300 : 450;
+    const targetW = isDesktop ? 1800 : 1200;
+    const targetH = isDesktop ? 600 : 900;
     canvas.width = targetW;
     canvas.height = targetH;
 
@@ -258,23 +350,23 @@ export default function BannersView() {
     const scaledW = cropSourceImg.width * scale;
     const scaledH = cropSourceImg.height * scale;
 
-    let posX = (targetW - scaledW) / 2 + cropPan.x;
-    let posY = (targetH - scaledH) / 2 + cropPan.y;
+    const posX = (targetW - scaledW) / 2 + cropPan.x * 2;
+    let posY = (targetH - scaledH) / 2 + cropPan.y * 2;
 
-    if (cropFocalPoint === 'top') posY = cropPan.y;
-    if (cropFocalPoint === 'bottom') posY = targetH - scaledH + cropPan.y;
+    if (cropFocalPoint === 'top') posY = cropPan.y * 2;
+    if (cropFocalPoint === 'bottom') posY = targetH - scaledH + cropPan.y * 2;
 
     ctx.drawImage(cropSourceImg, posX, posY, scaledW, scaledH);
 
-    // 80% Safe zone guide
-    ctx.strokeStyle = 'rgba(255, 77, 0, 0.6)';
-    ctx.lineWidth = 1;
-    ctx.setLineDash([4, 4]);
-    const safeMarginX = targetW * 0.1;
-    const safeMarginY = targetH * 0.1;
-    ctx.strokeRect(safeMarginX, safeMarginY, targetW * 0.8, targetH * 0.8);
-    ctx.setLineDash([]);
-  }, [cropModalOpen, cropSourceImg, cropZoom, cropPan, cropFocalPoint, cropTargetDevice]);
+    if (showSafeZone) {
+      const accentHex = getComputedStyle(document.documentElement).getPropertyValue('--accent-hex').trim() || '#FF4D00';
+      ctx.strokeStyle = accentHex;
+      ctx.lineWidth = 3;
+      ctx.setLineDash([8, 8]);
+      ctx.strokeRect(targetW * 0.1, targetH * 0.1, targetW * 0.8, targetH * 0.8);
+      ctx.setLineDash([]);
+    }
+  }, [cropModalOpen, cropSourceImg, cropZoom, cropPan, cropFocalPoint, cropTargetDevice, showSafeZone]);
 
   const handleApplyCrop = async () => {
     if (!canvasRef.current) return;
@@ -283,47 +375,33 @@ export default function BannersView() {
     const base64 = canvas.toDataURL('image/webp', 0.92);
 
     const res = await adminApi.uploadBannerImage({
-      base64: base64,
+      base64,
       imageBase64: base64,
       filename: `banner_${cropTargetDevice}_${Date.now()}.webp`,
       deviceType: cropTargetDevice,
-      type: cropTargetDevice
+      type: cropTargetDevice,
+      cropped: true,
+      skipRatioCheck: true
     });
     setUploadingCrop(false);
 
     if (res.data?.url) {
-      if (cropTargetDevice === 'desktop') {
-        setFormData(prev => ({ ...prev, image_desktop: res.data.url }));
-      } else {
-        setFormData(prev => ({ ...prev, image_mobile: res.data.url }));
-      }
+      const focalY = cropFocalPoint === 'top' ? 15 : cropFocalPoint === 'bottom' ? 85 : 50;
+      setFormData((prev) => ({
+        ...prev,
+        [cropTargetDevice === 'desktop' ? 'image_desktop' : 'image_mobile']: res.data.url,
+        focal_x: 50,
+        focal_y: focalY
+      }));
+      setImageMeta((prev) => ({
+        ...prev,
+        [cropTargetDevice]: {
+          width: res.data.width,
+          height: res.data.height,
+          size: res.data.size
+        }
+      }));
       addToast(`Cropped & uploaded ${cropTargetDevice} WebP banner`, 'success');
-      setCropModalOpen(false);
-    } else {
-      addToast(res.error || 'Upload failed', 'error');
-    }
-  };
-
-  const _handleUploadOriginal = async () => {
-    if (!rawSourceDataUrl) return;
-    setUploadingCrop(true);
-    const ext = rawSourceExt || 'png';
-    const res = await adminApi.uploadBannerImage({
-      base64: rawSourceDataUrl,
-      imageBase64: rawSourceDataUrl,
-      filename: `banner_${cropTargetDevice}_raw_${Date.now()}.${ext}`,
-      deviceType: cropTargetDevice,
-      type: cropTargetDevice
-    });
-    setUploadingCrop(false);
-
-    if (res.data?.url) {
-      if (cropTargetDevice === 'desktop') {
-        setFormData(prev => ({ ...prev, image_desktop: res.data.url }));
-      } else {
-        setFormData(prev => ({ ...prev, image_mobile: res.data.url }));
-      }
-      addToast(`Uploaded ${cropTargetDevice} banner directly`, 'success');
       setCropModalOpen(false);
     } else {
       addToast(res.error || 'Upload failed', 'error');
@@ -332,20 +410,25 @@ export default function BannersView() {
 
   const handleSaveBanner = async (e) => {
     e?.preventDefault?.();
-    if (!formData.title?.trim()) {
-      addToast('Banner title is required', 'error');
-      return;
-    }
+    const errors = {};
+    if (!formData.slot) errors.slot = 'Target slot is required.';
+    if (!formData.title?.trim()) errors.title = 'Campaign title is required.';
+    if (!formData.alt?.trim()) errors.alt = 'Accessible alt text is required.';
     const desktopImg = formData.image_desktop?.trim();
-    if (!desktopImg) {
-      addToast('Desktop banner image is required', 'error');
+    if (!desktopImg) errors.image_desktop = 'Desktop banner image is required.';
+
+    if (Object.keys(errors).length > 0) {
+      setFormErrors(errors);
+      addToast('Please fill in all required banner fields.', 'error');
       return;
     }
+    setFormErrors({});
 
     setSaving(true);
     const mobileImg = formData.image_mobile?.trim() || desktopImg;
     const payload = {
       title: formData.title.trim(),
+      alt: formData.alt.trim(),
       slot: formData.slot,
       audience: formData.audience || 'both',
       label: formData.label_pill?.trim() || null,
@@ -355,6 +438,8 @@ export default function BannersView() {
       mobile_image: mobileImg,
       image_mobile: mobileImg,
       thumb: mobileImg || desktopImg,
+      focal_x: Number(formData.focal_x ?? 50),
+      focal_y: Number(formData.focal_y ?? 50),
       link_type: formData.link_type || 'none',
       link_target: formData.link_target || '',
       new_tab: formData.new_tab ? 1 : 0,
@@ -382,6 +467,24 @@ export default function BannersView() {
       addToast(res.error || 'Failed to save banner', 'error');
     }
   };
+
+  const handleRowDrop = async (targetBanner) => {
+    if (!draggedBannerId || draggedBannerId === targetBanner.id) return;
+    const slotBanners = banners
+      .filter((b) => b.slot === targetBanner.slot)
+      .sort((a, b) => (a.priority ?? a.sort_order ?? 0) - (b.priority ?? b.sort_order ?? 0));
+    const fromIdx = slotBanners.findIndex((b) => b.id === draggedBannerId);
+    const toIdx = slotBanners.findIndex((b) => b.id === targetBanner.id);
+    if (fromIdx === -1 || toIdx === -1) return;
+    const reordered = [...slotBanners];
+    const [moved] = reordered.splice(fromIdx, 1);
+    reordered.splice(toIdx, 0, moved);
+    await adminApi.reorderBanners(targetBanner.slot, reordered.map((b) => b.id));
+    setDraggedBannerId(null);
+    fetchBanners();
+  };
+
+  const unhealthyBanners = banners.filter((b) => b.media_health && !b.media_health.healthy);
 
   return (
     <div className="space-y-8 animate-fadeIn">
@@ -416,6 +519,16 @@ export default function BannersView() {
           </button>
         </div>
       </div>
+
+      {/* Media Health Warning Banner */}
+      {unhealthyBanners.length > 0 && (
+        <div className="p-3 bg-red-50 border border-red-200 text-red-800 text-xs font-mono flex items-center gap-2 rounded-[2px]">
+          <AlertTriangle size={15} className="shrink-0" />
+          <span>
+            Media health warning: {unhealthyBanners.length} banner(s) reference missing image files on disk. Edit those banners to re-upload.
+          </span>
+        </div>
+      )}
 
       {/* 1. VISUAL SLOT MAP */}
       <div className="space-y-3">
@@ -564,9 +677,17 @@ export default function BannersView() {
                     const priority = banner.priority ?? banner.sort_order ?? 0;
 
                     return (
-                      <tr key={banner.id} className="hover:bg-[#FAFAFA] transition-colors">
+                      <tr
+                        key={banner.id}
+                        draggable
+                        onDragStart={() => setDraggedBannerId(banner.id)}
+                        onDragOver={(e) => e.preventDefault()}
+                        onDrop={() => handleRowDrop(banner)}
+                        className="hover:bg-[#FAFAFA] transition-colors"
+                      >
                         <td className="py-3 px-4">
                           <div className="flex items-center gap-3">
+                            <GripVertical size={13} className="text-[#BDBDBD] cursor-grab shrink-0" title="Drag to reorder within slot" />
                             <div className="w-16 h-8 bg-[#F7F7F7] border border-[#EAEAEA] rounded overflow-hidden shrink-0 flex items-center justify-center">
                               {bannerImg ? (
                                 <img
@@ -582,11 +703,18 @@ export default function BannersView() {
                               <div className="font-bold text-[#0A0A0A] truncate max-w-xs">
                                 {banner.title}
                               </div>
-                              {label && (
-                                <span className="inline-block bg-accent text-accent-contrast text-[9px] font-bold px-1.5 py-0.2 rounded mt-0.5">
-                                  {label}
-                                </span>
-                              )}
+                              <div className="flex items-center gap-1.5 mt-0.5">
+                                {label && (
+                                  <span className="inline-block bg-accent text-accent-contrast text-[9px] font-bold px-1.5 py-0.2 rounded">
+                                    {label}
+                                  </span>
+                                )}
+                                {banner.media_health && !banner.media_health.healthy && (
+                                  <span className="inline-flex items-center gap-1 bg-red-100 text-red-700 border border-red-200 text-[9px] font-bold px-1.5 py-0.2 rounded">
+                                    <AlertTriangle size={9} /> Missing {banner.media_health.missing.join('/')}
+                                  </span>
+                                )}
+                              </div>
                             </div>
                           </div>
                         </td>
@@ -695,13 +823,17 @@ export default function BannersView() {
 
       <BannerDrawerModal
         isDrawerOpen={isDrawerOpen}
-        setIsDrawerOpen={setIsDrawerOpen}
+        handleCloseDrawer={handleCloseDrawer}
         editingBanner={editingBanner}
         handleSaveBanner={handleSaveBanner}
         formData={formData}
         setFormData={setFormData}
         SLOTS={SLOTS}
         handleFileSelect={handleFileSelect}
+        handleOpenCropForExisting={handleOpenCropForExisting}
+        imageMeta={imageMeta}
+        formErrors={formErrors}
+        hasUnsavedChanges={hasUnsavedChanges}
         previewDevice={previewDevice}
         setPreviewDevice={setPreviewDevice}
         categories={categories}
@@ -716,9 +848,14 @@ export default function BannersView() {
         canvasRef={canvasRef}
         cropZoom={cropZoom}
         setCropZoom={setCropZoom}
+        cropPan={cropPan}
+        setCropPan={setCropPan}
         cropFocalPoint={cropFocalPoint}
         setCropFocalPoint={setCropFocalPoint}
+        showSafeZone={showSafeZone}
+        setShowSafeZone={setShowSafeZone}
         handleApplyCrop={handleApplyCrop}
+        uploadingCrop={uploadingCrop}
       />
     </div>
   );

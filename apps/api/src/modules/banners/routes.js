@@ -11,6 +11,14 @@ const trackingLimiter = rateLimit({
   message: { data: null, error: 'Tracking rate limit exceeded' }
 });
 
+// In-memory session dedupe (one impression & one click per session per banner per day)
+const seenImpressions = new Set();
+const seenClicks = new Set();
+
+function getTrackingSessionKey(req) {
+  return String(req.headers['x-session-id'] || req.cookies?.tb_session || req.ip || 'anon').slice(0, 64);
+}
+
 // GET /api/banners - get active banners (optionally filtered by slot and audience)
 router.get('/', (req, res, next) => {
   try {
@@ -58,13 +66,20 @@ router.post('/:id/impression', trackingLimiter, (req, res, next) => {
       return res.status(404).json({ data: null, error: 'Banner not found' });
     }
 
+    const today = new Date().toISOString().slice(0, 10);
+    const dedupeKey = `${today}:${bannerId}:${getTrackingSessionKey(req)}`;
+    if (seenImpressions.has(dedupeKey)) {
+      return res.json({ data: { success: true, deduped: true }, error: null });
+    }
+    seenImpressions.add(dedupeKey);
+
     db.prepare(`
       INSERT INTO banner_stats (banner_id, date, impressions, clicks)
       VALUES (?, DATE('now'), 1, 0)
       ON CONFLICT(banner_id, date) DO UPDATE SET impressions = impressions + 1
     `).run(bannerId);
 
-    res.json({ data: { success: true }, error: null });
+    res.json({ data: { success: true, deduped: false }, error: null });
   } catch (err) {
     next(err);
   }
@@ -84,13 +99,20 @@ router.post('/:id/click', trackingLimiter, (req, res, next) => {
       return res.status(404).json({ data: null, error: 'Banner not found' });
     }
 
+    const today = new Date().toISOString().slice(0, 10);
+    const dedupeKey = `${today}:${bannerId}:${getTrackingSessionKey(req)}`;
+    if (seenClicks.has(dedupeKey)) {
+      return res.json({ data: { success: true, deduped: true }, error: null });
+    }
+    seenClicks.add(dedupeKey);
+
     db.prepare(`
       INSERT INTO banner_stats (banner_id, date, impressions, clicks)
       VALUES (?, DATE('now'), 0, 1)
       ON CONFLICT(banner_id, date) DO UPDATE SET clicks = clicks + 1
     `).run(bannerId);
 
-    res.json({ data: { success: true }, error: null });
+    res.json({ data: { success: true, deduped: false }, error: null });
   } catch (err) {
     next(err);
   }

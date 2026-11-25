@@ -88,12 +88,10 @@ test.describe('Feature 1: Dynamic Accent Colour Engine E2E', () => {
     }
 
     // Verify public /api/branding returns #2563EB with no-cache
-    const brandingRes = await page.evaluate(async () => {
-      const r = await fetch('/api/branding');
-      return { cc: r.headers.get('cache-control'), data: (await r.json()).data };
-    });
-    expect(brandingRes.cc).toBe('no-cache');
-    expect(brandingRes.data.accent_hex).toBe('#2563EB');
+    const apiRes = await page.request.get('/api/branding');
+    expect(apiRes.headers()['cache-control']).toBe('no-cache');
+    const brandingJson = await apiRes.json();
+    expect(brandingJson.data.accent_hex).toBe('#2563EB');
 
     expect(consoleErrors, `Console errors: ${consoleErrors.join('; ')}`).toHaveLength(0);
   });

@@ -4,9 +4,10 @@
 
 import fs from 'fs';
 import path from 'path';
+import sharp from 'sharp';
 import { UPLOADS_DIR } from '../../config/paths.js';
 
-export function generateSampleBanners() {
+export async function generateSampleBanners() {
   const uploadDir = path.join(UPLOADS_DIR, 'banners');
   if (!fs.existsSync(uploadDir)) {
     fs.mkdirSync(uploadDir, { recursive: true });
@@ -27,7 +28,7 @@ export function generateSampleBanners() {
       slot: 'home-mid-2',
       badge: 'FACTORY DIRECT STOCK',
       title: 'ACOUSTIC HARDWARE FOR RESELLERS',
-      subtitle: 'Premium Wireless Earbuds & ANC Audio with 35%+ Resale Margins',
+      subtitle: 'Premium Wireless Earbuds &amp; ANC Audio with 35%+ Resale Margins',
       action: 'BROWSE AUDIO CATALOGUE',
       subtext: 'Tier 1 to Tier 3 Bulk Tiers • Direct Brand Warranty Included'
     },
@@ -147,10 +148,21 @@ export function generateSampleBanners() {
   </g>
 </svg>`;
 
-    fs.writeFileSync(path.join(uploadDir, `${b.id}-desktop.svg`), desktopSvg.trim());
-    fs.writeFileSync(path.join(uploadDir, `${b.id}-mobile.svg`), mobileSvg.trim());
-    fs.writeFileSync(path.join(uploadDir, `${b.id}-thumb.svg`), desktopSvg.trim());
+    await sharp(Buffer.from(desktopSvg.trim()))
+      .resize(1800, 600)
+      .webp({ quality: 90 })
+      .toFile(path.join(uploadDir, `${b.id}-desktop.webp`));
+
+    await sharp(Buffer.from(mobileSvg.trim()))
+      .resize(1200, 900)
+      .webp({ quality: 90 })
+      .toFile(path.join(uploadDir, `${b.id}-mobile.webp`));
+
+    await sharp(Buffer.from(desktopSvg.trim()))
+      .resize(600, 200)
+      .webp({ quality: 85 })
+      .toFile(path.join(uploadDir, `${b.id}-thumb.webp`));
   }
 
-  console.log('  ✓ Generated 3 sample desktop (3:1) and mobile (4:3) vector banners');
+  console.log('  ✓ Generated 3 sample desktop (1800x600 WebP), mobile (1200x900 WebP), and thumb WebP banners');
 }

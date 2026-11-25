@@ -2,8 +2,9 @@ import { Router } from 'express';
 import fs from 'fs';
 import path from 'path';
 import crypto from 'crypto';
+import sharp from 'sharp';
 import db from '../../../../db/index.js';
-import { UPLOADS_DIR } from '../../../../config/paths.js';
+import { UPLOADS_DIR, WEB_PUBLIC_DIR } from '../../../../config/paths.js';
 import { validateBody } from '../../../core/middleware/validate.js';
 import { validateImageUpload } from '../../../core/utils/imageSecurity.js';
 import * as adminSchemas from '../schemas.js';
@@ -11,9 +12,32 @@ import { logActivity } from '../helpers.js';
 
 const router = Router();
 
+function resolveLocalAssetExists(assetUrl) {
+  if (!assetUrl || typeof assetUrl !== 'string') return false;
+  if (/^https?:\/\//i.test(assetUrl)) return true;
+  const cleanRel = assetUrl.replace(/^\/+/, '').split('?')[0];
+  const candidate = path.resolve(WEB_PUBLIC_DIR, cleanRel);
+  if (!candidate.startsWith(path.resolve(WEB_PUBLIC_DIR))) return false;
+  return fs.existsSync(candidate);
+}
+
+function getBannerMediaHealth(banner) {
+  const desktopExists = resolveLocalAssetExists(banner.desktop_image);
+  const mobileExists = banner.mobile_image ? resolveLocalAssetExists(banner.mobile_image) : true;
+  const missing = [];
+  if (!desktopExists) missing.push('desktop');
+  if (banner.mobile_image && !mobileExists) missing.push('mobile');
+  return {
+    desktopExists,
+    mobileExists,
+    healthy: desktopExists && mobileExists,
+    missing
+  };
+}
+
 // --- BANNERS & ADS MANAGEMENT ---
 
-// GET /api/admin/banners - list all banners with analytics
+// GET /api/admin/banners - list all banners with analytics and media health
 router.get('/banners', (req, res) => {
   const rawBanners = db.prepare(`
     SELECT b.*,
@@ -36,7 +60,8 @@ router.get('/banners', (req, res) => {
     is_active: b.active,
     priority: b.sort_order,
     impressions: b.total_impressions,
-    clicks: b.total_clicks
+    clicks: b.total_clicks,
+    media_health: getBannerMediaHealth(b)
   }));
 
   return res.json({ data: { banners }, error: null });
@@ -197,16 +222,46 @@ router.post('/banners/reorder', validateBody(adminSchemas.bannerReorderSchema), 
   return res.json({ data: { message: 'Banners reordered successfully' }, error: null });
 });
 
-// POST /api/admin/banners/upload - PNG/JPEG/WebP only (rejects SVG, validates magic bytes & dimensions)
-router.post('/banners/upload', validateBody(adminSchemas.bannerUploadSchema), (req, res) => {
+// POST /api/admin/banners/upload - PNG/JPEG/WebP only (rejects SVG, validates magic bytes & dimensions, converts to WebP with sharp)
+router.post('/banners/upload', validateBody(adminSchemas.bannerUploadSchema), async (req, res) => {
   try {
     const base64 = req.body.base64 || req.body.imageBase64 || req.body.image;
     const rawType = req.body.type || req.body.deviceType || 'banner';
     const safeType = String(rawType).replace(/[^a-zA-Z0-9_-]/g, '').slice(0, 20) || 'banner';
+    const skipRatioCheck = Boolean(req.body.skipRatioCheck || req.body.cropped);
 
     const check = validateImageUpload(base64, { maxBytes: 5 * 1024 * 1024, minDim: 16, maxDim: 4096 });
     if (!check.valid) {
       return res.status(400).json({ data: null, error: check.error });
+    }
+
+    // Verify sharp can decode the image (catches polyglot/corrupt payloads)
+    let meta;
+    try {
+      meta = await sharp(check.buffer).metadata();
+    } catch {
+      return res.status(400).json({ data: null, error: 'Corrupted or unreadable image file.' });
+    }
+    const imgW = meta.width || check.width;
+    const imgH = meta.height || check.height;
+
+    // Aspect ratio tolerance check (+-15%) for desktop (3:1) and mobile (4:3)
+    if (!skipRatioCheck && (safeType === 'desktop' || safeType === 'mobile')) {
+      const expectedRatio = safeType === 'desktop' ? 3.0 : 4 / 3;
+      const actualRatio = imgW / Math.max(1, imgH);
+      const diff = Math.abs(actualRatio - expectedRatio) / expectedRatio;
+      if (diff > 0.15) {
+        return res.status(422).json({
+          data: {
+            cropNeeded: true,
+            width: imgW,
+            height: imgH,
+            expectedRatio: Number(expectedRatio.toFixed(2)),
+            actualRatio: Number(actualRatio.toFixed(2))
+          },
+          error: `Image aspect ratio (${imgW}x${imgH}) does not match ${safeType === 'desktop' ? '3:1 Desktop' : '4:3 Mobile'} within 15% tolerance. Please crop the image.`
+        });
+      }
     }
 
     const uploadDir = path.join(UPLOADS_DIR, 'banners');
@@ -214,13 +269,37 @@ router.post('/banners/upload', validateBody(adminSchemas.bannerUploadSchema), (r
       fs.mkdirSync(uploadDir, { recursive: true });
     }
 
-    const cleanFilename = `${safeType}_${crypto.randomBytes(12).toString('hex')}.${check.ext}`;
+    const randHex = crypto.randomBytes(12).toString('hex');
+    const cleanFilename = `${safeType}_${randHex}.webp`;
+    const thumbFilename = `thumb_${safeType}_${randHex}.webp`;
     const filePath = path.join(uploadDir, cleanFilename);
-    fs.writeFileSync(filePath, check.buffer);
+    const thumbPath = path.join(uploadDir, thumbFilename);
+
+    // Strip metadata and convert to WebP
+    const outInfo = await sharp(check.buffer)
+      .rotate()
+      .webp({ quality: 90 })
+      .toFile(filePath);
+
+    // Generate thumbnail
+    await sharp(check.buffer)
+      .rotate()
+      .resize({ width: 600, withoutEnlargement: true })
+      .webp({ quality: 82 })
+      .toFile(thumbPath);
 
     const publicUrl = `/uploads/banners/${cleanFilename}`;
+    const thumbUrl = `/uploads/banners/${thumbFilename}`;
     return res.json({
-      data: { url: publicUrl, filename: cleanFilename, width: check.width, height: check.height },
+      data: {
+        url: publicUrl,
+        thumbUrl,
+        filename: cleanFilename,
+        width: outInfo.width || imgW,
+        height: outInfo.height || imgH,
+        size: outInfo.size,
+        mime: 'image/webp'
+      },
       error: null
     });
   } catch (err) {

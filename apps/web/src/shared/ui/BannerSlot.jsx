@@ -1,6 +1,21 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ChevronLeft, ChevronRight, ExternalLink, Tag } from 'lucide-react';
+import { useStore } from '@app/providers/StoreContext';
+import useToastStore from '@shared/store/toastStore';
+
+function getBannerSessionId() {
+  try {
+    let sid = sessionStorage.getItem('tb_banner_sid');
+    if (!sid) {
+      sid = `bs_${Math.random().toString(36).slice(2)}_${Date.now().toString(36)}`;
+      sessionStorage.setItem('tb_banner_sid', sid);
+    }
+    return sid;
+  } catch {
+    return 'bs_default';
+  }
+}
 
 export default function BannerSlot({ slot, className = '' }) {
   const [banners, setBanners] = useState([]);
@@ -8,6 +23,8 @@ export default function BannerSlot({ slot, className = '' }) {
   const [isPaused, setIsPaused] = useState(false);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
+  const { setAppliedCoupon, cartSubtotal, mode } = useStore();
+  const addToast = useToastStore((s) => s.addToast);
 
   const containerRef = useRef(null);
   const timerRef = useRef(null);
@@ -47,7 +64,10 @@ export default function BannerSlot({ slot, className = '' }) {
           if (entry.isIntersecting && entry.intersectionRatio >= 0.5) {
             if (!trackedImpressions.current.has(currentBanner.id)) {
               trackedImpressions.current.add(currentBanner.id);
-              fetch(`/api/banners/${currentBanner.id}/impression`, { method: 'POST' }).catch(() => {});
+              fetch(`/api/banners/${currentBanner.id}/impression`, {
+                method: 'POST',
+                headers: { 'x-session-id': getBannerSessionId() }
+              }).catch(() => {});
             }
           }
         });
@@ -75,9 +95,12 @@ export default function BannerSlot({ slot, className = '' }) {
   }, [banners.length, isPaused]);
 
   // Handle banner click + analytics
-  const handleClick = (banner, _e) => {
+  const handleClick = async (banner, _e) => {
     // Record click stat non-blocking
-    fetch(`/api/banners/${banner.id}/click`, { method: 'POST' }).catch(() => {});
+    fetch(`/api/banners/${banner.id}/click`, {
+      method: 'POST',
+      headers: { 'x-session-id': getBannerSessionId() }
+    }).catch(() => {});
 
     if (!banner.link_type || banner.link_type === 'none') return;
 
@@ -91,9 +114,33 @@ export default function BannerSlot({ slot, className = '' }) {
     }
 
     if (banner.link_type === 'coupon') {
-      if (banner.link_target) {
-        navigator.clipboard.writeText(banner.link_target);
-        alert(`Coupon code "${banner.link_target}" copied to clipboard! Apply it at checkout for instant wholesale discounts.`);
+      const code = (banner.link_target || '').trim().toUpperCase();
+      if (code) {
+        try { await navigator.clipboard?.writeText(code); } catch {}
+        try {
+          const res = await fetch('/api/discounts/validate', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              code,
+              cartTotal: cartSubtotal || 0,
+              channel: mode === 'wholesale' ? 'wholesale' : 'retail'
+            })
+          });
+          const json = await res.json();
+          if (res.ok && json?.data?.valid) {
+            setAppliedCoupon({
+              code: json.data.code,
+              discountAmount: json.data.discountAmount,
+              title: json.data.title
+            });
+          } else {
+            setAppliedCoupon({ code, discountAmount: 0, title: banner.title || code });
+          }
+        } catch {
+          setAppliedCoupon({ code, discountAmount: 0, title: banner.title || code });
+        }
+        addToast(`Coupon "${code}" applied to your bag!`, 'success');
       }
       return;
     }

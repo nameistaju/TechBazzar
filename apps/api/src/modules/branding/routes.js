@@ -73,12 +73,13 @@ router.get('/branding', (req, res) => {
     const branding = getBrandingData();
     const etag = `W/"${crypto.createHash('md5').update(JSON.stringify(branding)).digest('hex')}"`;
 
+    res.setHeader('ETag', etag);
+    res.setHeader('Cache-Control', 'no-cache');
+
     if (req.headers['if-none-match'] === etag) {
       return res.status(304).end();
     }
 
-    res.setHeader('ETag', etag);
-    res.setHeader('Cache-Control', 'no-cache');
     return res.json({ data: branding, error: null });
   } catch (err) {
     console.error('Failed to load branding:', err);

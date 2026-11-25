@@ -470,7 +470,7 @@ const updatedCount = backfillTx(products);
 console.log(`  ✓ Backfilled ${updatedCount} products with wholesale MOQs, pack sizes, and 3-tier price brackets`);
 
 // 8. Generate and Seed Sample Banners
-generateSampleBanners();
+await generateSampleBanners();
 
 const bannerCount = db.prepare('SELECT COUNT(*) as count FROM banners').get();
 if (bannerCount.count === 0) {
@@ -484,9 +484,9 @@ if (bannerCount.count === 0) {
     {
       title: 'FESTIVE BULK DEALS - Extra 15% Off Orders Above ₹50,000',
       slot: 'home-mid-1',
-      desktop_image: '/uploads/banners/festive-deals-desktop.svg',
-      mobile_image: '/uploads/banners/festive-deals-mobile.svg',
-      thumb: '/uploads/banners/festive-deals-thumb.svg',
+      desktop_image: '/uploads/banners/festive-deals-desktop.webp',
+      mobile_image: '/uploads/banners/festive-deals-mobile.webp',
+      thumb: '/uploads/banners/festive-deals-thumb.webp',
       alt: 'Festive wholesale discounts on bulk electronics purchases',
       link_type: 'coupon',
       link_target: 'FESTIVE25',
@@ -496,9 +496,9 @@ if (bannerCount.count === 0) {
     {
       title: 'FACTORY DIRECT SMART AUDIO - High-Margin Resale Inventory',
       slot: 'home-mid-2',
-      desktop_image: '/uploads/banners/smart-audio-desktop.svg',
-      mobile_image: '/uploads/banners/smart-audio-mobile.svg',
-      thumb: '/uploads/banners/smart-audio-thumb.svg',
+      desktop_image: '/uploads/banners/smart-audio-desktop.webp',
+      mobile_image: '/uploads/banners/smart-audio-mobile.webp',
+      thumb: '/uploads/banners/smart-audio-thumb.webp',
       alt: 'Factory direct wireless audio for retail shop owners',
       link_type: 'category',
       link_target: 'earbuds',
@@ -508,9 +508,9 @@ if (bannerCount.count === 0) {
     {
       title: 'TECHBAZAAR B2B PARTNER CLUB - Priority Allocation & 30-Day Credit',
       slot: 'home-mid-3',
-      desktop_image: '/uploads/banners/b2b-partner-desktop.svg',
-      mobile_image: '/uploads/banners/b2b-partner-mobile.svg',
-      thumb: '/uploads/banners/b2b-partner-thumb.svg',
+      desktop_image: '/uploads/banners/b2b-partner-desktop.webp',
+      mobile_image: '/uploads/banners/b2b-partner-mobile.webp',
+      thumb: '/uploads/banners/b2b-partner-thumb.webp',
       alt: 'Join TechBazaar wholesale B2B reseller partner network',
       link_type: 'page',
       link_target: '/quote',
