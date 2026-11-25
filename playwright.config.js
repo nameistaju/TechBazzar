@@ -6,6 +6,7 @@ export default defineConfig({
   use: {
     baseURL: 'http://localhost:5000',
     channel: 'chrome',
-    headless: true
+    headless: true,
+    screenshot: 'only-on-failure'
   }
 });
