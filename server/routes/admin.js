@@ -2820,9 +2820,9 @@ router.post('/wholesale/applications/:id/approve', (req, res) => {
   const approveTx = db.transaction(() => {
     db.prepare(`
       UPDATE wholesale_applications
-      SET status = 'approved', reviewed_by = ?, reviewed_at = CURRENT_TIMESTAMP
+      SET status = 'approved', assigned_group_id = ?, reviewed_at = CURRENT_TIMESTAMP
       WHERE id = ?
-    `).run(req.user.id, appId);
+    `).run(group.id, appId);
 
     if (app.user_id) {
       db.prepare(`
@@ -2850,9 +2850,9 @@ router.post('/wholesale/applications/:id/reject', (req, res) => {
   const rejectTx = db.transaction(() => {
     db.prepare(`
       UPDATE wholesale_applications
-      SET status = 'rejected', rejection_reason = ?, reviewed_by = ?, reviewed_at = CURRENT_TIMESTAMP
+      SET status = 'rejected', rejection_reason = ?, reviewed_at = CURRENT_TIMESTAMP
       WHERE id = ?
-    `).run(reason.trim() || 'Does not meet wholesale criteria.', req.user.id, appId);
+    `).run(reason.trim() || 'Does not meet wholesale criteria.', appId);
 
     if (app.user_id) {
       db.prepare("UPDATE users SET wholesale_status = 'rejected' WHERE id = ?").run(app.user_id);

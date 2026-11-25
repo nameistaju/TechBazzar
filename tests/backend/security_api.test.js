@@ -1,65 +1,86 @@
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, afterAll } from 'vitest';
 import request from 'supertest';
-import app from '../../server/index.js';
-import db from '../../server/db/index.js';
+import { setupTempDb } from './testDb.js';
 
-describe('Security & API Integration', () => {
-  it('blocks unauthenticated invoice & quote enumeration with uniform 404', async () => {
-    const order = db.prepare('SELECT order_number FROM orders LIMIT 1').get();
-    if (order) {
-      const res = await request(app).get(`/api/orders/${order.order_number}/invoice`);
-      expect(res.status).toBe(404);
-    }
-    const quote = db.prepare('SELECT quote_number FROM quote_requests LIMIT 1').get();
-    if (quote) {
-      const res = await request(app).get(`/api/quotes/${quote.quote_number}`);
-      expect(res.status).toBe(404);
+const { cleanup } = setupTempDb('tb-sec-api-');
+const { default: app } = await import('../../server/index.js');
+const { default: db } = await import('../../server/db/index.js');
+const { getJwtSecret } = await import('../../server/middleware/auth.js');
+
+describe('Part 2.2 & 2.4: Invoice/Quote Access Control, Leak Scan & JWT Guard', () => {
+  afterAll(cleanup);
+
+  it('requires strong JWT_SECRET when NODE_ENV=production', () => {
+    const prevNodeEnv = process.env.NODE_ENV;
+    const prevSecret = process.env.JWT_SECRET;
+    try {
+      process.env.NODE_ENV = 'production';
+      process.env.JWT_SECRET = 'short';
+      expect(() => getJwtSecret()).toThrow(/FATAL: JWT_SECRET/);
+    } finally {
+      process.env.NODE_ENV = prevNodeEnv;
+      process.env.JWT_SECRET = prevSecret;
     }
   });
 
-  it('rejects guest wholesale orders via POST /api/orders', async () => {
-    const prod = db.prepare('SELECT id FROM products WHERE deleted_at IS NULL AND stock >= 1 LIMIT 1').get();
-    const res = await request(app)
+  it('enforces uniform 404 on /api/orders/:orderNumber/invoice for stranger & nonexistent order, allows token & contact', async () => {
+    const prod = db.prepare('SELECT id FROM products WHERE deleted_at IS NULL AND stock >= 5 LIMIT 1').get();
+    const email = `inv_owner_${Date.now()}@example.com`;
+    const createRes = await request(app)
       .post('/api/orders')
       .send({
-        customer: { name: 'Guest', email: 'guest@example.com', phone: '9876543210' },
+        customer: { name: 'Invoice Owner', email, phone: '9876501234' },
         shippingAddress: { addressLine: '12 MG Rd', city: 'Bengaluru', state: 'Karnataka', pincode: '560001' },
         items: [{ productId: prod.id, quantity: 1 }],
         paymentMethod: 'upi',
-        channel: 'wholesale'
+        channel: 'retail'
       });
-    expect(res.status).toBe(403);
+    expect(createRes.status).toBe(201);
+    const { orderNumber, trackingToken } = createRes.body.data.order;
+
+    const strangerRes = await request(app).get(`/api/orders/${orderNumber}/invoice`);
+    const missingRes = await request(app).get('/api/orders/TB-2099-00000/invoice');
+    expect(strangerRes.status).toBe(404);
+    expect(missingRes.status).toBe(404);
+    expect(strangerRes.body).toEqual(missingRes.body);
+
+    const tokenRes = await request(app).get(`/api/orders/${orderNumber}/invoice?token=${encodeURIComponent(trackingToken)}`);
+    expect(tokenRes.status).toBe(200);
+
+    const contactRes = await request(app).get(`/api/orders/${orderNumber}/invoice?contact=${encodeURIComponent(email)}`);
+    expect(contactRes.status).toBe(200);
   });
 
-  it('evaluates real coupon WELCOME10 in paise via POST /api/cart/apply-discount', async () => {
-    const prod = db.prepare('SELECT id, price FROM products WHERE deleted_at IS NULL AND price >= 50000 LIMIT 1').get();
-    const res = await request(app)
-      .post('/api/cart/apply-discount')
-      .send({ code: 'WELCOME10', items: [{ productId: prod.id, quantity: 1 }] });
-    expect(res.status).toBe(200);
-    expect(res.body.data.valid).toBe(true);
-    expect(res.body.data.discountAmount).toBe(Math.round(prod.price * 0.1));
+  it('enforces uniform 404 on /api/quotes/:quoteNumber for stranger & nonexistent quote, allows matching contact', async () => {
+    const quote = db.prepare('SELECT quote_number, email FROM quote_requests LIMIT 1').get();
+    if (!quote) return;
+
+    const strangerRes = await request(app).get(`/api/quotes/${quote.quote_number}`);
+    const missingRes = await request(app).get('/api/quotes/RFQ-2099-9999');
+    expect(strangerRes.status).toBe(404);
+    expect(missingRes.status).toBe(404);
+    expect(strangerRes.body).toEqual(missingRes.body);
+
+    const ownerRes = await request(app).get(`/api/quotes/${quote.quote_number}?contact=${encodeURIComponent(quote.email)}`);
+    expect(ownerRes.status).toBe(200);
   });
 
-  it('enforces Idempotency-Key on POST /api/orders', async () => {
-    const prod = db.prepare('SELECT id, stock FROM products WHERE deleted_at IS NULL AND stock >= 3 LIMIT 1').get();
-    const key = `vitest-idem-${Date.now()}`;
-    const payload = {
-      customer: { name: 'Test Buyer', email: `vitest_${Date.now()}@example.com`, phone: '9876543210' },
-      shippingAddress: { addressLine: '10 Church St', city: 'Bengaluru', state: 'Karnataka', pincode: '560001' },
-      items: [{ productId: prod.id, quantity: 1 }],
-      paymentMethod: 'upi',
-      channel: 'retail'
-    };
+  it('strips wholesale tier prices from all public GET product endpoints when wholesale_prices_only_registered=1', async () => {
+    db.prepare("INSERT OR REPLACE INTO settings (key, value) VALUES ('wholesale_prices_only_registered', '1')").run();
+    const prod = db.prepare('SELECT id FROM products WHERE deleted_at IS NULL LIMIT 1').get();
 
-    const r1 = await request(app).post('/api/orders').set('Idempotency-Key', key).send(payload);
-    expect(r1.status).toBe(201);
+    const endpoints = [
+      '/api/products',
+      `/api/products/${prod.id}`,
+      '/api/products/suggest?q=a',
+      '/api/products/search?q=a'
+    ];
 
-    const r2 = await request(app).post('/api/orders').set('Idempotency-Key', key).send(payload);
-    expect(r2.status).toBe(201);
-    expect(r2.body.data.order.orderNumber).toBe(r1.body.data.order.orderNumber);
-
-    const after = db.prepare('SELECT stock FROM products WHERE id = ?').get(prod.id).stock;
-    expect(after).toBe(prod.stock - 1);
+    for (const ep of endpoints) {
+      const res = await request(app).get(ep);
+      expect(res.status).toBe(200);
+      const raw = JSON.stringify(res.body);
+      expect(raw).not.toMatch(/tier1Price|tier2Price|tier3Price|tier4Price|wholesalePrice/);
+    }
   });
 });

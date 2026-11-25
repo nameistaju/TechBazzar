@@ -445,7 +445,23 @@ export function calculateRetailCart({
   const freeShippingProgress = Math.min(100, Math.round((subtotal / freeShippingThreshold) * 100));
   const amountToFreeShipping = Math.max(0, freeShippingThreshold - subtotal);
 
-  const total = Math.max(0, subtotal - discountAmount) + shipping;
+  // Add tax for any tax-exclusive retail items
+  let exclusiveTax = 0;
+  let remDisc = Math.min(subtotal, discountAmount);
+  processedItems.forEach((item, idx) => {
+    const share = idx === processedItems.length - 1
+      ? remDisc
+      : (subtotal > 0 ? Math.round((Math.min(subtotal, discountAmount) * item.lineTotal) / subtotal) : 0);
+    remDisc = Math.max(0, remDisc - share);
+    const prod = item.product || item;
+    const isTaxInclusive = prod.is_tax_inclusive !== undefined ? Boolean(prod.is_tax_inclusive) : true;
+    const taxRate = Number(prod.gst_rate || prod.taxRate || 18);
+    if (!isTaxInclusive) {
+      exclusiveTax += Math.round((Math.max(0, item.lineTotal - share) * taxRate) / 100);
+    }
+  });
+
+  const total = Math.max(0, subtotal - discountAmount) + exclusiveTax + shipping;
   const totalSavingsVsMrp = Math.max(0, totalMrp - total);
 
   return {

@@ -16,18 +16,21 @@ const router = Router();
 const orderLimiter = rateLimit({
   windowMs: 10 * 60 * 1000,
   max: 15,
+  skip: () => process.env.NODE_ENV === 'test',
   message: { data: null, error: 'Too many order requests. Please try again in a few minutes.' }
 });
 
 const trackLimiter = rateLimit({
   windowMs: 10 * 60 * 1000,
   max: 30,
+  skip: () => process.env.NODE_ENV === 'test',
   message: { data: null, error: 'Too many tracking requests. Please try again later.' }
 });
 
 const invoiceLimiter = rateLimit({
   windowMs: 10 * 60 * 1000,
   max: 30,
+  skip: () => process.env.NODE_ENV === 'test',
   message: { data: null, error: 'Too many invoice requests. Please try again later.' }
 });
 
@@ -197,7 +200,21 @@ router.post('/', orderLimiter, optionalAuth, idempotencyMiddleware, validateBody
         shipping = subtotal >= 149900 ? 0 : 9900;
       }
 
-      const total = Math.max(0, subtotal - discountAmount + shipping);
+      // Compute exclusive GST (for items where is_tax_inclusive is false)
+      let exclusiveTax = 0;
+      let remDiscOrder = Math.min(subtotal, discountAmount);
+      orderItemsToInsert.forEach((oi, idx) => {
+        const share = idx === orderItemsToInsert.length - 1
+          ? remDiscOrder
+          : (subtotal > 0 ? Math.round((Math.min(subtotal, discountAmount) * oi.lineTotal) / subtotal) : 0);
+        remDiscOrder = Math.max(0, remDiscOrder - share);
+        if (!oi.isTaxInclusive) {
+          const postDisc = Math.max(0, oi.lineTotal - share);
+          exclusiveTax += Math.round((postDisc * (oi.taxRate || 18)) / 100);
+        }
+      });
+
+      const total = Math.max(0, subtotal - discountAmount + exclusiveTax + shipping);
 
       // Advance payment calculations (50% booking advance)
       const isAdvance = Boolean(isAdvancePayment);
