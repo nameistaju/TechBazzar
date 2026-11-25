@@ -15,7 +15,7 @@ import productsRoutes from './modules/catalog/routes.js';
 import cartRoutes from './modules/cart/routes.js';
 import ordersRoutes from './modules/orders/routes.js';
 import addressesRoutes from './modules/addresses/routes.js';
-import adminRoutes from '../routes/admin.js';
+import adminRoutes from './modules/admin/index.js';
 import miscRoutes from './modules/misc/routes.js';
 import bannersRoutes from './modules/banners/routes.js';
 import quotesRoutes from './modules/quotes/routes.js';
