@@ -41,3 +41,9 @@
 - Resolved all `48` pre-existing ESLint `no-unused-vars` warnings across `19` frontend files (`0` errors, `0` warnings).
 - Added `docs/refactor/STRUCTURE.md` documenting the monorepo layout and path aliases.
 - `npm run verify`: ESLint `0` errors / `0` warnings; Vitest `7` files, `63/63` passed (`2.42s`); Vite build (`9.96s`).
+
+## Stage 6 — Fresh-Clone Proof (`clone-test` on `refactor/structure`)
+- Cloned `refactor/structure` (787 tracked files) into scratch directory `clone-test`.
+- `npm ci` failed on `better-sqlite3@13.2.0` native `node-gyp rebuild` on Node v24.14.1 (Visual Studio C++ Build Tools not installed on host); `npm ci --ignore-scripts` + copying `better-sqlite3/prebuilds` succeeded (`444` packages).
+- `npm run migrate` on an empty DB hit pre-existing `SqliteError: no such column: sku` at `apps/api/db/index.js:23` (documented in `docs/refactor/FOUND_BUGS.md`).
+- With `techbazaar.db` (+ `-wal`/`-shm`) copied into `clone-test/apps/api/db/`, `npm run verify` passed completely: ESLint `0` errors / `0` warnings; Vitest `7` files, `63/63` passed (`2.95s`); Vite build (`7.88s`, `1735` modules).
