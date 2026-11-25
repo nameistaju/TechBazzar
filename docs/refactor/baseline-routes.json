@@ -1,0 +1,984 @@
+{
+  "count": 128,
+  "routes": [
+    {
+      "method": "GET",
+      "path": "/api/health",
+      "middlewares": [
+        "<anonymous>"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/register",
+      "middlewares": [
+        "<anonymous>",
+        "<anonymous>",
+        "<anonymous>"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/login",
+      "middlewares": [
+        "<anonymous>",
+        "<anonymous>",
+        "<anonymous>"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/logout",
+      "middlewares": [
+        "<anonymous>"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/me",
+      "middlewares": [
+        "optionalAuth",
+        "<anonymous>"
+      ]
+    },
+    {
+      "method": "PATCH",
+      "path": "/me",
+      "middlewares": [
+        "requireAuth",
+        "<anonymous>",
+        "<anonymous>"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/",
+      "middlewares": [
+        "optionalAuth",
+        "<anonymous>"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/suggest",
+      "middlewares": [
+        "<anonymous>",
+        "optionalAuth",
+        "<anonymous>"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/search",
+      "middlewares": [
+        "<anonymous>"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/categories",
+      "middlewares": [
+        "<anonymous>"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/brands",
+      "middlewares": [
+        "<anonymous>"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/check-duplicate",
+      "middlewares": [
+        "<anonymous>"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/:id",
+      "middlewares": [
+        "optionalAuth",
+        "<anonymous>"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/validate",
+      "middlewares": [
+        "<anonymous>",
+        "<anonymous>"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/apply-discount",
+      "middlewares": [
+        "optionalAuth",
+        "<anonymous>"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/",
+      "middlewares": [
+        "requireAuth",
+        "<anonymous>"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/sync",
+      "middlewares": [
+        "requireAuth",
+        "<anonymous>",
+        "<anonymous>"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/wishlist",
+      "middlewares": [
+        "requireAuth",
+        "<anonymous>"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/wishlist/sync",
+      "middlewares": [
+        "requireAuth",
+        "<anonymous>",
+        "<anonymous>"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/",
+      "middlewares": [
+        "<anonymous>",
+        "optionalAuth",
+        "idempotencyMiddleware",
+        "<anonymous>",
+        "<anonymous>"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/track",
+      "middlewares": [
+        "<anonymous>",
+        "<anonymous>",
+        "<anonymous>"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/my",
+      "middlewares": [
+        "requireAuth",
+        "<anonymous>"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/:orderNumber/invoice",
+      "middlewares": [
+        "<anonymous>",
+        "optionalAuth",
+        "<anonymous>"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/",
+      "middlewares": [
+        "<anonymous>"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/",
+      "middlewares": [
+        "<anonymous>",
+        "<anonymous>"
+      ]
+    },
+    {
+      "method": "PATCH",
+      "path": "/:id/default",
+      "middlewares": [
+        "<anonymous>"
+      ]
+    },
+    {
+      "method": "DELETE",
+      "path": "/:id",
+      "middlewares": [
+        "<anonymous>"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/me",
+      "middlewares": [
+        "<anonymous>"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/change-password",
+      "middlewares": [
+        "<anonymous>",
+        "<anonymous>"
+      ]
+    },
+    {
+      "method": "PATCH",
+      "path": "/profile",
+      "middlewares": [
+        "<anonymous>",
+        "<anonymous>"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/forgot-password",
+      "middlewares": [
+        "<anonymous>"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/stats",
+      "middlewares": [
+        "<anonymous>"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/products/images",
+      "middlewares": [
+        "<anonymous>"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/products/duplicates",
+      "middlewares": [
+        "<anonymous>"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/products/merge",
+      "middlewares": [
+        "<anonymous>",
+        "<anonymous>"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/products/merge-all",
+      "middlewares": [
+        "<anonymous>"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/products",
+      "middlewares": [
+        "<anonymous>",
+        "<anonymous>"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/products/:id",
+      "middlewares": [
+        "<anonymous>"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/products",
+      "middlewares": [
+        "<anonymous>",
+        "<anonymous>"
+      ]
+    },
+    {
+      "method": "PATCH",
+      "path": "/products/:id",
+      "middlewares": [
+        "<anonymous>",
+        "<anonymous>"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/products/:id/duplicate",
+      "middlewares": [
+        "<anonymous>"
+      ]
+    },
+    {
+      "method": "DELETE",
+      "path": "/products/:id",
+      "middlewares": [
+        "<anonymous>"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/products/:id/restore",
+      "middlewares": [
+        "<anonymous>"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/products/bulk",
+      "middlewares": [
+        "<anonymous>",
+        "<anonymous>"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/products/export/csv",
+      "middlewares": [
+        "<anonymous>"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/inventory",
+      "middlewares": [
+        "<anonymous>"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/inventory/adjust",
+      "middlewares": [
+        "<anonymous>",
+        "<anonymous>"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/inventory/movements",
+      "middlewares": [
+        "<anonymous>"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/orders",
+      "middlewares": [
+        "<anonymous>",
+        "<anonymous>"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/orders/:id",
+      "middlewares": [
+        "<anonymous>"
+      ]
+    },
+    {
+      "method": "PATCH",
+      "path": "/orders/:id",
+      "middlewares": [
+        "<anonymous>",
+        "<anonymous>"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/orders/:id/create-invoice",
+      "middlewares": [
+        "<anonymous>"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/orders/manual",
+      "middlewares": [
+        "<anonymous>",
+        "<anonymous>"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/discounts",
+      "middlewares": [
+        "<anonymous>"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/discounts",
+      "middlewares": [
+        "<anonymous>",
+        "<anonymous>"
+      ]
+    },
+    {
+      "method": "PATCH",
+      "path": "/discounts/:id",
+      "middlewares": [
+        "<anonymous>",
+        "<anonymous>"
+      ]
+    },
+    {
+      "method": "DELETE",
+      "path": "/discounts/:id",
+      "middlewares": [
+        "<anonymous>"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/discounts/simulate",
+      "middlewares": [
+        "<anonymous>",
+        "<anonymous>"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/estimates",
+      "middlewares": [
+        "<anonymous>"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/estimates/:id",
+      "middlewares": [
+        "<anonymous>"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/estimates",
+      "middlewares": [
+        "<anonymous>",
+        "<anonymous>"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/estimates/:id/convert-to-invoice",
+      "middlewares": [
+        "<anonymous>"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/estimates/:id/pdf",
+      "middlewares": [
+        "<anonymous>"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/invoices",
+      "middlewares": [
+        "<anonymous>"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/invoices/:id",
+      "middlewares": [
+        "<anonymous>"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/invoices",
+      "middlewares": [
+        "<anonymous>",
+        "<anonymous>"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/invoices/:id/payments",
+      "middlewares": [
+        "<anonymous>",
+        "<anonymous>"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/invoices/:id/void",
+      "middlewares": [
+        "<anonymous>",
+        "<anonymous>"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/invoices/:id/pdf",
+      "middlewares": [
+        "<anonymous>"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/customers",
+      "middlewares": [
+        "<anonymous>"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/customers/:id",
+      "middlewares": [
+        "<anonymous>"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/customers",
+      "middlewares": [
+        "<anonymous>",
+        "<anonymous>"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/customers/merge",
+      "middlewares": [
+        "<anonymous>",
+        "<anonymous>"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/reports/sales",
+      "middlewares": [
+        "<anonymous>"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/reports/products",
+      "middlewares": [
+        "<anonymous>"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/reports/categories",
+      "middlewares": [
+        "<anonymous>"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/reports/discounts",
+      "middlewares": [
+        "<anonymous>"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/reports/tax",
+      "middlewares": [
+        "<anonymous>"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/reports/stock-valuation",
+      "middlewares": [
+        "<anonymous>"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/settings",
+      "middlewares": [
+        "<anonymous>"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/settings",
+      "middlewares": [
+        "<anonymous>"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/settings/backup",
+      "middlewares": [
+        "<anonymous>"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/settings/purge-logs",
+      "middlewares": [
+        "<anonymous>"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/activity-log",
+      "middlewares": [
+        "<anonymous>",
+        "<anonymous>"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/activity-log/:id/undo",
+      "middlewares": [
+        "<anonymous>"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/banners",
+      "middlewares": [
+        "<anonymous>"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/banners",
+      "middlewares": [
+        "<anonymous>",
+        "<anonymous>"
+      ]
+    },
+    {
+      "method": "PUT",
+      "path": "/banners/:id",
+      "middlewares": [
+        "<anonymous>",
+        "<anonymous>"
+      ]
+    },
+    {
+      "method": "DELETE",
+      "path": "/banners/:id",
+      "middlewares": [
+        "<anonymous>"
+      ]
+    },
+    {
+      "method": "PATCH",
+      "path": "/banners/:id/toggle",
+      "middlewares": [
+        "<anonymous>"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/banners/reorder",
+      "middlewares": [
+        "<anonymous>",
+        "<anonymous>"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/banners/upload",
+      "middlewares": [
+        "<anonymous>",
+        "<anonymous>"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/banners/export/csv",
+      "middlewares": [
+        "<anonymous>"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/quotes",
+      "middlewares": [
+        "<anonymous>"
+      ]
+    },
+    {
+      "method": "PATCH",
+      "path": "/quotes/:id",
+      "middlewares": [
+        "<anonymous>",
+        "<anonymous>"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/quotes/:id/convert-to-estimate",
+      "middlewares": [
+        "<anonymous>"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/wholesale/applications",
+      "middlewares": [
+        "<anonymous>"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/wholesale/applications/:id/approve",
+      "middlewares": [
+        "<anonymous>"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/wholesale/applications/:id/reject",
+      "middlewares": [
+        "<anonymous>"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/wholesale/convert-customer",
+      "middlewares": [
+        "<anonymous>"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/wholesale/groups",
+      "middlewares": [
+        "<anonymous>"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/wholesale/groups",
+      "middlewares": [
+        "<anonymous>"
+      ]
+    },
+    {
+      "method": "PUT",
+      "path": "/wholesale/groups/:id",
+      "middlewares": [
+        "<anonymous>"
+      ]
+    },
+    {
+      "method": "DELETE",
+      "path": "/wholesale/groups/:id",
+      "middlewares": [
+        "<anonymous>"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/",
+      "middlewares": [
+        "<anonymous>"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/:id/impression",
+      "middlewares": [
+        "<anonymous>",
+        "<anonymous>"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/:id/click",
+      "middlewares": [
+        "<anonymous>",
+        "<anonymous>"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/",
+      "middlewares": [
+        "<anonymous>",
+        "<anonymous>",
+        "<anonymous>"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/:quoteNumber",
+      "middlewares": [
+        "<anonymous>",
+        "optionalAuth",
+        "<anonymous>"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/apply",
+      "middlewares": [
+        "<anonymous>",
+        "<anonymous>",
+        "<anonymous>"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/cart",
+      "middlewares": [
+        "requireApprovedWholesaleBuyer",
+        "<anonymous>"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/cart",
+      "middlewares": [
+        "requireApprovedWholesaleBuyer",
+        "<anonymous>"
+      ]
+    },
+    {
+      "method": "PATCH",
+      "path": "/cart/:productId",
+      "middlewares": [
+        "requireApprovedWholesaleBuyer",
+        "<anonymous>"
+      ]
+    },
+    {
+      "method": "DELETE",
+      "path": "/cart/:productId",
+      "middlewares": [
+        "requireApprovedWholesaleBuyer",
+        "<anonymous>"
+      ]
+    },
+    {
+      "method": "DELETE",
+      "path": "/cart",
+      "middlewares": [
+        "requireApprovedWholesaleBuyer",
+        "<anonymous>"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/cart/validate",
+      "middlewares": [
+        "requireApprovedWholesaleBuyer",
+        "<anonymous>"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/credit",
+      "middlewares": [
+        "requireApprovedWholesaleBuyer",
+        "<anonymous>"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/orders",
+      "middlewares": [
+        "requireApprovedWholesaleBuyer",
+        "idempotencyMiddleware",
+        "<anonymous>",
+        "<anonymous>"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/saved-lists",
+      "middlewares": [
+        "requireApprovedWholesaleBuyer",
+        "<anonymous>"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/saved-lists",
+      "middlewares": [
+        "requireApprovedWholesaleBuyer",
+        "<anonymous>"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/saved-lists/:listId/load",
+      "middlewares": [
+        "requireApprovedWholesaleBuyer",
+        "<anonymous>"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/reorder/:orderNumber",
+      "middlewares": [
+        "requireApprovedWholesaleBuyer",
+        "<anonymous>"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/branding",
+      "middlewares": [
+        "<anonymous>"
+      ]
+    },
+    {
+      "method": "PUT",
+      "path": "/admin/branding",
+      "middlewares": [
+        "requireAdmin",
+        "<anonymous>"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/admin/branding/logo",
+      "middlewares": [
+        "requireAdmin",
+        "<anonymous>"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/newsletter",
+      "middlewares": [
+        "<anonymous>",
+        "<anonymous>",
+        "<anonymous>"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/notify-me",
+      "middlewares": [
+        "<anonymous>",
+        "<anonymous>",
+        "<anonymous>"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/^\\/(?!api|uploads).*/",
+      "middlewares": [
+        "<anonymous>"
+      ]
+    }
+  ]
+}
