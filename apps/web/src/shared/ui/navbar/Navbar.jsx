@@ -10,7 +10,8 @@ import {
   ArrowRight,
   Sparkles,
   Zap,
-  MoreHorizontal
+  MoreHorizontal,
+  PackageCheck
 } from 'lucide-react';
 import { useStore } from '@app/providers/StoreContext';
 import useAuthStore from '@shared/store/authStore';
