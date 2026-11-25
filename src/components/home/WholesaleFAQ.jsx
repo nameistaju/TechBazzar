@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ChevronDown, HelpCircle, MessageCircle } from 'lucide-react';
+import { ChevronDown, MessageCircle } from 'lucide-react';
 
 export default function WholesaleFAQ() {
   const [openIndex, setOpenIndex] = useState(0);

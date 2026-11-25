@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowRight, Check, ShieldCheck, Truck, RotateCcw, Lock } from 'lucide-react';
+import { ArrowRight, Check } from 'lucide-react';
 import { categories } from '../../data/categories';
 import { useBranding } from '../../context/BrandingContext';
 

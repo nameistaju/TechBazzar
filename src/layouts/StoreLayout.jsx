@@ -1,7 +1,7 @@
 // src/layouts/StoreLayout.jsx
 import React, { useState, useEffect } from 'react';
 import { Outlet, Link, useLocation } from 'react-router-dom';
-import { X, ArrowRight, ShieldCheck } from 'lucide-react';
+import { X, ArrowRight } from 'lucide-react';
 import AnnouncementBar from '../components/common/AnnouncementBar';
 import Navbar from '../components/common/Navbar';
 import Footer from '../components/common/Footer';

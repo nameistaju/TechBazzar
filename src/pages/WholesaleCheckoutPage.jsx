@@ -3,19 +3,12 @@ import { Link, useNavigate } from 'react-router-dom';
 import { 
   Building2, 
   Truck, 
-  MapPin, 
   ShieldCheck, 
   ArrowRight, 
-  Check, 
-  ArrowLeft, 
   CreditCard, 
-  Banknote, 
   FileText, 
   AlertCircle,
   Loader2,
-  Lock,
-  Plus,
-  Clock,
   Sparkles,
   ReceiptText
 } from 'lucide-react';
@@ -27,7 +20,6 @@ import Breadcrumbs from '../components/common/Breadcrumbs';
 
 export default function WholesaleCheckoutPage() {
   const { 
-    wholesaleCart, 
     cartItems, 
     cartSubtotal, 
     shippingFee, 
@@ -40,7 +32,6 @@ export default function WholesaleCheckoutPage() {
     volumeDiscountAmount, 
     volumeDiscountPercent, 
     appliedCoupon,
-    couponDiscountAmount,
     minOrderValue, 
     meetsMinOrderValue, 
     hasMoqViolations, 

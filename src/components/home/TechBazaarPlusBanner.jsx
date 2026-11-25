@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Crown, Sparkles, ArrowRight, Zap, Shield, Gift } from 'lucide-react';
+import { Crown, ArrowRight, Zap, Shield, Gift } from 'lucide-react';
 
 export default function TechBazaarPlusBanner() {
   return (

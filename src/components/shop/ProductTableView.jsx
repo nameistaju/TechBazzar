@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { ShoppingBag, Check, Plus, Minus, Layers, ArrowRight } from 'lucide-react';
+import { ShoppingBag, Check, Plus, Minus } from 'lucide-react';
 import { useStore } from '../../context/StoreContext';
 import { getWholesaleTier } from '../../utils/wholesaleCalculation';
 

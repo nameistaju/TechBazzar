@@ -18,7 +18,23 @@ export const productsApi = {
 
   getCategories: () => apiClient('/products/categories'),
 
-  getBrands: () => apiClient('/products/brands')
+  getBrands: () => apiClient('/products/brands'),
+
+  checkDuplicate: ({ name, brand, excludeId }) => {
+    const params = new URLSearchParams();
+    if (name) params.append('name', name);
+    if (brand) params.append('brand', brand);
+    if (excludeId) params.append('excludeId', excludeId);
+    return apiClient(`/products/check-duplicate?${params.toString()}`);
+  },
+
+  getSuggestions: ({ q, mode = 'retail', limit = 50 } = {}) => {
+    const params = new URLSearchParams();
+    if (q) params.append('q', q);
+    if (mode) params.append('mode', mode);
+    if (limit) params.append('limit', limit);
+    return apiClient(`/products/suggest?${params.toString()}`);
+  }
 };
 
 export default productsApi;

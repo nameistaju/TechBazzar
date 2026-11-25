@@ -1,19 +1,13 @@
 // src/components/admin/InventoryView.jsx
 import React, { useState, useEffect } from 'react';
 import { 
-  Package, 
   Search, 
   AlertTriangle, 
-  ArrowUpDown, 
   History, 
-  Plus, 
-  Minus, 
-  Check, 
   X,
   RefreshCw
 } from 'lucide-react';
 import adminApi from '../../api/adminApi';
-import { formatINR } from '../../utils/formatters';
 import useToastStore from '../../store/toastStore';
 
 export default function InventoryView({ preselectedProduct, onClearPreselected }) {
@@ -257,7 +251,15 @@ export default function InventoryView({ preselectedProduct, onClearPreselected }
                   <tr key={item.id} className="hover:bg-[#FBFBFB]">
                     <td className="p-3">
                       <div className="flex items-center gap-3">
-                        <img src={item.image} alt="" className="w-9 h-9 object-contain bg-white border border-[#EAEAEA] p-0.5 shrink-0" />
+                        <img
+                          src={item.image || '/images/placeholder-product.svg'}
+                          alt=""
+                          onError={(e) => {
+                            e.currentTarget.onerror = null;
+                            e.currentTarget.src = '/images/placeholder-product.svg';
+                          }}
+                          className="w-9 h-9 object-contain bg-white border border-[#EAEAEA] p-0.5 shrink-0"
+                        />
                         <div>
                           <div className="font-semibold text-[#0A0A0A] line-clamp-1">{item.name}</div>
                           <div className="text-[11px] text-[#6B6B6B]">{item.brand}</div>

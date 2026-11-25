@@ -1,18 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { useSearchParams, Link } from 'react-router-dom';
 import { 
-  FileText, 
   Send, 
   CheckCircle2, 
   Plus, 
   Trash2, 
-  Search, 
-  Clock, 
-  Building, 
-  Phone, 
-  Mail, 
   Printer, 
-  ArrowRight,
   ShieldCheck
 } from 'lucide-react';
 import Breadcrumbs from '../components/common/Breadcrumbs';

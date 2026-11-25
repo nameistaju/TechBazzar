@@ -39,7 +39,7 @@ export function formatDate(dateStr) {
       month: 'short',
       day: 'numeric'
     });
-  } catch (e) {
+  } catch {
     return String(dateStr);
   }
 }

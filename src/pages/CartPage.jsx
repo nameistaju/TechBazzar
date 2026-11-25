@@ -8,7 +8,6 @@ import {
   ArrowRight, 
   Truck, 
   ShieldCheck, 
-  Tag, 
   Check, 
   ArrowLeft,
   Bookmark,
@@ -16,7 +15,6 @@ import {
   FileText,
   CheckCircle2,
   AlertTriangle,
-  Sparkles,
   Building2,
   ArrowLeftRight
 } from 'lucide-react';
@@ -41,8 +39,6 @@ export default function CartPage() {
     volumeDiscountPercent,
     shippingFee, 
     cartTotal, 
-    taxableValue,
-    totalTax,
     couponDiscountAmount,
     appliedCoupon,
     setAppliedCoupon,

@@ -1,18 +1,11 @@
 // src/components/admin/InvoicesView.jsx
 import React, { useState, useEffect } from 'react';
 import { 
-  FileText, 
   Search, 
   Plus, 
   Download, 
-  Printer, 
-  CreditCard, 
   AlertTriangle, 
-  Check, 
   X, 
-  Eye, 
-  ArrowRight,
-  RefreshCw,
   Ban
 } from 'lucide-react';
 import adminApi from '../../api/adminApi';
@@ -26,6 +19,7 @@ export default function InvoicesView() {
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
+  const [channelFilter, setChannelFilter] = useState('all'); // 'all', 'retail', 'wholesale'
 
   // Detail & Action Modal State
   const [selectedInvoice, setSelectedInvoice] = useState(null);
@@ -70,6 +64,7 @@ export default function InvoicesView() {
     setLoading(true);
     const res = await adminApi.getInvoices({
       status: statusFilter !== 'all' ? statusFilter : undefined,
+      channel: channelFilter !== 'all' ? channelFilter : undefined,
       search
     });
     if (res.data?.invoices) setInvoices(res.data.invoices);
@@ -78,7 +73,7 @@ export default function InvoicesView() {
 
   useEffect(() => {
     fetchInvoices();
-  }, [statusFilter]);
+  }, [statusFilter, channelFilter]);
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -239,7 +234,7 @@ export default function InvoicesView() {
 
       {/* Filter and Search */}
       <div className="p-4 bg-white border border-[#EAEAEA] flex flex-wrap items-center justify-between gap-3">
-        <div className="flex items-center gap-2">
+        <div className="flex flex-wrap items-center gap-2">
           {['all', 'Unpaid', 'Partially paid', 'Paid', 'Overdue', 'Void'].map(st => (
             <button
               key={st}
@@ -253,6 +248,17 @@ export default function InvoicesView() {
               {st}
             </button>
           ))}
+
+          {/* Channel Selector */}
+          <select
+            value={channelFilter}
+            onChange={(e) => setChannelFilter(e.target.value)}
+            className="px-2.5 py-1.5 border border-[#EAEAEA] text-xs font-mono bg-white outline-none ml-2"
+          >
+            <option value="all">All Invoices</option>
+            <option value="retail">Retail B2C Invoices</option>
+            <option value="wholesale">Wholesale B2B (GST)</option>
+          </select>
         </div>
 
         <div className="relative">
@@ -273,6 +279,7 @@ export default function InvoicesView() {
           <thead>
             <tr className="bg-[#F7F7F7] border-b border-[#EAEAEA] font-mono uppercase text-[#6B6B6B] text-[11px]">
               <th className="p-3">Invoice #</th>
+              <th className="p-3">Channel</th>
               <th className="p-3">Invoice Date</th>
               <th className="p-3">Due Date</th>
               <th className="p-3">Customer</th>
@@ -285,7 +292,7 @@ export default function InvoicesView() {
           <tbody className="divide-y divide-[#F0F0F0]">
             {loading && (
               <tr>
-                <td colSpan={8} className="p-8 text-center text-xs font-mono text-[#6B6B6B]">
+                <td colSpan={9} className="p-8 text-center text-xs font-mono text-[#6B6B6B]">
                   Loading invoices...
                 </td>
               </tr>
@@ -293,7 +300,7 @@ export default function InvoicesView() {
 
             {!loading && invoices.length === 0 && (
               <tr>
-                <td colSpan={8} className="p-8 text-center text-xs text-[#6B6B6B]">
+                <td colSpan={9} className="p-8 text-center text-xs text-[#6B6B6B]">
                   No invoices found.
                 </td>
               </tr>
@@ -303,6 +310,18 @@ export default function InvoicesView() {
               <tr key={inv.id} className="hover:bg-[#FBFBFB]">
                 <td className="p-3 font-mono font-bold text-[#0A0A0A]">
                   {inv.invoice_number}
+                </td>
+
+                <td className="p-3 font-mono text-[10px]">
+                  {inv.channel === 'wholesale' || inv.invoice_type === 'gst' ? (
+                    <span className="px-1.5 py-0.5 rounded font-bold uppercase bg-[#FFF0EB] text-[#FF4D00] border border-[#FFD9CC]">
+                      B2B GST
+                    </span>
+                  ) : (
+                    <span className="px-1.5 py-0.5 rounded font-medium uppercase bg-neutral-100 text-[#6B6B6B]">
+                      Retail
+                    </span>
+                  )}
                 </td>
 
                 <td className="p-3 font-mono text-[#6B6B6B] text-[11px]">

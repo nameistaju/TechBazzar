@@ -9,10 +9,7 @@ import {
   FileText, 
   Users, 
   Printer, 
-  Check, 
-  AlertTriangle,
   ArrowRight,
-  ExternalLink,
   ShieldAlert
 } from 'lucide-react';
 import adminApi from '../../api/adminApi';
@@ -22,7 +19,7 @@ import { formatINR } from '../../utils/formatters';
 /**
  * Force Password Change Modal (Shown on First Login)
  */
-export function ForcePasswordChangeModal({ isOpen, onClose, onPasswordChanged }) {
+export function ForcePasswordChangeModal({ isOpen, _onClose, onPasswordChanged }) {
   const [currentPassword, setCurrentPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');

@@ -1,18 +1,11 @@
 // src/components/admin/DiscountsView.jsx
 import React, { useState, useEffect } from 'react';
 import { 
-  Tag, 
-  Search, 
   Plus, 
-  Sparkles, 
-  Check, 
   X, 
   Trash2, 
   Edit3, 
   Play, 
-  Percent, 
-  ShoppingBag,
-  RefreshCw,
   Calculator
 } from 'lucide-react';
 import adminApi from '../../api/adminApi';
@@ -34,6 +27,7 @@ export default function DiscountsView() {
   const [code, setCode] = useState('');
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
+  const [audience, setAudience] = useState('both'); // 'both', 'retail', 'wholesale'
   const [type, setType] = useState('percentage'); // 'percentage', 'flat', 'rule_higher', 'rule_lower'
   const [value, setValue] = useState(10);
   const [rulePercentage, setRulePercentage] = useState(25);
@@ -51,6 +45,7 @@ export default function DiscountsView() {
 
   // Simulator Panel State
   const [testCode, setTestCode] = useState('FESTIVE25');
+  const [testChannel, setTestChannel] = useState('retail');
   const [testCartItems, setTestCartItems] = useState([
     { id: 'image-1', name: 'Premium Wireless Earbuds', price: 1200, quantity: 2, category: 'Earbuds' }
   ]);
@@ -77,6 +72,7 @@ export default function DiscountsView() {
     setCode('PROMO' + Math.floor(100 + Math.random() * 900));
     setTitle('Special Promotional Discount');
     setDescription('');
+    setAudience('both');
     setType('percentage');
     setValue(15);
     setRulePercentage(25);
@@ -97,6 +93,7 @@ export default function DiscountsView() {
     setCode(d.code || '');
     setTitle(d.title);
     setDescription(d.description || '');
+    setAudience(d.audience || 'both');
     setType(d.type);
     setValue(d.value);
     setRulePercentage(d.rule_percentage || 25);
@@ -120,6 +117,7 @@ export default function DiscountsView() {
       code: code ? code.trim().toUpperCase() : null,
       title: title.trim(),
       description,
+      audience,
       type,
       value: Number(value) || 0,
       rulePercentage: (type === 'rule_higher' || type === 'rule_lower') ? Number(rulePercentage) : null,
@@ -166,11 +164,14 @@ export default function DiscountsView() {
   };
 
   // Run Simulation
-  const handleSimulate = async () => {
+  const handleSimulate = async (customCode = null, customChannel = null) => {
     setSimulating(true);
+    const targetCode = customCode !== null && typeof customCode === 'string' ? customCode : testCode;
+    const targetChannel = customChannel !== null ? customChannel : testChannel;
     const res = await adminApi.simulateDiscount({
-      code: testCode,
-      cartItems: testCartItems
+      code: targetCode,
+      cartItems: testCartItems,
+      channel: targetChannel
     });
     setSimulating(false);
     if (res.data) {
@@ -230,8 +231,23 @@ export default function DiscountsView() {
                 {!loading && discounts.map(d => (
                   <tr key={d.id} className="hover:bg-[#FBFBFB]">
                     <td className="p-3">
-                      <div className="font-mono font-bold text-sm text-[#0A0A0A]">
-                        {d.code ? d.code : <span className="text-[#FF4D00]">Auto Cart Rule</span>}
+                      <div className="flex items-center gap-2">
+                        <span className="font-mono font-bold text-sm text-[#0A0A0A]">
+                          {d.code ? d.code : <span className="text-[#FF4D00]">Auto Cart Rule</span>}
+                        </span>
+                        {d.audience === 'wholesale' ? (
+                          <span className="px-1.5 py-0.5 text-[9px] font-mono uppercase font-bold bg-orange-50 text-[#FF4D00] border border-orange-200">
+                            Wholesale
+                          </span>
+                        ) : d.audience === 'retail' ? (
+                          <span className="px-1.5 py-0.5 text-[9px] font-mono uppercase font-bold bg-neutral-100 text-neutral-600 border border-neutral-200">
+                            Retail
+                          </span>
+                        ) : (
+                          <span className="px-1.5 py-0.5 text-[9px] font-mono uppercase bg-neutral-50 text-neutral-500 border border-neutral-100">
+                            Omnichannel
+                          </span>
+                        )}
                       </div>
                       <div className="text-xs text-[#6B6B6B]">{d.title}</div>
                     </td>
@@ -323,6 +339,30 @@ export default function DiscountsView() {
                 onChange={(e) => setTestCode(e.target.value.toUpperCase())}
                 className="w-full px-3 py-1.5 border border-[#EAEAEA] outline-none font-bold"
               />
+            </div>
+
+            <div>
+              <label className="block text-[10px] uppercase text-[#6B6B6B] mb-1">Simulate Cart Channel</label>
+              <div className="grid grid-cols-2 gap-1.5">
+                <button
+                  type="button"
+                  onClick={() => setTestChannel('retail')}
+                  className={`py-1.5 text-center text-[10px] uppercase font-bold border transition-colors ${
+                    testChannel === 'retail' ? 'bg-[#0A0A0A] text-white border-[#0A0A0A]' : 'bg-white text-neutral-600 border-[#EAEAEA] hover:border-neutral-400'
+                  }`}
+                >
+                  Retail Cart
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setTestChannel('wholesale')}
+                  className={`py-1.5 text-center text-[10px] uppercase font-bold border transition-colors ${
+                    testChannel === 'wholesale' ? 'bg-[#FF4D00] text-white border-[#FF4D00]' : 'bg-white text-neutral-600 border-[#EAEAEA] hover:border-neutral-400'
+                  }`}
+                >
+                  Wholesale Cart
+                </button>
+              </div>
             </div>
 
             {/* Test Cart Items */}
@@ -443,6 +483,29 @@ export default function DiscountsView() {
                     placeholder="e.g. Festive Special 25% or ₹200 Higher"
                     className="w-full px-3 py-1.5 border border-[#CCC]"
                   />
+                </div>
+              </div>
+
+              {/* Target Channel / Audience */}
+              <div>
+                <label className="block text-[10px] uppercase text-[#6B6B6B] mb-1">Target Channel / Audience</label>
+                <div className="grid grid-cols-3 gap-2">
+                  {[
+                    { id: 'both', label: 'Omnichannel (Both)' },
+                    { id: 'retail', label: 'Retail Only' },
+                    { id: 'wholesale', label: 'Wholesale Only' }
+                  ].map(a => (
+                    <button
+                      key={a.id}
+                      type="button"
+                      onClick={() => setAudience(a.id)}
+                      className={`p-2 border text-center text-[11px] font-semibold transition-colors ${
+                        audience === a.id ? 'bg-[#0A0A0A] text-white border-[#0A0A0A]' : 'bg-white border-[#EAEAEA] text-[#6B6B6B] hover:border-neutral-400'
+                      }`}
+                    >
+                      {a.label}
+                    </button>
+                  ))}
                 </div>
               </div>
 

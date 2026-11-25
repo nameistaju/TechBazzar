@@ -6,24 +6,17 @@ import {
   Trash2, 
   Edit3, 
   Copy, 
-  Eye, 
-  EyeOff, 
   Download, 
   ArrowUp, 
   ArrowDown, 
-  ExternalLink, 
-  Check, 
   X, 
   Smartphone, 
   Monitor, 
   Layers, 
   Calendar, 
-  MousePointerClick, 
-  BarChart2, 
   Upload, 
   Crop, 
-  RefreshCw,
-  Sliders
+  RefreshCw
 } from 'lucide-react';
 import adminApi from '../../api/adminApi';
 import useToastStore from '../../store/toastStore';

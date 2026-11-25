@@ -1,19 +1,11 @@
 // src/components/admin/EstimatesView.jsx
 import React, { useState, useEffect } from 'react';
 import { 
-  FileText, 
   Search, 
   Plus, 
   Download, 
   ArrowRight, 
-  Check, 
-  X, 
-  Eye, 
-  User, 
-  Calendar, 
-  Percent, 
-  Printer, 
-  RefreshCw 
+  X 
 } from 'lucide-react';
 import adminApi from '../../api/adminApi';
 import { formatINR } from '../../utils/formatters';

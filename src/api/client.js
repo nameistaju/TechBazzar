@@ -44,7 +44,7 @@ export async function apiClient(endpoint, { method = 'GET', body, headers = {}, 
       error: null,
       status: response.status
     };
-  } catch (err) {
+  } catch {
     return {
       data: null,
       error: 'Can\'t reach the server. Please check your connection and retry.',

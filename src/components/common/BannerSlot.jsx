@@ -75,7 +75,7 @@ export default function BannerSlot({ slot, className = '' }) {
   }, [banners.length, isPaused]);
 
   // Handle banner click + analytics
-  const handleClick = (banner, e) => {
+  const handleClick = (banner, _e) => {
     // Record click stat non-blocking
     fetch(`/api/banners/${banner.id}/click`, { method: 'POST' }).catch(() => {});
 

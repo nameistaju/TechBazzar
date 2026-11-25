@@ -1,12 +1,8 @@
 // src/components/admin/ActivityLogView.jsx
 import React, { useState, useEffect } from 'react';
 import { 
-  History, 
   RotateCcw, 
-  Search, 
-  Check, 
   X, 
-  AlertCircle,
   RefreshCw,
   Eye
 } from 'lucide-react';
@@ -110,6 +106,7 @@ export default function ActivityLogView() {
           <option value="price_change">Price Adjustments</option>
           <option value="stock_change">Stock Movements</option>
           <option value="status_change">Status Transitions</option>
+          <option value="merge_products">Merged Products</option>
           <option value="void">Voided</option>
           <option value="undo">Undone</option>
         </select>

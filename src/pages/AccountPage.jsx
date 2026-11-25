@@ -6,15 +6,9 @@ import {
   Heart, 
   MapPin, 
   LogOut, 
-  Check, 
-  Clock, 
-  Truck, 
-  ArrowRight, 
   RotateCcw, 
   Plus, 
   Trash2, 
-  Edit3,
-  ShieldCheck,
   ChevronRight
 } from 'lucide-react';
 import useAuthStore from '../store/authStore';

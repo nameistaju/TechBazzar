@@ -14,10 +14,7 @@ import {
   Bookmark, 
   FileText, 
   CheckCircle2, 
-  AlertTriangle,
-  Building2,
-  Sparkles,
-  ArrowLeftRight
+  AlertTriangle
 } from 'lucide-react';
 import { useStore } from '../../context/StoreContext';
 import BannerSlot from './BannerSlot';
@@ -26,7 +23,6 @@ export default function CartDrawer() {
   const { 
     mode,
     switchMode,
-    otherCartCount,
     cart, 
     cartItems,
     cartCount, 
@@ -34,9 +30,6 @@ export default function CartDrawer() {
     cartSavings,
     cartSavingsVsRetail,
     groupDiscountTotal,
-    volumeDiscountAmount,
-    taxableValue,
-    totalTax,
     shippingFee, 
     cartTotal, 
     freeShippingProgress, 

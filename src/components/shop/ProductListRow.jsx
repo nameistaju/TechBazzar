@@ -4,9 +4,13 @@ import { Heart, ShoppingBag, Check, Star } from 'lucide-react';
 import { useStore } from '../../context/StoreContext';
 
 export default function ProductListRow({ product }) {
-  const { addToCart, toggleWishlist, isInWishlist } = useStore();
+  const { mode, addToCart, toggleWishlist, isInWishlist } = useStore();
   const [isAdded, setIsAdded] = useState(false);
   const inWishlist = isInWishlist(product.id);
+
+  const isWholesale = mode === 'wholesale';
+  const moq = Number(product.moq || 10);
+  const qty = isWholesale ? moq : 1;
 
   const discountPercent = product.originalPrice && product.originalPrice > product.price
     ? Math.round(((product.originalPrice - product.price) / product.originalPrice) * 100)
@@ -15,7 +19,7 @@ export default function ProductListRow({ product }) {
   const handleAddToCart = (e) => {
     e.preventDefault();
     e.stopPropagation();
-    addToCart(product, 1);
+    addToCart(product, qty);
     setIsAdded(true);
     setTimeout(() => setIsAdded(false), 1500);
   };

@@ -2,16 +2,9 @@
 import React, { useState, useEffect } from 'react';
 import { 
   TrendingUp, 
-  ShoppingBag, 
   AlertTriangle, 
-  Users, 
-  FileText, 
-  ArrowUpRight, 
   ArrowRight,
-  Plus,
-  RefreshCw,
-  Clock,
-  Package
+  RefreshCw
 } from 'lucide-react';
 import adminApi from '../../api/adminApi';
 import { formatINR } from '../../utils/formatters';
@@ -159,6 +152,64 @@ export default function DashboardView({ onNavigate, onQuickRestock }) {
         </div>
       </div>
 
+      {/* Channel Breakdown Split (Retail vs Wholesale) */}
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+        <div className="p-4 bg-white border border-[#EAEAEA] rounded-[4px] flex items-center justify-between">
+          <div>
+            <span className="text-[10px] font-mono uppercase tracking-wider text-[#6B6B6B] block">
+              Retail Channel
+            </span>
+            <span className="text-lg font-bold font-mono text-[#0A0A0A]">
+              {formatINR(s.retailStats?.revenue || 0)}
+            </span>
+            <span className="text-[10px] text-[#8A8A8A] block">
+              {s.retailStats?.orders || 0} consumer orders
+            </span>
+          </div>
+          <span className="px-2 py-1 rounded bg-neutral-100 text-[#0A0A0A] text-xs font-mono font-bold">
+            B2C
+          </span>
+        </div>
+
+        <div className="p-4 bg-white border border-[#EAEAEA] rounded-[4px] flex items-center justify-between">
+          <div>
+            <span className="text-[10px] font-mono uppercase tracking-wider text-[#FF4D00] block font-bold">
+              Wholesale Channel
+            </span>
+            <span className="text-lg font-bold font-mono text-[#0A0A0A]">
+              {formatINR(s.wholesaleStats?.revenue || 0)}
+            </span>
+            <span className="text-[10px] text-[#8A8A8A] block">
+              {s.wholesaleStats?.orders || 0} commercial orders
+            </span>
+          </div>
+          <span className="px-2 py-1 rounded bg-[#FFF0EB] text-[#FF4D00] text-xs font-mono font-bold border border-[#FFD9CC]">
+            B2B
+          </span>
+        </div>
+
+        <div 
+          onClick={() => onNavigate('customers')}
+          className="p-4 bg-white border border-[#EAEAEA] hover:border-[#FF4D00] rounded-[4px] flex items-center justify-between cursor-pointer group"
+        >
+          <div>
+            <span className="text-[10px] font-mono uppercase tracking-wider text-[#6B6B6B] block">
+              Pending B2B Applications
+            </span>
+            <span className="text-lg font-bold font-mono text-[#FF4D00]">
+              {s.pendingApplications || 0}
+            </span>
+            <span className="text-[10px] text-[#8A8A8A] block">
+              Awaiting verification
+            </span>
+          </div>
+          <div className="flex items-center gap-1 text-xs text-[#6B6B6B] group-hover:text-[#FF4D00]">
+            <span>Review</span>
+            <ArrowRight size={13} />
+          </div>
+        </div>
+      </div>
+
       {/* Visual Charts Section */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* 1. Revenue & Orders Timeline Chart */}
@@ -292,7 +343,15 @@ export default function DashboardView({ onNavigate, onQuickRestock }) {
             {(s.lowStockAlerts || []).slice(0, 5).map((p) => (
               <div key={p.id} className="py-2.5 flex items-center justify-between gap-3">
                 <div className="flex items-center gap-3">
-                  <img src={p.image} alt={p.name} className="w-8 h-8 object-contain bg-white border border-[#EAEAEA] p-0.5" />
+                  <img
+                    src={p.image || '/images/placeholder-product.svg'}
+                    alt={p.name}
+                    onError={(e) => {
+                      e.currentTarget.onerror = null;
+                      e.currentTarget.src = '/images/placeholder-product.svg';
+                    }}
+                    className="w-8 h-8 object-contain bg-white border border-[#EAEAEA] p-0.5"
+                  />
                   <div>
                     <div className="text-xs font-medium text-[#0A0A0A] line-clamp-1">{p.name}</div>
                     <div className="text-[11px] font-mono text-[#6B6B6B]">SKU: {p.sku || p.id}</div>

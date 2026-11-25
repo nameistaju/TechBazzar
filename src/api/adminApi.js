@@ -33,6 +33,9 @@ export const adminApi = {
   restoreProduct: (id) => apiClient(`/admin/products/${id}/restore`, { method: 'POST' }),
   bulkAction: (payload) => apiClient('/admin/products/bulk', { method: 'POST', body: payload }),
   getExportProductsUrl: () => '/api/admin/products/export/csv',
+  getDuplicateGroups: () => apiClient('/admin/products/duplicates'),
+  mergeProductGroup: (canonicalId, duplicateIds) => apiClient('/admin/products/merge', { method: 'POST', body: { canonicalId, duplicateIds } }),
+  mergeAllDuplicateGroups: () => apiClient('/admin/products/merge-all', { method: 'POST' }),
 
   // 4. Inventory
   getInventory: (params = {}) => {
@@ -138,7 +141,19 @@ export const adminApi = {
     return apiClient(`/admin/quotes${sp ? `?${sp}` : ''}`);
   },
   updateQuote: (id, payload) => apiClient(`/admin/quotes/${id}`, { method: 'PATCH', body: payload }),
-  convertQuoteToEstimate: (id) => apiClient(`/admin/quotes/${id}/convert-to-estimate`, { method: 'POST' })
+  convertQuoteToEstimate: (id) => apiClient(`/admin/quotes/${id}/convert-to-estimate`, { method: 'POST' }),
+
+  // 15. Wholesale Applications & Groups
+  getWholesaleApplications: (params = {}) => {
+    const sp = new URLSearchParams(params).toString();
+    return apiClient(`/admin/wholesale/applications${sp ? `?${sp}` : ''}`);
+  },
+  approveWholesaleApplication: (id, payload) => apiClient(`/admin/wholesale/applications/${id}/approve`, { method: 'POST', body: payload }),
+  rejectWholesaleApplication: (id, payload) => apiClient(`/admin/wholesale/applications/${id}/reject`, { method: 'POST', body: payload }),
+  convertCustomerToWholesale: (payload) => apiClient('/admin/wholesale/convert-customer', { method: 'POST', body: payload }),
+  getWholesaleGroups: () => apiClient('/admin/wholesale/groups'),
+  createWholesaleGroup: (payload) => apiClient('/admin/wholesale/groups', { method: 'POST', body: payload }),
+  updateWholesaleGroup: (id, payload) => apiClient(`/admin/wholesale/groups/${id}`, { method: 'PUT', body: payload })
 };
 
 export default adminApi;

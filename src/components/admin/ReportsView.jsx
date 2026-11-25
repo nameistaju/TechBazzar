@@ -1,15 +1,8 @@
 // src/components/admin/ReportsView.jsx
 import React, { useState, useEffect } from 'react';
 import { 
-  BarChart3, 
   Download, 
-  TrendingUp, 
-  Calendar, 
-  Package, 
-  FileText, 
-  Percent, 
-  RefreshCw,
-  Coins
+  RefreshCw
 } from 'lucide-react';
 import adminApi from '../../api/adminApi';
 import { formatINR } from '../../utils/formatters';

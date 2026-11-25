@@ -3,7 +3,31 @@ import { create } from 'zustand';
 export const useToastStore = create((set, get) => ({
   toasts: [],
 
-  addToast: ({ type = 'info', message, action = null, duration = 4000 }) => {
+  addToast: (firstArg, typeArg = 'info', opts = {}) => {
+    let type = 'info';
+    let message = '';
+    let action = null;
+    let duration = 4000;
+
+    if (typeof firstArg === 'string') {
+      message = firstArg;
+      if (typeof typeArg === 'string') {
+        type = typeArg;
+      }
+      if (typeof typeArg === 'object' && typeArg !== null) {
+        action = typeArg.action || null;
+        duration = typeArg.duration ?? 4000;
+      } else if (typeof opts === 'object' && opts !== null) {
+        action = opts.action || null;
+        duration = opts.duration ?? 4000;
+      }
+    } else if (typeof firstArg === 'object' && firstArg !== null) {
+      type = firstArg.type || 'info';
+      message = firstArg.message || '';
+      action = firstArg.action || null;
+      duration = firstArg.duration ?? 4000;
+    }
+
     const id = `toast-${Date.now()}-${Math.random().toString(36).substr(2, 5)}`;
     const newToast = { id, type, message, action, duration };
 

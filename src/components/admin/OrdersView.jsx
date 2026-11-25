@@ -1,21 +1,14 @@
 // src/components/admin/OrdersView.jsx
 import React, { useState, useEffect } from 'react';
 import { 
-  ShoppingBag, 
   Search, 
   Printer, 
   FileText, 
   Truck, 
-  Check, 
   X, 
-  ExternalLink, 
   Plus, 
-  Clock, 
   User, 
-  MapPin, 
-  CreditCard,
-  RefreshCw,
-  AlertCircle
+  MapPin 
 } from 'lucide-react';
 import adminApi from '../../api/adminApi';
 import { formatINR } from '../../utils/formatters';
@@ -30,6 +23,7 @@ export default function OrdersView({ initialOrderId, onClearInitialOrder, onNavi
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
   const [paymentFilter, setPaymentFilter] = useState('all');
+  const [channelFilter, setChannelFilter] = useState('all'); // 'all', 'retail', 'wholesale'
 
   // Detail Modal State
   const [selectedOrder, setSelectedOrder] = useState(null);
@@ -60,6 +54,7 @@ export default function OrdersView({ initialOrderId, onClearInitialOrder, onNavi
     const res = await adminApi.getOrders({
       status: statusFilter !== 'all' ? statusFilter : undefined,
       paymentMethod: paymentFilter !== 'all' ? paymentFilter : undefined,
+      channel: channelFilter !== 'all' ? channelFilter : undefined,
       search,
       limit: 100
     });
@@ -71,7 +66,7 @@ export default function OrdersView({ initialOrderId, onClearInitialOrder, onNavi
 
   useEffect(() => {
     fetchOrders();
-  }, [statusFilter, paymentFilter]);
+  }, [statusFilter, paymentFilter, channelFilter]);
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -252,7 +247,21 @@ export default function OrdersView({ initialOrderId, onClearInitialOrder, onNavi
             <option value="card">Cards / Netbanking</option>
             <option value="upi">UPI Instant</option>
             <option value="cod">Cash on Delivery</option>
+            <option value="bank_transfer">Bank Transfer (B2B)</option>
+            <option value="credit_terms">Credit Line (Net 30)</option>
+            <option value="advance_50">50% Advance</option>
             <option value="cash">Walk-in Cash</option>
+          </select>
+
+          {/* Channel Selector */}
+          <select
+            value={channelFilter}
+            onChange={(e) => setChannelFilter(e.target.value)}
+            className="px-2.5 py-1.5 border border-[#EAEAEA] text-xs font-mono bg-white outline-none"
+          >
+            <option value="all">All Channels</option>
+            <option value="retail">Retail Storefront</option>
+            <option value="wholesale">Wholesale B2B</option>
           </select>
         </div>
 
@@ -275,6 +284,7 @@ export default function OrdersView({ initialOrderId, onClearInitialOrder, onNavi
           <thead>
             <tr className="bg-[#F7F7F7] border-b border-[#EAEAEA] font-mono uppercase text-[#6B6B6B] text-[11px]">
               <th className="p-3">Order Number</th>
+              <th className="p-3">Channel</th>
               <th className="p-3">Date</th>
               <th className="p-3">Customer</th>
               <th className="p-3 text-center">Items</th>
@@ -288,7 +298,7 @@ export default function OrdersView({ initialOrderId, onClearInitialOrder, onNavi
           <tbody className="divide-y divide-[#F0F0F0]">
             {loading && (
               <tr>
-                <td colSpan={9} className="p-8 text-center text-xs font-mono text-[#6B6B6B]">
+                <td colSpan={10} className="p-8 text-center text-xs font-mono text-[#6B6B6B]">
                   Loading orders...
                 </td>
               </tr>
@@ -296,7 +306,7 @@ export default function OrdersView({ initialOrderId, onClearInitialOrder, onNavi
 
             {!loading && orders.length === 0 && (
               <tr>
-                <td colSpan={9} className="p-8 text-center text-xs text-[#6B6B6B]">
+                <td colSpan={10} className="p-8 text-center text-xs text-[#6B6B6B]">
                   No orders found matching the filter criteria.
                 </td>
               </tr>
@@ -306,6 +316,18 @@ export default function OrdersView({ initialOrderId, onClearInitialOrder, onNavi
               <tr key={ord.id} className="hover:bg-[#FBFBFB]">
                 <td className="p-3 font-mono font-bold text-[#0A0A0A]">
                   {ord.order_number}
+                </td>
+
+                <td className="p-3 font-mono text-[10px]">
+                  {ord.channel === 'wholesale' ? (
+                    <span className="px-1.5 py-0.5 rounded font-bold uppercase bg-[#FFF0EB] text-[#FF4D00] border border-[#FFD9CC]">
+                      Wholesale
+                    </span>
+                  ) : (
+                    <span className="px-1.5 py-0.5 rounded font-medium uppercase bg-neutral-100 text-[#6B6B6B]">
+                      Retail
+                    </span>
+                  )}
                 </td>
 
                 <td className="p-3 font-mono text-[#6B6B6B] text-[11px]">
@@ -535,7 +557,15 @@ export default function OrdersView({ initialOrderId, onClearInitialOrder, onNavi
                   {(selectedOrder.items || []).map((it, idx) => (
                     <div key={idx} className="p-3 flex items-center justify-between gap-3 text-xs">
                       <div className="flex items-center gap-3">
-                        <img src={it.image} alt="" className="w-10 h-10 object-contain bg-white border border-[#EAEAEA] p-0.5" />
+                        <img
+                          src={it.image || '/images/placeholder-product.svg'}
+                          alt=""
+                          onError={(e) => {
+                            e.currentTarget.onerror = null;
+                            e.currentTarget.src = '/images/placeholder-product.svg';
+                          }}
+                          className="w-10 h-10 object-contain bg-white border border-[#EAEAEA] p-0.5"
+                        />
                         <div>
                           <div className="font-semibold text-[#0A0A0A]">{it.product_name || it.name}</div>
                           <div className="text-[11px] font-mono text-[#6B6B6B]">Qty: {it.quantity} × {formatINR(it.price)}</div>

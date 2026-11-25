@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Heart, ShoppingBag, Check, Star, Plus, Minus, Sparkles } from 'lucide-react';
+import { Heart, ShoppingBag, Check, Star, Plus, Minus } from 'lucide-react';
 import { useStore } from '../../context/StoreContext';
 import { getWholesaleTier } from '../../utils/wholesaleCalculation';
 import { getResponsiveImageSrcSet } from '../../utils/formatters';

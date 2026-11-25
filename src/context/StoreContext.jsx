@@ -5,7 +5,7 @@
 // Items never mix. Switching mode keeps both carts intact.
 
 import React, { createContext, useContext, useState, useEffect, useMemo } from 'react';
-import { calculateRetailCart, calculateWholesaleCart, getWholesaleTier } from '../utils/wholesaleCalculation';
+import { calculateRetailCart, calculateWholesaleCart } from '../utils/wholesaleCalculation';
 import useAuthStore from '../store/authStore';
 
 const StoreContext = createContext();

@@ -1,19 +1,13 @@
 // src/components/admin/SettingsView.jsx
 import React, { useState, useEffect } from 'react';
 import { 
-  Building, 
-  FileText, 
-  Sliders, 
-  Database, 
-  Lock, 
   Download, 
-  Trash2, 
-  Check, 
   Save, 
   RefreshCw 
 } from 'lucide-react';
 import adminApi from '../../api/adminApi';
 import useToastStore from '../../store/toastStore';
+import BrandingThemeTab from './BrandingThemeTab';
 
 export default function SettingsView() {
   const addToast = useToastStore((s) => s.addToast);
@@ -143,14 +137,15 @@ export default function SettingsView() {
           { id: 'invoice', label: '2. Invoicing & Bank / UPI' },
           { id: 'store', label: '3. Store Preferences' },
           { id: 'backup', label: '4. Database Backup' },
-          { id: 'account', label: '5. Admin Owner Account' }
+          { id: 'account', label: '5. Admin Owner Account' },
+          { id: 'branding', label: '6. Branding & Theme' }
         ].map(t => (
           <button
             key={t.id}
             onClick={() => setActiveTab(t.id)}
             className={`py-3 px-4 border-b-2 font-semibold transition-colors whitespace-nowrap ${
               activeTab === t.id
-                ? 'border-[#FF4D00] text-[#0A0A0A]'
+                ? 'border-pop text-[#0A0A0A]'
                 : 'border-transparent text-[#6B6B6B] hover:text-[#0A0A0A]'
             }`}
           >
@@ -484,12 +479,17 @@ export default function SettingsView() {
             <button
               type="submit"
               disabled={savingAccount}
-              className="px-4 py-2 bg-[#0A0A0A] text-white text-xs font-mono uppercase hover:bg-[#FF4D00] font-bold"
+              className="px-4 py-2 bg-[#0A0A0A] text-white text-xs font-mono uppercase hover:bg-pop font-bold"
             >
               Update Password
             </button>
           </form>
         </div>
+      )}
+
+      {/* TAB 6: BRANDING & THEME */}
+      {activeTab === 'branding' && (
+        <BrandingThemeTab />
       )}
     </div>
   );

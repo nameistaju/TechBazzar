@@ -4,18 +4,13 @@ import confetti from 'canvas-confetti';
 import { formatMoney } from '../utils/formatters';
 import { 
   CheckCircle2, 
-  Package, 
   ArrowRight, 
-  Clock, 
   Truck, 
-  ShieldCheck, 
-  Mail, 
   Check, 
   Lock,
   Loader2,
   FileText,
-  Printer,
-  Building2
+  Printer
 } from 'lucide-react';
 import useAuthStore from '../store/authStore';
 import { useStore } from '../context/StoreContext';

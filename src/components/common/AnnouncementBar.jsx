@@ -1,5 +1,5 @@
 import React from 'react';
-import { ArrowRight, Truck, ShieldCheck, Sparkles, LogOut, ArrowLeftRight } from 'lucide-react';
+import { ArrowRight, Truck, ShieldCheck, Sparkles, ArrowLeftRight } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { useStore } from '../../context/StoreContext';
 import useAuthStore from '../../store/authStore';

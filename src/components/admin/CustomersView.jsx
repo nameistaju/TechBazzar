@@ -7,27 +7,17 @@ import {
   GitMerge, 
   Mail, 
   Phone, 
-  ShoppingBag, 
-  FileText, 
-  Tag, 
-  Check, 
   X,
-  ArrowRight, 
-  TrendingUp,
   RefreshCw,
   Building2,
   ShieldCheck,
-  CheckCircle2,
-  AlertCircle,
-  Percent,
-  CreditCard,
-  Truck
+  CheckCircle2
 } from 'lucide-react';
 import adminApi from '../../api/adminApi';
 import { formatINR } from '../../utils/formatters';
 import useToastStore from '../../store/toastStore';
 
-export default function CustomersView({ initialCustomerId, onClearInitialCustomer, onNavigate }) {
+export default function CustomersView({ initialCustomerId, onClearInitialCustomer, _onNavigate }) {
   const addToast = useToastStore((s) => s.addToast);
 
   // Active top-level tab
@@ -159,7 +149,7 @@ export default function CustomersView({ initialCustomerId, onClearInitialCustome
         fetchApplications();
         fetchCustomers();
       }
-    } catch (err) {
+    } catch {
       addToast({ type: 'error', message: 'Failed to approve application' });
     }
   };
@@ -188,7 +178,7 @@ export default function CustomersView({ initialCustomerId, onClearInitialCustome
         setRejectReason('');
         fetchApplications();
       }
-    } catch (err) {
+    } catch {
       addToast({ type: 'error', message: 'Failed to reject application' });
     } finally {
       setSubmittingReject(false);
@@ -223,7 +213,7 @@ export default function CustomersView({ initialCustomerId, onClearInitialCustome
         setConvertModalUser(null);
         fetchCustomers();
       }
-    } catch (err) {
+    } catch {
       addToast({ type: 'error', message: 'Failed to convert customer' });
     } finally {
       setConverting(false);

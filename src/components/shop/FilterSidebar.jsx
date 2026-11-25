@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Search, X, RotateCcw, Star, Check } from 'lucide-react';
+import { Search, RotateCcw, Star, Check } from 'lucide-react';
 import { useCategories } from '../../hooks/useCatalog';
 import { formatMoney } from '../../utils/formatters';
 import { brands } from '../../data/brands';

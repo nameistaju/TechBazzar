@@ -2,21 +2,13 @@
 import React, { useState, useEffect } from 'react';
 import { 
   MessageSquare, 
-  Search, 
   FileSpreadsheet, 
-  Check, 
   X, 
   Eye, 
-  Clock, 
-  Building2, 
-  Phone, 
-  Mail, 
-  RefreshCw,
-  ArrowRight
+  RefreshCw
 } from 'lucide-react';
 import adminApi from '../../api/adminApi';
 import useToastStore from '../../store/toastStore';
-import { formatINR } from '../../utils/formatters';
 
 export default function QuotesView({ onNavigate }) {
   const addToast = useToastStore((s) => s.addToast);

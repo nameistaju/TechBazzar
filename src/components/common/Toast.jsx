@@ -25,7 +25,7 @@ export default function Toast() {
   return (
     <div 
       aria-live="polite"
-      className="fixed bottom-6 left-1/2 -translate-x-1/2 sm:left-auto sm:translate-x-0 sm:right-6 z-50 flex flex-col gap-2 max-w-sm w-[92vw] sm:w-auto pointer-events-none"
+      className="fixed top-6 right-4 sm:right-6 z-[100] flex flex-col gap-2 max-w-sm w-[92vw] sm:w-auto pointer-events-none"
     >
       {allToasts.map((t) => (
         <div

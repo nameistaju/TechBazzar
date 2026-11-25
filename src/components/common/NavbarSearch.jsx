@@ -9,9 +9,7 @@ import {
   History, 
   TrendingUp, 
   FolderTree, 
-  Sparkles,
-  RefreshCw,
-  ExternalLink
+  RefreshCw
 } from 'lucide-react';
 import { useStore } from '../../context/StoreContext';
 import { categories } from '../../data/categories';

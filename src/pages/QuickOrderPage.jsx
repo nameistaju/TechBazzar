@@ -7,12 +7,9 @@ import {
   ShoppingBag, 
   Upload, 
   FileText, 
-  Check, 
   AlertCircle, 
   RefreshCw,
   Search,
-  ArrowRight,
-  HelpCircle,
   Wand2
 } from 'lucide-react';
 import Breadcrumbs from '../components/common/Breadcrumbs';

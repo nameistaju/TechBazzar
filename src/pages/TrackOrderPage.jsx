@@ -1,17 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { useSearchParams, Link } from 'react-router-dom';
+import { useSearchParams } from 'react-router-dom';
 import { 
-  PackageCheck, 
   Search, 
-  Truck, 
-  CheckCircle2, 
-  Clock, 
   AlertCircle, 
-  Loader2, 
-  MapPin, 
-  Calendar,
-  ShieldCheck,
-  ArrowRight
+  Loader2 
 } from 'lucide-react';
 import ordersApi from '../api/ordersApi';
 import Breadcrumbs from '../components/common/Breadcrumbs';

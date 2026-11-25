@@ -1,6 +1,6 @@
 // src/components/common/Navbar.jsx
 import React, { useState, useRef, useEffect } from 'react';
-import { Link, useNavigate, useLocation } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { 
   Search, 
   Heart, 
@@ -13,7 +13,6 @@ import {
   Sparkles,
   Zap,
   PackageCheck,
-  ShieldCheck,
   LogOut,
   LayoutDashboard,
   MoreHorizontal

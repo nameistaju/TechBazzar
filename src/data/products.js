@@ -27,7 +27,18 @@ export const products = [
     "isTrending": true,
     "isBestseller": true,
     "isNew": false,
-    "isRecommended": true
+    "isRecommended": true,
+    "sku": "TB-EAR-0001",
+    "moq": 10,
+    "pack_size": 5,
+    "tier1_qty": 10,
+    "tier1_price": 1499,
+    "tier2_qty": 50,
+    "tier2_price": 1379,
+    "tier3_qty": 100,
+    "tier3_price": 1259,
+    "mrp": 2990,
+    "suggested_retail_price": 2990
   },
   {
     "id": "sennheiser-momentum-tws-4",
@@ -57,7 +68,18 @@ export const products = [
     "isTrending": true,
     "isBestseller": false,
     "isNew": true,
-    "isRecommended": true
+    "isRecommended": true,
+    "sku": "TB-EAR-0002",
+    "moq": 10,
+    "pack_size": 5,
+    "tier1_qty": 10,
+    "tier1_price": 24990,
+    "tier2_qty": 50,
+    "tier2_price": 22991,
+    "tier3_qty": 100,
+    "tier3_price": 20992,
+    "mrp": 29990,
+    "suggested_retail_price": 29990
   },
   {
     "id": "samsung-galaxy-buds-fe",
@@ -87,7 +109,18 @@ export const products = [
     "isTrending": false,
     "isBestseller": true,
     "isNew": false,
-    "isRecommended": true
+    "isRecommended": true,
+    "sku": "TB-EAR-0003",
+    "moq": 10,
+    "pack_size": 5,
+    "tier1_qty": 10,
+    "tier1_price": 5499,
+    "tier2_qty": 50,
+    "tier2_price": 5059,
+    "tier3_qty": 100,
+    "tier3_price": 4619,
+    "mrp": 9999,
+    "suggested_retail_price": 9999
   },
   {
     "id": "realme-buds-t100",
@@ -117,7 +150,18 @@ export const products = [
     "isTrending": true,
     "isBestseller": true,
     "isNew": false,
-    "isRecommended": false
+    "isRecommended": false,
+    "sku": "TB-EAR-0004",
+    "moq": 10,
+    "pack_size": 5,
+    "tier1_qty": 10,
+    "tier1_price": 1299,
+    "tier2_qty": 50,
+    "tier2_price": 1195,
+    "tier3_qty": 100,
+    "tier3_price": 1091,
+    "mrp": 2499,
+    "suggested_retail_price": 2499
   },
   {
     "id": "jbl-tune-310c-hi-res",
@@ -147,7 +191,18 @@ export const products = [
     "isTrending": false,
     "isBestseller": false,
     "isNew": true,
-    "isRecommended": true
+    "isRecommended": true,
+    "sku": "TB-EAR-0005",
+    "moq": 10,
+    "pack_size": 5,
+    "tier1_qty": 10,
+    "tier1_price": 1799,
+    "tier2_qty": 50,
+    "tier2_price": 1655,
+    "tier3_qty": 100,
+    "tier3_price": 1511,
+    "mrp": 2499,
+    "suggested_retail_price": 2499
   },
   {
     "id": "soundcore-life-p2-mini",
@@ -177,7 +232,18 @@ export const products = [
     "isTrending": true,
     "isBestseller": true,
     "isNew": false,
-    "isRecommended": true
+    "isRecommended": true,
+    "sku": "TB-EAR-0006",
+    "moq": 10,
+    "pack_size": 5,
+    "tier1_qty": 10,
+    "tier1_price": 1999,
+    "tier2_qty": 50,
+    "tier2_price": 1839,
+    "tier3_qty": 100,
+    "tier3_price": 1679,
+    "mrp": 3999,
+    "suggested_retail_price": 3999
   },
   {
     "id": "triggr-kraken-tws-neon",
@@ -207,7 +273,18 @@ export const products = [
     "isTrending": true,
     "isBestseller": false,
     "isNew": true,
-    "isRecommended": false
+    "isRecommended": false,
+    "sku": "TB-EAR-0007",
+    "moq": 10,
+    "pack_size": 5,
+    "tier1_qty": 10,
+    "tier1_price": 1699,
+    "tier2_qty": 50,
+    "tier2_price": 1563,
+    "tier3_qty": 100,
+    "tier3_price": 1427,
+    "mrp": 3499,
+    "suggested_retail_price": 3499
   },
   {
     "id": "triggr-tws-gaming-cyber",
@@ -237,7 +314,32 @@ export const products = [
     "isTrending": false,
     "isBestseller": false,
     "isNew": true,
-    "isRecommended": true
+    "isRecommended": true,
+    "sku": "TB-EAR-0008",
+    "moq": 10,
+    "pack_size": 5,
+    "tier1_qty": 10,
+    "tier1_price": 1599,
+    "tier2_qty": 50,
+    "tier2_price": 1471,
+    "tier3_qty": 100,
+    "tier3_price": 1343,
+    "mrp": 2999,
+    "suggested_retail_price": 2999,
+    "images": [
+      "/images/image-100.webp",
+      "/images/image-128.webp"
+    ],
+    "variants": [
+      {
+        "id": "var-image-128",
+        "name": "Neon Cyan",
+        "sku": "TB-EAR-0093",
+        "price": 1699,
+        "stock": 30,
+        "image": "/images/image-128.webp"
+      }
+    ]
   },
   {
     "id": "number-super-buds-pro",
@@ -267,7 +369,18 @@ export const products = [
     "isTrending": true,
     "isBestseller": false,
     "isNew": false,
-    "isRecommended": true
+    "isRecommended": true,
+    "sku": "TB-EAR-0009",
+    "moq": 10,
+    "pack_size": 5,
+    "tier1_qty": 10,
+    "tier1_price": 2199,
+    "tier2_qty": 50,
+    "tier2_price": 2023,
+    "tier3_qty": 100,
+    "tier3_price": 1847,
+    "mrp": 4499,
+    "suggested_retail_price": 4499
   },
   {
     "id": "fastrack-fpods-fx1",
@@ -297,7 +410,18 @@ export const products = [
     "isTrending": false,
     "isBestseller": true,
     "isNew": false,
-    "isRecommended": false
+    "isRecommended": false,
+    "sku": "TB-EAR-0010",
+    "moq": 10,
+    "pack_size": 5,
+    "tier1_qty": 10,
+    "tier1_price": 1499,
+    "tier2_qty": 50,
+    "tier2_price": 1379,
+    "tier3_qty": 100,
+    "tier3_price": 1259,
+    "mrp": 2995,
+    "suggested_retail_price": 2995
   },
   {
     "id": "noise-buds-vs104",
@@ -327,7 +451,18 @@ export const products = [
     "isTrending": true,
     "isBestseller": true,
     "isNew": false,
-    "isRecommended": true
+    "isRecommended": true,
+    "sku": "TB-EAR-0011",
+    "moq": 10,
+    "pack_size": 5,
+    "tier1_qty": 10,
+    "tier1_price": 1299,
+    "tier2_qty": 50,
+    "tier2_price": 1195,
+    "tier3_qty": 100,
+    "tier3_price": 1091,
+    "mrp": 2999,
+    "suggested_retail_price": 2999
   },
   {
     "id": "skullcandy-push-ultra-sport",
@@ -357,7 +492,18 @@ export const products = [
     "isTrending": false,
     "isBestseller": false,
     "isNew": false,
-    "isRecommended": true
+    "isRecommended": true,
+    "sku": "TB-EAR-0012",
+    "moq": 10,
+    "pack_size": 5,
+    "tier1_qty": 10,
+    "tier1_price": 4999,
+    "tier2_qty": 50,
+    "tier2_price": 4599,
+    "tier3_qty": 100,
+    "tier3_price": 4199,
+    "mrp": 9999,
+    "suggested_retail_price": 9999
   },
   {
     "id": "boult-audio-curve-anc",
@@ -387,7 +533,18 @@ export const products = [
     "isTrending": false,
     "isBestseller": true,
     "isNew": false,
-    "isRecommended": false
+    "isRecommended": false,
+    "sku": "TB-EAR-0013",
+    "moq": 10,
+    "pack_size": 5,
+    "tier1_qty": 10,
+    "tier1_price": 1199,
+    "tier2_qty": 50,
+    "tier2_price": 1103,
+    "tier3_qty": 100,
+    "tier3_price": 1007,
+    "mrp": 2499,
+    "suggested_retail_price": 2499
   },
   {
     "id": "govo-gobuds-920",
@@ -417,7 +574,18 @@ export const products = [
     "isTrending": false,
     "isBestseller": false,
     "isNew": true,
-    "isRecommended": false
+    "isRecommended": false,
+    "sku": "TB-EAR-0014",
+    "moq": 10,
+    "pack_size": 5,
+    "tier1_qty": 10,
+    "tier1_price": 1399,
+    "tier2_qty": 50,
+    "tier2_price": 1287,
+    "tier3_qty": 100,
+    "tier3_price": 1175,
+    "mrp": 3999,
+    "suggested_retail_price": 3999
   },
   {
     "id": "fireboltt-firepods-polaris",
@@ -447,7 +615,18 @@ export const products = [
     "isTrending": true,
     "isBestseller": false,
     "isNew": true,
-    "isRecommended": true
+    "isRecommended": true,
+    "sku": "TB-EAR-0015",
+    "moq": 10,
+    "pack_size": 5,
+    "tier1_qty": 10,
+    "tier1_price": 1799,
+    "tier2_qty": 50,
+    "tier2_price": 1655,
+    "tier3_qty": 100,
+    "tier3_price": 1511,
+    "mrp": 3999,
+    "suggested_retail_price": 3999
   },
   {
     "id": "triggr-kraken-x4-slider",
@@ -477,7 +656,18 @@ export const products = [
     "isTrending": true,
     "isBestseller": false,
     "isNew": true,
-    "isRecommended": false
+    "isRecommended": false,
+    "sku": "TB-EAR-0016",
+    "moq": 10,
+    "pack_size": 5,
+    "tier1_qty": 10,
+    "tier1_price": 1899,
+    "tier2_qty": 50,
+    "tier2_price": 1747,
+    "tier3_qty": 100,
+    "tier3_price": 1595,
+    "mrp": 3999,
+    "suggested_retail_price": 3999
   },
   {
     "id": "triggr-leathercraft-vintage",
@@ -507,7 +697,18 @@ export const products = [
     "isTrending": true,
     "isBestseller": false,
     "isNew": true,
-    "isRecommended": true
+    "isRecommended": true,
+    "sku": "TB-EAR-0017",
+    "moq": 10,
+    "pack_size": 5,
+    "tier1_qty": 10,
+    "tier1_price": 2299,
+    "tier2_qty": 50,
+    "tier2_price": 2115,
+    "tier3_qty": 100,
+    "tier3_price": 1931,
+    "mrp": 4999,
+    "suggested_retail_price": 4999
   },
   {
     "id": "techbazaar-studio-buds-pearl",
@@ -537,7 +738,18 @@ export const products = [
     "isTrending": true,
     "isBestseller": true,
     "isNew": true,
-    "isRecommended": true
+    "isRecommended": true,
+    "sku": "TB-EAR-0018",
+    "moq": 10,
+    "pack_size": 5,
+    "tier1_qty": 10,
+    "tier1_price": 2499,
+    "tier2_qty": 50,
+    "tier2_price": 2299,
+    "tier3_qty": 100,
+    "tier3_price": 2099,
+    "mrp": 4999,
+    "suggested_retail_price": 4999
   },
   {
     "id": "sennheiser-momentum-4-wireless",
@@ -567,7 +779,18 @@ export const products = [
     "isTrending": true,
     "isBestseller": true,
     "isNew": false,
-    "isRecommended": true
+    "isRecommended": true,
+    "sku": "TB-HEA-0019",
+    "moq": 10,
+    "pack_size": 5,
+    "tier1_qty": 10,
+    "tier1_price": 27990,
+    "tier2_qty": 50,
+    "tier2_price": 25751,
+    "tier3_qty": 100,
+    "tier3_price": 23512,
+    "mrp": 34990,
+    "suggested_retail_price": 34990
   },
   {
     "id": "sennheiser-hd-450bt",
@@ -597,7 +820,18 @@ export const products = [
     "isTrending": false,
     "isBestseller": true,
     "isNew": false,
-    "isRecommended": true
+    "isRecommended": true,
+    "sku": "TB-HEA-0020",
+    "moq": 10,
+    "pack_size": 5,
+    "tier1_qty": 10,
+    "tier1_price": 7990,
+    "tier2_qty": 50,
+    "tier2_price": 7351,
+    "tier3_qty": 100,
+    "tier3_price": 6712,
+    "mrp": 14990,
+    "suggested_retail_price": 14990
   },
   {
     "id": "sennheiser-accentum-wireless",
@@ -627,7 +861,18 @@ export const products = [
     "isTrending": true,
     "isBestseller": false,
     "isNew": true,
-    "isRecommended": true
+    "isRecommended": true,
+    "sku": "TB-HEA-0021",
+    "moq": 10,
+    "pack_size": 5,
+    "tier1_qty": 10,
+    "tier1_price": 14990,
+    "tier2_qty": 50,
+    "tier2_price": 13791,
+    "tier3_qty": 100,
+    "tier3_price": 12592,
+    "mrp": 19990,
+    "suggested_retail_price": 19990
   },
   {
     "id": "sony-wh-ch720n-anc",
@@ -657,7 +902,18 @@ export const products = [
     "isTrending": true,
     "isBestseller": true,
     "isNew": false,
-    "isRecommended": true
+    "isRecommended": true,
+    "sku": "TB-HEA-0022",
+    "moq": 10,
+    "pack_size": 5,
+    "tier1_qty": 10,
+    "tier1_price": 9990,
+    "tier2_qty": 50,
+    "tier2_price": 9191,
+    "tier3_qty": 100,
+    "tier3_price": 8392,
+    "mrp": 14990,
+    "suggested_retail_price": 14990
   },
   {
     "id": "skullcandy-hesh-anc",
@@ -687,7 +943,18 @@ export const products = [
     "isTrending": false,
     "isBestseller": true,
     "isNew": false,
-    "isRecommended": false
+    "isRecommended": false,
+    "sku": "TB-HEA-0023",
+    "moq": 10,
+    "pack_size": 5,
+    "tier1_qty": 10,
+    "tier1_price": 8499,
+    "tier2_qty": 50,
+    "tier2_price": 7819,
+    "tier3_qty": 100,
+    "tier3_price": 7139,
+    "mrp": 16999,
+    "suggested_retail_price": 16999
   },
   {
     "id": "cosmic-byte-kronos-rgb-gaming",
@@ -717,7 +984,18 @@ export const products = [
     "isTrending": true,
     "isBestseller": false,
     "isNew": true,
-    "isRecommended": true
+    "isRecommended": true,
+    "sku": "TB-HEA-0024",
+    "moq": 10,
+    "pack_size": 5,
+    "tier1_qty": 10,
+    "tier1_price": 2899,
+    "tier2_qty": 50,
+    "tier2_price": 2667,
+    "tier3_qty": 100,
+    "tier3_price": 2435,
+    "mrp": 5999,
+    "suggested_retail_price": 5999
   },
   {
     "id": "apple-watch-ultra-titanium-ocean",
@@ -747,7 +1025,32 @@ export const products = [
     "isTrending": true,
     "isBestseller": true,
     "isNew": false,
-    "isRecommended": true
+    "isRecommended": true,
+    "sku": "TB-SMA-0025",
+    "moq": 5,
+    "pack_size": 2,
+    "tier1_qty": 5,
+    "tier1_price": 79900,
+    "tier2_qty": 20,
+    "tier2_price": 74307,
+    "tier3_qty": 50,
+    "tier3_price": 68714,
+    "mrp": 89900,
+    "suggested_retail_price": 89900,
+    "images": [
+      "/images/image-150.webp",
+      "/images/image-40.webp"
+    ],
+    "variants": [
+      {
+        "id": "var-image-40",
+        "name": "Titanium",
+        "sku": "TB-SMA-0140",
+        "price": 79900,
+        "stock": 38,
+        "image": "/images/image-40.webp"
+      }
+    ]
   },
   {
     "id": "apple-watch-ultra-yellow-ocean",
@@ -777,7 +1080,18 @@ export const products = [
     "isTrending": false,
     "isBestseller": false,
     "isNew": true,
-    "isRecommended": true
+    "isRecommended": true,
+    "sku": "TB-SMA-0026",
+    "moq": 5,
+    "pack_size": 2,
+    "tier1_qty": 5,
+    "tier1_price": 78900,
+    "tier2_qty": 20,
+    "tier2_price": 73377,
+    "tier3_qty": 50,
+    "tier3_price": 67854,
+    "mrp": 89900,
+    "suggested_retail_price": 89900
   },
   {
     "id": "apple-watch-ultra-rose-gold-chain",
@@ -807,7 +1121,18 @@ export const products = [
     "isTrending": true,
     "isBestseller": true,
     "isNew": false,
-    "isRecommended": true
+    "isRecommended": true,
+    "sku": "TB-SMA-0027",
+    "moq": 5,
+    "pack_size": 2,
+    "tier1_qty": 5,
+    "tier1_price": 3999,
+    "tier2_qty": 20,
+    "tier2_price": 3719,
+    "tier3_qty": 50,
+    "tier3_price": 3439,
+    "mrp": 8999,
+    "suggested_retail_price": 8999
   },
   {
     "id": "fireboltt-emerald-luxury-chronograph",
@@ -837,7 +1162,18 @@ export const products = [
     "isTrending": true,
     "isBestseller": false,
     "isNew": true,
-    "isRecommended": true
+    "isRecommended": true,
+    "sku": "TB-SMA-0028",
+    "moq": 5,
+    "pack_size": 2,
+    "tier1_qty": 5,
+    "tier1_price": 3499,
+    "tier2_qty": 20,
+    "tier2_price": 3254,
+    "tier3_qty": 50,
+    "tier3_price": 3009,
+    "mrp": 9999,
+    "suggested_retail_price": 9999
   },
   {
     "id": "fireboltt-invincible-plus-amoled",
@@ -867,7 +1203,18 @@ export const products = [
     "isTrending": false,
     "isBestseller": true,
     "isNew": false,
-    "isRecommended": true
+    "isRecommended": true,
+    "sku": "TB-SMA-0029",
+    "moq": 5,
+    "pack_size": 2,
+    "tier1_qty": 5,
+    "tier1_price": 3999,
+    "tier2_qty": 20,
+    "tier2_price": 3719,
+    "tier3_qty": 50,
+    "tier3_price": 3439,
+    "mrp": 11999,
+    "suggested_retail_price": 11999
   },
   {
     "id": "fastrack-limitless-fs1-pro",
@@ -897,7 +1244,18 @@ export const products = [
     "isTrending": true,
     "isBestseller": true,
     "isNew": false,
-    "isRecommended": false
+    "isRecommended": false,
+    "sku": "TB-SMA-0030",
+    "moq": 5,
+    "pack_size": 2,
+    "tier1_qty": 5,
+    "tier1_price": 2499,
+    "tier2_qty": 20,
+    "tier2_price": 2324,
+    "tier3_qty": 50,
+    "tier3_price": 2149,
+    "mrp": 6995,
+    "suggested_retail_price": 6995
   },
   {
     "id": "amazfit-bip-5-smartwatch",
@@ -927,7 +1285,18 @@ export const products = [
     "isTrending": true,
     "isBestseller": false,
     "isNew": true,
-    "isRecommended": true
+    "isRecommended": true,
+    "sku": "TB-SMA-0031",
+    "moq": 5,
+    "pack_size": 2,
+    "tier1_qty": 5,
+    "tier1_price": 6999,
+    "tier2_qty": 20,
+    "tier2_price": 6509,
+    "tier3_qty": 50,
+    "tier3_price": 6019,
+    "mrp": 8999,
+    "suggested_retail_price": 8999
   },
   {
     "id": "hammer-ace-ultra-smartwatch",
@@ -957,7 +1326,18 @@ export const products = [
     "isTrending": false,
     "isBestseller": false,
     "isNew": false,
-    "isRecommended": false
+    "isRecommended": false,
+    "sku": "TB-SMA-0032",
+    "moq": 5,
+    "pack_size": 2,
+    "tier1_qty": 5,
+    "tier1_price": 1999,
+    "tier2_qty": 20,
+    "tier2_price": 1859,
+    "tier3_qty": 50,
+    "tier3_price": 1719,
+    "mrp": 4999,
+    "suggested_retail_price": 4999
   },
   {
     "id": "fireboltt-royale-stainless-smartwatch",
@@ -987,7 +1367,18 @@ export const products = [
     "isTrending": true,
     "isBestseller": true,
     "isNew": true,
-    "isRecommended": true
+    "isRecommended": true,
+    "sku": "TB-SMA-0033",
+    "moq": 5,
+    "pack_size": 2,
+    "tier1_qty": 5,
+    "tier1_price": 3799,
+    "tier2_qty": 20,
+    "tier2_price": 3533,
+    "tier3_qty": 50,
+    "tier3_price": 3267,
+    "mrp": 12999,
+    "suggested_retail_price": 12999
   },
   {
     "id": "marshall-acton-iii-bluetooth-speaker",
@@ -1007,7 +1398,7 @@ export const products = [
     "shortDescription": "Re-engineered with outward-angled tweeters and updated waveguides to deliver a wider, room-filling soundstage.",
     "specs": {
       "Amplifiers": "1x 30W Class D (Woofer) + 2x 15W Class D (Tweeters)",
-      "Frequency Range": "45\u201320,000 Hz",
+      "Frequency Range": "45–20,000 Hz",
       "Max SPL": "95 dB @ 1 m",
       "Connectivity": "Bluetooth 5.2 & 3.5mm AUX",
       "Cabinet": "Bass-Reflex with Brass Controls",
@@ -1017,7 +1408,18 @@ export const products = [
     "isTrending": true,
     "isBestseller": true,
     "isNew": false,
-    "isRecommended": true
+    "isRecommended": true,
+    "sku": "TB-SPE-0034",
+    "moq": 10,
+    "pack_size": 5,
+    "tier1_qty": 10,
+    "tier1_price": 27999,
+    "tier2_qty": 50,
+    "tier2_price": 25759,
+    "tier3_qty": 100,
+    "tier3_price": 23519,
+    "mrp": 31999,
+    "suggested_retail_price": 31999
   },
   {
     "id": "jbl-partybox-stage-320",
@@ -1047,7 +1449,18 @@ export const products = [
     "isTrending": true,
     "isBestseller": false,
     "isNew": true,
-    "isRecommended": true
+    "isRecommended": true,
+    "sku": "TB-SPE-0035",
+    "moq": 10,
+    "pack_size": 5,
+    "tier1_qty": 10,
+    "tier1_price": 39999,
+    "tier2_qty": 50,
+    "tier2_price": 36799,
+    "tier3_qty": 100,
+    "tier3_price": 33599,
+    "mrp": 49999,
+    "suggested_retail_price": 49999
   },
   {
     "id": "hammer-pebble-portable-speaker",
@@ -1077,11 +1490,22 @@ export const products = [
     "isTrending": false,
     "isBestseller": true,
     "isNew": false,
-    "isRecommended": true
+    "isRecommended": true,
+    "sku": "TB-SPE-0036",
+    "moq": 10,
+    "pack_size": 5,
+    "tier1_qty": 10,
+    "tier1_price": 999,
+    "tier2_qty": 50,
+    "tier2_price": 919,
+    "tier3_qty": 100,
+    "tier3_price": 839,
+    "mrp": 1999,
+    "suggested_retail_price": 1999
   },
   {
     "id": "soundcore-glow-mini-rgb",
-    "name": "Soundcore Glow Mini 360\u00b0 Portable RGB Speaker",
+    "name": "Soundcore Glow Mini 360° Portable RGB Speaker",
     "brand": "Soundcore",
     "category": "speakers",
     "price": 3499,
@@ -1090,7 +1514,7 @@ export const products = [
     "reviewsCount": 420,
     "image": "/images/image-122.jpg",
     "tags": [
-      "360\u00b0 Omnidirectional Sound",
+      "360° Omnidirectional Sound",
       "Body-Synced Light Show",
       "IP67 Submersible"
     ],
@@ -1107,7 +1531,18 @@ export const products = [
     "isTrending": true,
     "isBestseller": false,
     "isNew": true,
-    "isRecommended": true
+    "isRecommended": true,
+    "sku": "TB-SPE-0037",
+    "moq": 10,
+    "pack_size": 5,
+    "tier1_qty": 10,
+    "tier1_price": 3499,
+    "tier2_qty": 50,
+    "tier2_price": 3219,
+    "tier3_qty": 100,
+    "tier3_price": 2939,
+    "mrp": 4999,
+    "suggested_retail_price": 4999
   },
   {
     "id": "zebronics-zeb-rocket-boombox",
@@ -1137,7 +1572,18 @@ export const products = [
     "isTrending": false,
     "isBestseller": true,
     "isNew": false,
-    "isRecommended": false
+    "isRecommended": false,
+    "sku": "TB-SPE-0038",
+    "moq": 10,
+    "pack_size": 5,
+    "tier1_qty": 10,
+    "tier1_price": 1499,
+    "tier2_qty": 50,
+    "tier2_price": 1379,
+    "tier3_qty": 100,
+    "tier3_price": 1259,
+    "mrp": 2999,
+    "suggested_retail_price": 2999
   },
   {
     "id": "portronics-thunder-party-tower",
@@ -1167,7 +1613,18 @@ export const products = [
     "isTrending": true,
     "isBestseller": false,
     "isNew": false,
-    "isRecommended": true
+    "isRecommended": true,
+    "sku": "TB-SPE-0039",
+    "moq": 10,
+    "pack_size": 5,
+    "tier1_qty": 10,
+    "tier1_price": 4999,
+    "tier2_qty": 50,
+    "tier2_price": 4599,
+    "tier3_qty": 100,
+    "tier3_price": 4199,
+    "mrp": 9999,
+    "suggested_retail_price": 9999
   },
   {
     "id": "white-square-karaoke-trolley-screen",
@@ -1197,7 +1654,18 @@ export const products = [
     "isTrending": true,
     "isBestseller": false,
     "isNew": true,
-    "isRecommended": true
+    "isRecommended": true,
+    "sku": "TB-SPE-0040",
+    "moq": 10,
+    "pack_size": 5,
+    "tier1_qty": 10,
+    "tier1_price": 16999,
+    "tier2_qty": 50,
+    "tier2_price": 15639,
+    "tier3_qty": 100,
+    "tier3_price": 14279,
+    "mrp": 24999,
+    "suggested_retail_price": 24999
   },
   {
     "id": "zebronics-pocket-retro-radio",
@@ -1227,7 +1695,18 @@ export const products = [
     "isTrending": false,
     "isBestseller": false,
     "isNew": false,
-    "isRecommended": false
+    "isRecommended": false,
+    "sku": "TB-SPE-0041",
+    "moq": 10,
+    "pack_size": 5,
+    "tier1_qty": 10,
+    "tier1_price": 899,
+    "tier2_qty": 50,
+    "tier2_price": 827,
+    "tier3_qty": 100,
+    "tier3_price": 755,
+    "mrp": 1999,
+    "suggested_retail_price": 1999
   },
   {
     "id": "xiaomi-power-bank-4i-10000mah",
@@ -1257,7 +1736,18 @@ export const products = [
     "isTrending": true,
     "isBestseller": true,
     "isNew": false,
-    "isRecommended": true
+    "isRecommended": true,
+    "sku": "TB-POW-0042",
+    "moq": 10,
+    "pack_size": 5,
+    "tier1_qty": 10,
+    "tier1_price": 1299,
+    "tier2_qty": 50,
+    "tier2_price": 1169,
+    "tier3_qty": 100,
+    "tier3_price": 1065,
+    "mrp": 2199,
+    "suggested_retail_price": 2199
   },
   {
     "id": "belkin-boostcharge-slim-gold",
@@ -1287,7 +1777,18 @@ export const products = [
     "isTrending": false,
     "isBestseller": true,
     "isNew": false,
-    "isRecommended": true
+    "isRecommended": true,
+    "sku": "TB-POW-0043",
+    "moq": 10,
+    "pack_size": 5,
+    "tier1_qty": 10,
+    "tier1_price": 2499,
+    "tier2_qty": 50,
+    "tier2_price": 2249,
+    "tier3_qty": 100,
+    "tier3_price": 2049,
+    "mrp": 3999,
+    "suggested_retail_price": 3999
   },
   {
     "id": "ambrane-stylo-pro-20000mah",
@@ -1317,7 +1818,18 @@ export const products = [
     "isTrending": true,
     "isBestseller": true,
     "isNew": false,
-    "isRecommended": true
+    "isRecommended": true,
+    "sku": "TB-POW-0044",
+    "moq": 10,
+    "pack_size": 5,
+    "tier1_qty": 10,
+    "tier1_price": 1899,
+    "tier2_qty": 50,
+    "tier2_price": 1709,
+    "tier3_qty": 100,
+    "tier3_price": 1557,
+    "mrp": 3499,
+    "suggested_retail_price": 3499
   },
   {
     "id": "portronics-power-mag-wireless",
@@ -1347,7 +1859,21 @@ export const products = [
     "isTrending": true,
     "isBestseller": false,
     "isNew": true,
-    "isRecommended": true
+    "isRecommended": true,
+    "sku": "TB-POW-0045",
+    "moq": 10,
+    "pack_size": 5,
+    "tier1_qty": 10,
+    "tier1_price": 1699,
+    "tier2_qty": 50,
+    "tier2_price": 1529,
+    "tier3_qty": 100,
+    "tier3_price": 1393,
+    "mrp": 3499,
+    "suggested_retail_price": 3499,
+    "images": [
+      "/images/image-136.jpg"
+    ]
   },
   {
     "id": "lifelong-pocket-mini-cables",
@@ -1377,7 +1903,18 @@ export const products = [
     "isTrending": false,
     "isBestseller": false,
     "isNew": true,
-    "isRecommended": false
+    "isRecommended": false,
+    "sku": "TB-POW-0046",
+    "moq": 10,
+    "pack_size": 5,
+    "tier1_qty": 10,
+    "tier1_price": 1199,
+    "tier2_qty": 50,
+    "tier2_price": 1079,
+    "tier3_qty": 100,
+    "tier3_price": 983,
+    "mrp": 2499,
+    "suggested_retail_price": 2499
   },
   {
     "id": "techbazaar-industrial-10000-yellow",
@@ -1407,7 +1944,18 @@ export const products = [
     "isTrending": true,
     "isBestseller": false,
     "isNew": true,
-    "isRecommended": true
+    "isRecommended": true,
+    "sku": "TB-POW-0047",
+    "moq": 10,
+    "pack_size": 5,
+    "tier1_qty": 10,
+    "tier1_price": 1799,
+    "tier2_qty": 50,
+    "tier2_price": 1619,
+    "tier3_qty": 100,
+    "tier3_price": 1475,
+    "mrp": 3299,
+    "suggested_retail_price": 3299
   },
   {
     "id": "boat-rugged-deuce-300-red",
@@ -1437,7 +1985,18 @@ export const products = [
     "isTrending": true,
     "isBestseller": true,
     "isNew": false,
-    "isRecommended": true
+    "isRecommended": true,
+    "sku": "TB-CHA-0048",
+    "moq": 20,
+    "pack_size": 5,
+    "tier1_qty": 20,
+    "tier1_price": 349,
+    "tier2_qty": 50,
+    "tier2_price": 307,
+    "tier3_qty": 100,
+    "tier3_price": 272,
+    "mrp": 799,
+    "suggested_retail_price": 799
   },
   {
     "id": "hammer-65w-braided-sky-blue",
@@ -1467,7 +2026,18 @@ export const products = [
     "isTrending": false,
     "isBestseller": false,
     "isNew": true,
-    "isRecommended": true
+    "isRecommended": true,
+    "sku": "TB-CHA-0049",
+    "moq": 20,
+    "pack_size": 5,
+    "tier1_qty": 20,
+    "tier1_price": 499,
+    "tier2_qty": 50,
+    "tier2_price": 439,
+    "tier3_qty": 100,
+    "tier3_price": 389,
+    "mrp": 999,
+    "suggested_retail_price": 999
   },
   {
     "id": "techbazaar-3in1-magnetic-charging-station",
@@ -1497,7 +2067,18 @@ export const products = [
     "isTrending": true,
     "isBestseller": true,
     "isNew": true,
-    "isRecommended": true
+    "isRecommended": true,
+    "sku": "TB-CHA-0050",
+    "moq": 20,
+    "pack_size": 5,
+    "tier1_qty": 20,
+    "tier1_price": 2799,
+    "tier2_qty": 50,
+    "tier2_price": 2463,
+    "tier3_qty": 100,
+    "tier3_price": 2183,
+    "mrp": 5999,
+    "suggested_retail_price": 5999
   },
   {
     "id": "samsung-45w-super-fast-adapter",
@@ -1527,7 +2108,18 @@ export const products = [
     "isTrending": true,
     "isBestseller": true,
     "isNew": false,
-    "isRecommended": true
+    "isRecommended": true,
+    "sku": "TB-CHA-0051",
+    "moq": 20,
+    "pack_size": 5,
+    "tier1_qty": 20,
+    "tier1_price": 2499,
+    "tier2_qty": 50,
+    "tier2_price": 2199,
+    "tier3_qty": 100,
+    "tier3_price": 1949,
+    "mrp": 3499,
+    "suggested_retail_price": 3499
   },
   {
     "id": "portronics-car-power-45w",
@@ -1557,7 +2149,18 @@ export const products = [
     "isTrending": false,
     "isBestseller": true,
     "isNew": false,
-    "isRecommended": false
+    "isRecommended": false,
+    "sku": "TB-CHA-0052",
+    "moq": 20,
+    "pack_size": 5,
+    "tier1_qty": 20,
+    "tier1_price": 699,
+    "tier2_qty": 50,
+    "tier2_price": 615,
+    "tier3_qty": 100,
+    "tier3_price": 545,
+    "mrp": 1499,
+    "suggested_retail_price": 1499
   },
   {
     "id": "portronics-konnect-multi-kit",
@@ -1587,11 +2190,22 @@ export const products = [
     "isTrending": true,
     "isBestseller": true,
     "isNew": true,
-    "isRecommended": true
+    "isRecommended": true,
+    "sku": "TB-CHA-0053",
+    "moq": 20,
+    "pack_size": 5,
+    "tier1_qty": 20,
+    "tier1_price": 799,
+    "tier2_qty": 50,
+    "tier2_price": 703,
+    "tier3_qty": 100,
+    "tier3_price": 623,
+    "mrp": 1699,
+    "suggested_retail_price": 1699
   },
   {
     "id": "cpplus-360-full-hd-cctv",
-    "name": "CP PLUS Intelligent 360\u00b0 Full HD Wi-Fi Security CCTV Camera",
+    "name": "CP PLUS Intelligent 360° Full HD Wi-Fi Security CCTV Camera",
     "brand": "TechBazaar",
     "category": "cameras-cctv",
     "price": 1899,
@@ -1600,14 +2214,14 @@ export const products = [
     "reviewsCount": 1120,
     "image": "/images/image-153.jpg",
     "tags": [
-      "360\u00b0 Pan-Tilt Panoramas",
+      "360° Pan-Tilt Panoramas",
       "1080p Crystal Vision",
       "AI Human Body Detection"
     ],
     "shortDescription": "Zero-blind-spot home monitoring with night infrared illuminators and two-way talk directly through your phone.",
     "specs": {
       "Resolution": "1080p Full HD (1920x1080)",
-      "Rotation": "355\u00b0 Horizontal & 85\u00b0 Vertical",
+      "Rotation": "355° Horizontal & 85° Vertical",
       "Night Vision": "IR Range Up to 10 Meters",
       "Audio": "Two-Way Audio with Echo Cancellation",
       "Storage": "MicroSD Up to 128GB + Cloud",
@@ -1617,7 +2231,18 @@ export const products = [
     "isTrending": true,
     "isBestseller": true,
     "isNew": false,
-    "isRecommended": true
+    "isRecommended": true,
+    "sku": "TB-CAM-0054",
+    "moq": 5,
+    "pack_size": 2,
+    "tier1_qty": 5,
+    "tier1_price": 1899,
+    "tier2_qty": 20,
+    "tier2_price": 1747,
+    "tier3_qty": 50,
+    "tier3_price": 1614,
+    "mrp": 3900,
+    "suggested_retail_price": 3900
   },
   {
     "id": "qubo-smart-360-3mp-camera",
@@ -1638,7 +2263,7 @@ export const products = [
     "specs": {
       "Resolution": "3MP (2304 x 1296)",
       "AI Detection": "Person Detection, Baby Cry Alert, Motion",
-      "Field of View": "360\u00b0 Horizontal Pan & Tilt",
+      "Field of View": "360° Horizontal Pan & Tilt",
       "Servers": "ISO Certified Encrypted Indian Servers",
       "Connectivity": "Wi-Fi 2.4GHz",
       "App": "Qubo App for iOS & Android"
@@ -1647,7 +2272,18 @@ export const products = [
     "isTrending": true,
     "isBestseller": true,
     "isNew": true,
-    "isRecommended": true
+    "isRecommended": true,
+    "sku": "TB-CAM-0055",
+    "moq": 5,
+    "pack_size": 2,
+    "tier1_qty": 5,
+    "tier1_price": 2490,
+    "tier2_qty": 20,
+    "tier2_price": 2291,
+    "tier3_qty": 50,
+    "tier3_price": 2117,
+    "mrp": 4290,
+    "suggested_retail_price": 4290
   },
   {
     "id": "70mai-a500s-dashcam-pro-plus",
@@ -1677,7 +2313,18 @@ export const products = [
     "isTrending": true,
     "isBestseller": false,
     "isNew": false,
-    "isRecommended": true
+    "isRecommended": true,
+    "sku": "TB-CAM-0056",
+    "moq": 5,
+    "pack_size": 2,
+    "tier1_qty": 5,
+    "tier1_price": 9999,
+    "tier2_qty": 20,
+    "tier2_price": 9199,
+    "tier3_qty": 50,
+    "tier3_price": 8499,
+    "mrp": 14999,
+    "suggested_retail_price": 14999
   },
   {
     "id": "70mai-smart-dash-cam-1s",
@@ -1697,7 +2344,7 @@ export const products = [
     "shortDescription": "Compact tube form factor hides invisibly behind rearview mirrors with G-sensor emergency collision lock.",
     "specs": {
       "Resolution": "1080p Full HD @ 30fps",
-      "Angle": "130\u00b0 Wide Angle FOV",
+      "Angle": "130° Wide Angle FOV",
       "Voice Control": "English Voice Commands ('Take Picture', 'Record Video')",
       "Loop Recording": "Auto Overwrite Old Footage",
       "Power": "12V Car Socket with Supercapacitor",
@@ -1707,7 +2354,18 @@ export const products = [
     "isTrending": false,
     "isBestseller": true,
     "isNew": false,
-    "isRecommended": true
+    "isRecommended": true,
+    "sku": "TB-CAM-0057",
+    "moq": 5,
+    "pack_size": 2,
+    "tier1_qty": 5,
+    "tier1_price": 3999,
+    "tier2_qty": 20,
+    "tier2_price": 3679,
+    "tier3_qty": 50,
+    "tier3_price": 3399,
+    "mrp": 5999,
+    "suggested_retail_price": 5999
   },
   {
     "id": "sony-playstation-5-dualsense-dock",
@@ -1737,7 +2395,18 @@ export const products = [
     "isTrending": true,
     "isBestseller": true,
     "isNew": false,
-    "isRecommended": true
+    "isRecommended": true,
+    "sku": "TB-GAM-0058",
+    "moq": 5,
+    "pack_size": 2,
+    "tier1_qty": 5,
+    "tier1_price": 5990,
+    "tier2_qty": 20,
+    "tier2_price": 5571,
+    "tier3_qty": 50,
+    "tier3_price": 5151,
+    "mrp": 6990,
+    "suggested_retail_price": 6990
   },
   {
     "id": "logitech-g915-tkl-mechanical",
@@ -1767,7 +2436,18 @@ export const products = [
     "isTrending": true,
     "isBestseller": false,
     "isNew": true,
-    "isRecommended": true
+    "isRecommended": true,
+    "sku": "TB-GAM-0059",
+    "moq": 5,
+    "pack_size": 2,
+    "tier1_qty": 5,
+    "tier1_price": 18995,
+    "tier2_qty": 20,
+    "tier2_price": 17665,
+    "tier3_qty": 50,
+    "tier3_price": 16336,
+    "mrp": 22995,
+    "suggested_retail_price": 22995
   },
   {
     "id": "sony-ps5-hit-game-trio",
@@ -1796,7 +2476,18 @@ export const products = [
     "isTrending": true,
     "isBestseller": true,
     "isNew": false,
-    "isRecommended": true
+    "isRecommended": true,
+    "sku": "TB-GAM-0060",
+    "moq": 5,
+    "pack_size": 2,
+    "tier1_qty": 5,
+    "tier1_price": 4999,
+    "tier2_qty": 20,
+    "tier2_price": 4649,
+    "tier3_qty": 50,
+    "tier3_price": 4299,
+    "mrp": 8999,
+    "suggested_retail_price": 8999
   },
   {
     "id": "techbazaar-cybercool-phone-cooler",
@@ -1810,7 +2501,7 @@ export const products = [
     "image": "/images/image-109.jpg",
     "tags": [
       "Peltier Thermoelectric Chilling",
-      "Drops Temp by 15\u00b0C",
+      "Drops Temp by 15°C",
       "Aura RGB Ring"
     ],
     "shortDescription": "Active semiconductor thermoelectric ice cooling prevents thermal throttling during high-refresh mobile gaming.",
@@ -1818,7 +2509,7 @@ export const products = [
       "Technology": "Peltier Thermoelectric Semiconductor",
       "Fan Speed": "7-Blade 7000 RPM Turbo Fan",
       "Mounting": "Magnetic MagSafe + Universal Clip",
-      "Temperature Drop": "Up to 15\u00b0C Drop in 60 Seconds",
+      "Temperature Drop": "Up to 15°C Drop in 60 Seconds",
       "Noise Level": "Silent 25dB Operation",
       "Lighting": "Circular RGB Lighting Engine"
     },
@@ -1826,7 +2517,18 @@ export const products = [
     "isTrending": true,
     "isBestseller": false,
     "isNew": true,
-    "isRecommended": true
+    "isRecommended": true,
+    "sku": "TB-GAM-0061",
+    "moq": 5,
+    "pack_size": 2,
+    "tier1_qty": 5,
+    "tier1_price": 1499,
+    "tier2_qty": 20,
+    "tier2_price": 1394,
+    "tier3_qty": 50,
+    "tier3_price": 1289,
+    "mrp": 2999,
+    "suggested_retail_price": 2999
   },
   {
     "id": "ambrane-modesk-foldable-stand",
@@ -1840,14 +2542,14 @@ export const products = [
     "image": "/images/image-10.jpg",
     "tags": [
       "CNC Anodized Aluminum",
-      "Dual Dual-Axis 270\u00b0 Tilt",
+      "Dual Dual-Axis 270° Tilt",
       "Anti-Slip Silicone Base"
     ],
     "shortDescription": "Precision-machined aircraft alloy desk cradle engineered to hold smartphones and heavy iPads rock-solid.",
     "specs": {
       "Material": "CNC Machined Aluminum Alloy",
       "Compatibility": "4 to 12.9 Inch Phones & Tablets",
-      "Adjustability": "Dual Axis 270\u00b0 Ergonomic Viewing",
+      "Adjustability": "Dual Axis 270° Ergonomic Viewing",
       "Pads": "Scratch-Free Anti-Skid Silicone",
       "Foldable": "Folds Flat into Pocket Size",
       "Weight": "165g Solid Base"
@@ -1856,7 +2558,18 @@ export const products = [
     "isTrending": true,
     "isBestseller": true,
     "isNew": false,
-    "isRecommended": true
+    "isRecommended": true,
+    "sku": "TB-ACC-0062",
+    "moq": 5,
+    "pack_size": 2,
+    "tier1_qty": 5,
+    "tier1_price": 599,
+    "tier2_qty": 20,
+    "tier2_price": 551,
+    "tier3_qty": 50,
+    "tier3_price": 503,
+    "mrp": 1299,
+    "suggested_retail_price": 1299
   },
   {
     "id": "sandisk-extreme-1tb-portable-ssd",
@@ -1886,7 +2599,18 @@ export const products = [
     "isTrending": true,
     "isBestseller": true,
     "isNew": false,
-    "isRecommended": true
+    "isRecommended": true,
+    "sku": "TB-ACC-0063",
+    "moq": 5,
+    "pack_size": 2,
+    "tier1_qty": 5,
+    "tier1_price": 8999,
+    "tier2_qty": 20,
+    "tier2_price": 8279,
+    "tier3_qty": 50,
+    "tier3_price": 7559,
+    "mrp": 15999,
+    "suggested_retail_price": 15999
   },
   {
     "id": "techbazaar-3in1-bluetooth-selfie-tripod",
@@ -1908,7 +2632,7 @@ export const products = [
       "Extended Length": "105 cm",
       "Folded Length": "19 cm (Pocket Friendly)",
       "Remote": "Detachable Bluetooth 5.0 (10m Range)",
-      "Rotation": "360\u00b0 Phone Holder with 225\u00b0 Neck Tilt",
+      "Rotation": "360° Phone Holder with 225° Neck Tilt",
       "Material": "Stainless Steel + Reinforced ABS",
       "Weight": "170g"
     },
@@ -1916,7 +2640,18 @@ export const products = [
     "isTrending": false,
     "isBestseller": true,
     "isNew": false,
-    "isRecommended": true
+    "isRecommended": true,
+    "sku": "TB-ACC-0064",
+    "moq": 5,
+    "pack_size": 2,
+    "tier1_qty": 5,
+    "tier1_price": 799,
+    "tier2_qty": 20,
+    "tier2_price": 735,
+    "tier3_qty": 50,
+    "tier3_price": 671,
+    "mrp": 1999,
+    "suggested_retail_price": 1999
   },
   {
     "id": "gizga-essentials-laptop-sleeve-15",
@@ -1929,7 +2664,7 @@ export const products = [
     "reviewsCount": 640,
     "image": "/images/image-118.png",
     "tags": [
-      "360\u00b0 Shockproof Bubble Foam",
+      "360° Shockproof Bubble Foam",
       "Water-Repellent Fabric",
       "Hidden Carry Handle"
     ],
@@ -1946,7 +2681,18 @@ export const products = [
     "isTrending": false,
     "isBestseller": true,
     "isNew": false,
-    "isRecommended": true
+    "isRecommended": true,
+    "sku": "TB-ACC-0065",
+    "moq": 5,
+    "pack_size": 2,
+    "tier1_qty": 5,
+    "tier1_price": 899,
+    "tier2_qty": 20,
+    "tier2_price": 827,
+    "tier3_qty": 50,
+    "tier3_price": 755,
+    "mrp": 1899,
+    "suggested_retail_price": 1899
   },
   {
     "id": "baseus-active-stylus-ipad",
@@ -1976,7 +2722,18 @@ export const products = [
     "isTrending": true,
     "isBestseller": false,
     "isNew": true,
-    "isRecommended": true
+    "isRecommended": true,
+    "sku": "TB-ACC-0066",
+    "moq": 5,
+    "pack_size": 2,
+    "tier1_qty": 5,
+    "tier1_price": 1899,
+    "tier2_qty": 20,
+    "tier2_price": 1747,
+    "tier3_qty": 50,
+    "tier3_price": 1595,
+    "mrp": 3499,
+    "suggested_retail_price": 3499
   },
   {
     "id": "portronics-clamp-car-mount-m",
@@ -1991,12 +2748,12 @@ export const products = [
     "tags": [
       "Quick-Release One Touch",
       "Steel Core Vent Hook",
-      "360\u00b0 Ball Joint"
+      "360° Ball Joint"
     ],
     "shortDescription": "Locks securely into automotive AC louvers with a mechanical steel clamp and one-touch quick release button.",
     "specs": {
       "Mounting": "Twist-Lock Steel Air Vent Hook",
-      "Rotation": "360\u00b0 Ball Swivel",
+      "Rotation": "360° Ball Swivel",
       "Arm Width": "Holds Phones 4.7\" to 7.0\" with Cases",
       "Cushioning": "Thick Soft Textured Silicone",
       "Operation": "Single-Handed One-Touch Release",
@@ -2006,7 +2763,22 @@ export const products = [
     "isTrending": false,
     "isBestseller": true,
     "isNew": false,
-    "isRecommended": true
+    "isRecommended": true,
+    "sku": "TB-ACC-0067",
+    "moq": 5,
+    "pack_size": 2,
+    "tier1_qty": 5,
+    "tier1_price": 499,
+    "tier2_qty": 20,
+    "tier2_price": 459,
+    "tier3_qty": 50,
+    "tier3_price": 419,
+    "mrp": 999,
+    "suggested_retail_price": 999,
+    "images": [
+      "/images/image-18.jpg",
+      "/images/image-17.jpg"
+    ]
   },
   {
     "id": "techbazaar-dual-slot-vertical-stand",
@@ -2036,7 +2808,18 @@ export const products = [
     "isTrending": true,
     "isBestseller": false,
     "isNew": false,
-    "isRecommended": true
+    "isRecommended": true,
+    "sku": "TB-ACC-0068",
+    "moq": 5,
+    "pack_size": 2,
+    "tier1_qty": 5,
+    "tier1_price": 1299,
+    "tier2_qty": 20,
+    "tier2_price": 1195,
+    "tier3_qty": 50,
+    "tier3_price": 1091,
+    "mrp": 2499,
+    "suggested_retail_price": 2499
   },
   {
     "id": "techbazaar-smart-folio-keyboard-ipad",
@@ -2066,7 +2849,18 @@ export const products = [
     "isTrending": true,
     "isBestseller": false,
     "isNew": true,
-    "isRecommended": true
+    "isRecommended": true,
+    "sku": "TB-ACC-0069",
+    "moq": 5,
+    "pack_size": 2,
+    "tier1_qty": 5,
+    "tier1_price": 4999,
+    "tier2_qty": 20,
+    "tier2_price": 4599,
+    "tier3_qty": 50,
+    "tier3_price": 4199,
+    "mrp": 9999,
+    "suggested_retail_price": 9999
   },
   {
     "id": "techbazaar-cinemalite-smart-projector",
@@ -2080,10 +2874,10 @@ export const products = [
     "image": "/images/image-24.png",
     "tags": [
       "130\" Cinematic Projection",
-      "180\u00b0 Rotatable Gimbal Base",
+      "180° Rotatable Gimbal Base",
       "Built-in Android Streaming"
     ],
-    "shortDescription": "Point-and-play anywhere on walls or ceilings with 180\u00b0 swivel gimbal base, auto keystone, and Netflix support.",
+    "shortDescription": "Point-and-play anywhere on walls or ceilings with 180° swivel gimbal base, auto keystone, and Netflix support.",
     "specs": {
       "Native Resolution": "1280x720p (4K Decoding Supported)",
       "Brightness": "200 ANSI Lumens",
@@ -2096,7 +2890,18 @@ export const products = [
     "isTrending": true,
     "isBestseller": true,
     "isNew": true,
-    "isRecommended": true
+    "isRecommended": true,
+    "sku": "TB-SMA-0070",
+    "moq": 5,
+    "pack_size": 2,
+    "tier1_qty": 5,
+    "tier1_price": 8999,
+    "tier2_qty": 20,
+    "tier2_price": 8279,
+    "tier3_qty": 50,
+    "tier3_price": 7559,
+    "mrp": 17999,
+    "suggested_retail_price": 17999
   },
   {
     "id": "jiotag-smart-gps-tracker",
@@ -2126,7 +2931,18 @@ export const products = [
     "isTrending": false,
     "isBestseller": true,
     "isNew": false,
-    "isRecommended": false
+    "isRecommended": false,
+    "sku": "TB-SMA-0071",
+    "moq": 5,
+    "pack_size": 2,
+    "tier1_qty": 5,
+    "tier1_price": 749,
+    "tier2_qty": 20,
+    "tier2_price": 689,
+    "tier3_qty": 50,
+    "tier3_price": 629,
+    "mrp": 1499,
+    "suggested_retail_price": 1499
   },
   {
     "id": "philips-series-3000-beard-trimmer",
@@ -2156,7 +2972,18 @@ export const products = [
     "isTrending": true,
     "isBestseller": true,
     "isNew": false,
-    "isRecommended": true
+    "isRecommended": true,
+    "sku": "TB-GRO-0072",
+    "moq": 5,
+    "pack_size": 2,
+    "tier1_qty": 5,
+    "tier1_price": 1499,
+    "tier2_qty": 20,
+    "tier2_price": 1379,
+    "tier3_qty": 50,
+    "tier3_price": 1259,
+    "mrp": 2295,
+    "suggested_retail_price": 2295
   },
   {
     "id": "cultsport-deep-tissue-massage-gun",
@@ -2186,7 +3013,18 @@ export const products = [
     "isTrending": true,
     "isBestseller": false,
     "isNew": true,
-    "isRecommended": true
+    "isRecommended": true,
+    "sku": "TB-GRO-0073",
+    "moq": 5,
+    "pack_size": 2,
+    "tier1_qty": 5,
+    "tier1_price": 2499,
+    "tier2_qty": 20,
+    "tier2_price": 2299,
+    "tier3_qty": 50,
+    "tier3_price": 2099,
+    "mrp": 5999,
+    "suggested_retail_price": 5999
   },
   {
     "id": "lifelong-electric-scalp-massager",
@@ -2216,7 +3054,18 @@ export const products = [
     "isTrending": false,
     "isBestseller": false,
     "isNew": true,
-    "isRecommended": true
+    "isRecommended": true,
+    "sku": "TB-GRO-0074",
+    "moq": 5,
+    "pack_size": 2,
+    "tier1_qty": 5,
+    "tier1_price": 1799,
+    "tier2_qty": 20,
+    "tier2_price": 1655,
+    "tier3_qty": 50,
+    "tier3_price": 1511,
+    "mrp": 3999,
+    "suggested_retail_price": 3999
   },
   {
     "id": "syska-ultratrim-beard-trimmer",
@@ -2246,7 +3095,18 @@ export const products = [
     "isTrending": false,
     "isBestseller": true,
     "isNew": false,
-    "isRecommended": false
+    "isRecommended": false,
+    "sku": "TB-GRO-0075",
+    "moq": 5,
+    "pack_size": 2,
+    "tier1_qty": 5,
+    "tier1_price": 899,
+    "tier2_qty": 20,
+    "tier2_price": 827,
+    "tier3_qty": 50,
+    "tier3_price": 755,
+    "mrp": 1899,
+    "suggested_retail_price": 1899
   },
   {
     "id": "image-101-fitpro-ultra-rugged-health-&-f",
@@ -2274,7 +3134,18 @@ export const products = [
     "isTrending": false,
     "isBestseller": false,
     "isNew": true,
-    "isRecommended": true
+    "isRecommended": true,
+    "sku": "TB-SMA-0076",
+    "moq": 5,
+    "pack_size": 2,
+    "tier1_qty": 5,
+    "tier1_price": 2299,
+    "tier2_qty": 20,
+    "tier2_price": 2138,
+    "tier3_qty": 50,
+    "tier3_price": 1977,
+    "mrp": 4999,
+    "suggested_retail_price": 4999
   },
   {
     "id": "image-109-noise-colorfit-pro-5-connected",
@@ -2302,7 +3173,18 @@ export const products = [
     "isTrending": true,
     "isBestseller": true,
     "isNew": false,
-    "isRecommended": true
+    "isRecommended": true,
+    "sku": "TB-SMA-0077",
+    "moq": 5,
+    "pack_size": 2,
+    "tier1_qty": 5,
+    "tier1_price": 3499,
+    "tier2_qty": 20,
+    "tier2_price": 3254,
+    "tier3_qty": 50,
+    "tier3_price": 3009,
+    "mrp": 7999,
+    "suggested_retail_price": 7999
   },
   {
     "id": "image-11-jbl-endurance-run-sweatproof-s",
@@ -2330,7 +3212,18 @@ export const products = [
     "isTrending": false,
     "isBestseller": true,
     "isNew": false,
-    "isRecommended": true
+    "isRecommended": true,
+    "sku": "TB-EAR-0078",
+    "moq": 10,
+    "pack_size": 5,
+    "tier1_qty": 10,
+    "tier1_price": 1199,
+    "tier2_qty": 50,
+    "tier2_price": 1103,
+    "tier3_qty": 100,
+    "tier3_price": 1007,
+    "mrp": 1999,
+    "suggested_retail_price": 1999
   },
   {
     "id": "image-110-beetel-dependability-b11-cordl",
@@ -2358,7 +3251,18 @@ export const products = [
     "isTrending": false,
     "isBestseller": false,
     "isNew": false,
-    "isRecommended": false
+    "isRecommended": false,
+    "sku": "TB-SMA-0079",
+    "moq": 5,
+    "pack_size": 2,
+    "tier1_qty": 5,
+    "tier1_price": 1999,
+    "tier2_qty": 20,
+    "tier2_price": 1839,
+    "tier3_qty": 50,
+    "tier3_price": 1679,
+    "mrp": 3499,
+    "suggested_retail_price": 3499
   },
   {
     "id": "image-110-techbazaar-magpack-wireless-ec",
@@ -2386,7 +3290,18 @@ export const products = [
     "isTrending": true,
     "isBestseller": false,
     "isNew": true,
-    "isRecommended": true
+    "isRecommended": true,
+    "sku": "TB-POW-0080",
+    "moq": 10,
+    "pack_size": 5,
+    "tier1_qty": 10,
+    "tier1_price": 2999,
+    "tier2_qty": 50,
+    "tier2_price": 2699,
+    "tier3_qty": 100,
+    "tier3_price": 2459,
+    "mrp": 5499,
+    "suggested_retail_price": 5499
   },
   {
     "id": "image-111-boat-bassheads-100-type-c-wire",
@@ -2414,7 +3329,18 @@ export const products = [
     "isTrending": true,
     "isBestseller": true,
     "isNew": false,
-    "isRecommended": false
+    "isRecommended": false,
+    "sku": "TB-EAR-0081",
+    "moq": 10,
+    "pack_size": 5,
+    "tier1_qty": 10,
+    "tier1_price": 699,
+    "tier2_qty": 50,
+    "tier2_price": 643,
+    "tier3_qty": 100,
+    "tier3_price": 587,
+    "mrp": 1290,
+    "suggested_retail_price": 1290
   },
   {
     "id": "image-112-portronics-conch-20-type-c-hi-",
@@ -2442,7 +3368,18 @@ export const products = [
     "isTrending": false,
     "isBestseller": false,
     "isNew": false,
-    "isRecommended": true
+    "isRecommended": true,
+    "sku": "TB-EAR-0082",
+    "moq": 10,
+    "pack_size": 5,
+    "tier1_qty": 10,
+    "tier1_price": 799,
+    "tier2_qty": 50,
+    "tier2_price": 735,
+    "tier3_qty": 100,
+    "tier3_price": 671,
+    "mrp": 1499,
+    "suggested_retail_price": 1499
   },
   {
     "id": "image-113-sandisk-ultra-dual-drive-64gb-",
@@ -2470,7 +3407,18 @@ export const products = [
     "isTrending": false,
     "isBestseller": true,
     "isNew": false,
-    "isRecommended": true
+    "isRecommended": true,
+    "sku": "TB-ACC-0083",
+    "moq": 5,
+    "pack_size": 2,
+    "tier1_qty": 5,
+    "tier1_price": 899,
+    "tier2_qty": 20,
+    "tier2_price": 827,
+    "tier3_qty": 50,
+    "tier3_price": 755,
+    "mrp": 1699,
+    "suggested_retail_price": 1699
   },
   {
     "id": "image-113-triggr-pro-type-c-gaming-earph",
@@ -2489,7 +3437,7 @@ export const products = [
     ],
     "shortDescription": "Dual-mic combat gaming earphones with flexible noise-filtering boom microphone and in-line volume slider.",
     "specs": {
-      "Microphones": "Detachable 360\u00b0 Boom Mic + In-line Mic",
+      "Microphones": "Detachable 360° Boom Mic + In-line Mic",
       "Drivers": "10mm Neodymium Tuned for Footsteps",
       "Connector": "Type-C Low Latency",
       "Cable": "Braided L-Shape Plug"
@@ -2498,7 +3446,18 @@ export const products = [
     "isTrending": true,
     "isBestseller": false,
     "isNew": true,
-    "isRecommended": true
+    "isRecommended": true,
+    "sku": "TB-EAR-0084",
+    "moq": 10,
+    "pack_size": 5,
+    "tier1_qty": 10,
+    "tier1_price": 1399,
+    "tier2_qty": 50,
+    "tier2_price": 1287,
+    "tier3_qty": 100,
+    "tier3_price": 1175,
+    "mrp": 2799,
+    "suggested_retail_price": 2799
   },
   {
     "id": "image-115-realme-buds-2-neo-wired-earpho",
@@ -2513,7 +3472,7 @@ export const products = [
     "tags": [
       "11.2mm Bass Boost Driver",
       "Tangle-Free Gear Cable",
-      "Right-Angle 90\u00b0 Jack"
+      "Right-Angle 90° Jack"
     ],
     "shortDescription": "Large 11.2mm drivers deliver explosive club bass, featuring realme iconic yellow and gear-grooved cable.",
     "specs": {
@@ -2526,7 +3485,18 @@ export const products = [
     "isTrending": true,
     "isBestseller": true,
     "isNew": false,
-    "isRecommended": true
+    "isRecommended": true,
+    "sku": "TB-EAR-0085",
+    "moq": 10,
+    "pack_size": 5,
+    "tier1_qty": 10,
+    "tier1_price": 599,
+    "tier2_qty": 50,
+    "tier2_price": 551,
+    "tier3_qty": 100,
+    "tier3_price": 503,
+    "mrp": 999,
+    "suggested_retail_price": 999
   },
   {
     "id": "image-116-boat-deuce-300-braided-type-c-",
@@ -2554,7 +3524,18 @@ export const products = [
     "isTrending": false,
     "isBestseller": true,
     "isNew": false,
-    "isRecommended": true
+    "isRecommended": true,
+    "sku": "TB-CHA-0086",
+    "moq": 20,
+    "pack_size": 5,
+    "tier1_qty": 20,
+    "tier1_price": 449,
+    "tier2_qty": 50,
+    "tier2_price": 395,
+    "tier3_qty": 100,
+    "tier3_price": 350,
+    "mrp": 999,
+    "suggested_retail_price": 999
   },
   {
     "id": "image-117-boat-rugged-100w-type-c-to-typ",
@@ -2582,7 +3563,18 @@ export const products = [
     "isTrending": true,
     "isBestseller": true,
     "isNew": false,
-    "isRecommended": true
+    "isRecommended": true,
+    "sku": "TB-CHA-0087",
+    "moq": 20,
+    "pack_size": 5,
+    "tier1_qty": 20,
+    "tier1_price": 499,
+    "tier2_qty": 50,
+    "tier2_price": 439,
+    "tier3_qty": 100,
+    "tier3_price": 389,
+    "mrp": 1199,
+    "suggested_retail_price": 1199
   },
   {
     "id": "image-119-fire-boltt-gladiator-rugged-me",
@@ -2610,7 +3602,18 @@ export const products = [
     "isTrending": true,
     "isBestseller": false,
     "isNew": true,
-    "isRecommended": true
+    "isRecommended": true,
+    "sku": "TB-SMA-0088",
+    "moq": 5,
+    "pack_size": 2,
+    "tier1_qty": 5,
+    "tier1_price": 3299,
+    "tier2_qty": 20,
+    "tier2_price": 3068,
+    "tier3_qty": 50,
+    "tier3_price": 2837,
+    "mrp": 9999,
+    "suggested_retail_price": 9999
   },
   {
     "id": "image-12-zebronics-zeb-bro-3.5mm-stereo",
@@ -2638,7 +3641,18 @@ export const products = [
     "isTrending": false,
     "isBestseller": true,
     "isNew": false,
-    "isRecommended": false
+    "isRecommended": false,
+    "sku": "TB-EAR-0089",
+    "moq": 10,
+    "pack_size": 5,
+    "tier1_qty": 10,
+    "tier1_price": 299,
+    "tier2_qty": 50,
+    "tier2_price": 275,
+    "tier3_qty": 100,
+    "tier3_price": 251,
+    "mrp": 599,
+    "suggested_retail_price": 599
   },
   {
     "id": "image-126-spigen-valentinus-magnetic-lea",
@@ -2666,7 +3680,18 @@ export const products = [
     "isTrending": true,
     "isBestseller": true,
     "isNew": false,
-    "isRecommended": true
+    "isRecommended": true,
+    "sku": "TB-ACC-0090",
+    "moq": 5,
+    "pack_size": 2,
+    "tier1_qty": 5,
+    "tier1_price": 1499,
+    "tier2_qty": 20,
+    "tier2_price": 1379,
+    "tier3_qty": 50,
+    "tier3_price": 1259,
+    "mrp": 2499,
+    "suggested_retail_price": 2499
   },
   {
     "id": "image-126-triggr-dual-driver-ultra-bass-",
@@ -2694,7 +3719,18 @@ export const products = [
     "isTrending": false,
     "isBestseller": false,
     "isNew": true,
-    "isRecommended": true
+    "isRecommended": true,
+    "sku": "TB-EAR-0091",
+    "moq": 10,
+    "pack_size": 5,
+    "tier1_qty": 10,
+    "tier1_price": 1799,
+    "tier2_qty": 50,
+    "tier2_price": 1655,
+    "tier3_qty": 100,
+    "tier3_price": 1511,
+    "mrp": 3499,
+    "suggested_retail_price": 3499
   },
   {
     "id": "image-128-lifelong-maghold-10000mah-magn",
@@ -2722,35 +3758,18 @@ export const products = [
     "isTrending": false,
     "isBestseller": false,
     "isNew": true,
-    "isRecommended": true
-  },
-  {
-    "id": "image-128-triggr-neon-cyan-low-latency-g",
-    "name": "TriggR Neon Cyan Low Latency Gaming Earbuds",
-    "brand": "TriggR",
-    "category": "earbuds",
-    "price": 1699,
-    "originalPrice": 3299,
-    "rating": 4.4,
-    "reviewsCount": 280,
-    "image": "/images/image-128.webp",
-    "tags": [
-      "Electric Cyan Breathing LEDs",
-      "35ms Mobile Gaming Mode",
-      "Environmental Noise Filter"
-    ],
-    "shortDescription": "Striking cyan neon accents combined with zero-delay gaming audio for competitive PUBG and Call of Duty.",
-    "specs": {
-      "Latency": "35ms Ultra Low Gaming Mode",
-      "Drivers": "12mm Carbon Diaphragm",
-      "Battery": "32 Hours Total Playtime",
-      "Touch Controls": "Capacitive Tap Sensors"
-    },
-    "isFlashSale": false,
-    "isTrending": true,
-    "isBestseller": false,
-    "isNew": true,
-    "isRecommended": false
+    "isRecommended": true,
+    "sku": "TB-POW-0092",
+    "moq": 10,
+    "pack_size": 5,
+    "tier1_qty": 10,
+    "tier1_price": 1799,
+    "tier2_qty": 50,
+    "tier2_price": 1619,
+    "tier3_qty": 100,
+    "tier3_price": 1475,
+    "mrp": 3499,
+    "suggested_retail_price": 3499
   },
   {
     "id": "image-129-portronics-power-pro-20000mah-",
@@ -2778,7 +3797,18 @@ export const products = [
     "isTrending": true,
     "isBestseller": true,
     "isNew": false,
-    "isRecommended": true
+    "isRecommended": true,
+    "sku": "TB-POW-0094",
+    "moq": 10,
+    "pack_size": 5,
+    "tier1_qty": 10,
+    "tier1_price": 1999,
+    "tier2_qty": 50,
+    "tier2_price": 1799,
+    "tier3_qty": 100,
+    "tier3_price": 1639,
+    "mrp": 3999,
+    "suggested_retail_price": 3999
   },
   {
     "id": "image-129-fire-boltt-heritage-roman-stee",
@@ -2806,35 +3836,18 @@ export const products = [
     "isTrending": true,
     "isBestseller": false,
     "isNew": true,
-    "isRecommended": true
-  },
-  {
-    "id": "image-136-portronics-power-mag-15w-wirel",
-    "name": "Portronics Power Mag 15W Wireless Magnetic Power Bank",
-    "brand": "Portronics",
-    "category": "power-banks",
-    "price": 1799,
-    "originalPrice": 3499,
-    "rating": 4.6,
-    "reviewsCount": 490,
-    "image": "/images/image-136.jpg",
-    "tags": [
-      "15W MagSafe Magnetic Snap",
-      "Integrated Finger Ring Stand",
-      "20W PD Type-C"
-    ],
-    "shortDescription": "Snap securely to the back of your phone and prop it up at your desk with the integrated metal kickstand ring.",
-    "specs": {
-      "Capacity": "10000mAh",
-      "Wireless Output": "15W / 10W / 7.5W",
-      "Stand": "Fold-flat Zinc Alloy Ring Kickstand",
-      "Weight": "205g Compact Profile"
-    },
-    "isFlashSale": true,
-    "isTrending": false,
-    "isBestseller": true,
-    "isNew": false,
-    "isRecommended": true
+    "isRecommended": true,
+    "sku": "TB-SMA-0095",
+    "moq": 5,
+    "pack_size": 2,
+    "tier1_qty": 5,
+    "tier1_price": 3699,
+    "tier2_qty": 20,
+    "tier2_price": 3440,
+    "tier3_qty": 50,
+    "tier3_price": 3181,
+    "mrp": 10999,
+    "suggested_retail_price": 10999
   },
   {
     "id": "image-137-portronics-luxcell-10000mah-co",
@@ -2862,7 +3875,18 @@ export const products = [
     "isTrending": true,
     "isBestseller": false,
     "isNew": true,
-    "isRecommended": true
+    "isRecommended": true,
+    "sku": "TB-POW-0097",
+    "moq": 10,
+    "pack_size": 5,
+    "tier1_qty": 10,
+    "tier1_price": 1499,
+    "tier2_qty": 50,
+    "tier2_price": 1349,
+    "tier3_qty": 100,
+    "tier3_price": 1229,
+    "mrp": 2999,
+    "suggested_retail_price": 2999
   },
   {
     "id": "image-139-xiaomi-20000mah-18w-fast-charg",
@@ -2879,7 +3903,7 @@ export const products = [
       "18W Dual Way Fast Charging",
       "Matte Sandblasted Shell"
     ],
-    "shortDescription": "India\u2019s most trusted marathon power bank with dual USB-A and USB-C bidirectional fast charging.",
+    "shortDescription": "India’s most trusted marathon power bank with dual USB-A and USB-C bidirectional fast charging.",
     "specs": {
       "Capacity": "20000mAh (74Wh)",
       "Fast Charge": "18W Fast Charging",
@@ -2890,7 +3914,18 @@ export const products = [
     "isTrending": true,
     "isBestseller": true,
     "isNew": false,
-    "isRecommended": true
+    "isRecommended": true,
+    "sku": "TB-POW-0098",
+    "moq": 10,
+    "pack_size": 5,
+    "tier1_qty": 10,
+    "tier1_price": 1999,
+    "tier2_qty": 50,
+    "tier2_price": 1799,
+    "tier3_qty": 100,
+    "tier3_price": 1639,
+    "mrp": 2999,
+    "suggested_retail_price": 2999
   },
   {
     "id": "image-14-portronics-modesk-360-ai-auto-",
@@ -2904,13 +3939,13 @@ export const products = [
     "image": "/images/image-14.jpg",
     "tags": [
       "AI Optical Face & Body Tracking",
-      "360\u00b0 Infinite Smooth Rotation",
+      "360° Infinite Smooth Rotation",
       "No App Required"
     ],
     "shortDescription": "Hardware optical camera recognizes faces and rotates smoothly to keep vloggers centered without apps.",
     "specs": {
       "Tracking": "Onboard AI Vision Sensor (Zero App Needed)",
-      "Rotation": "360\u00b0 Horizontal Infinite Tracking",
+      "Rotation": "360° Horizontal Infinite Tracking",
       "Battery": "1200mAh (4-6 Hours Active Tracking)",
       "Mount": "Standard 1/4\" Tripod Thread on Base"
     },
@@ -2918,7 +3953,18 @@ export const products = [
     "isTrending": true,
     "isBestseller": false,
     "isNew": true,
-    "isRecommended": true
+    "isRecommended": true,
+    "sku": "TB-ACC-0099",
+    "moq": 5,
+    "pack_size": 2,
+    "tier1_qty": 5,
+    "tier1_price": 2299,
+    "tier2_qty": 20,
+    "tier2_price": 2115,
+    "tier3_qty": 50,
+    "tier3_price": 1931,
+    "mrp": 4999,
+    "suggested_retail_price": 4999
   },
   {
     "id": "image-14-triggr-braided-gaming-audio-ea",
@@ -2946,7 +3992,18 @@ export const products = [
     "isTrending": false,
     "isBestseller": false,
     "isNew": false,
-    "isRecommended": true
+    "isRecommended": true,
+    "sku": "TB-EAR-0100",
+    "moq": 10,
+    "pack_size": 5,
+    "tier1_qty": 10,
+    "tier1_price": 999,
+    "tier2_qty": 50,
+    "tier2_price": 919,
+    "tier3_qty": 100,
+    "tier3_price": 839,
+    "mrp": 1999,
+    "suggested_retail_price": 1999
   },
   {
     "id": "image-142-d-cal-ultra-slim-5000mah-credi",
@@ -2974,7 +4031,18 @@ export const products = [
     "isTrending": false,
     "isBestseller": true,
     "isNew": false,
-    "isRecommended": true
+    "isRecommended": true,
+    "sku": "TB-POW-0101",
+    "moq": 10,
+    "pack_size": 5,
+    "tier1_qty": 10,
+    "tier1_price": 999,
+    "tier2_qty": 50,
+    "tier2_price": 899,
+    "tier3_qty": 100,
+    "tier3_price": 819,
+    "mrp": 1999,
+    "suggested_retail_price": 1999
   },
   {
     "id": "image-140-ambrane-rugged-armor-10000mah-",
@@ -3002,7 +4070,18 @@ export const products = [
     "isTrending": false,
     "isBestseller": false,
     "isNew": true,
-    "isRecommended": false
+    "isRecommended": false,
+    "sku": "TB-POW-0102",
+    "moq": 10,
+    "pack_size": 5,
+    "tier1_qty": 10,
+    "tier1_price": 1599,
+    "tier2_qty": 50,
+    "tier2_price": 1439,
+    "tier3_qty": 100,
+    "tier3_price": 1311,
+    "mrp": 3299,
+    "suggested_retail_price": 3299
   },
   {
     "id": "image-147-zebronics-zeb-sound-feast-500-",
@@ -3030,7 +4109,18 @@ export const products = [
     "isTrending": true,
     "isBestseller": true,
     "isNew": false,
-    "isRecommended": true
+    "isRecommended": true,
+    "sku": "TB-SPE-0103",
+    "moq": 10,
+    "pack_size": 5,
+    "tier1_qty": 10,
+    "tier1_price": 2499,
+    "tier2_qty": 50,
+    "tier2_price": 2299,
+    "tier3_qty": 100,
+    "tier3_price": 2099,
+    "mrp": 4999,
+    "suggested_retail_price": 4999
   },
   {
     "id": "image-147-saregama-carvaan-mini-retro-bl",
@@ -3058,7 +4148,18 @@ export const products = [
     "isTrending": true,
     "isBestseller": true,
     "isNew": false,
-    "isRecommended": true
+    "isRecommended": true,
+    "sku": "TB-SPE-0104",
+    "moq": 10,
+    "pack_size": 5,
+    "tier1_qty": 10,
+    "tier1_price": 1990,
+    "tier2_qty": 50,
+    "tier2_price": 1831,
+    "tier3_qty": 100,
+    "tier3_price": 1672,
+    "mrp": 2490,
+    "suggested_retail_price": 2490
   },
   {
     "id": "image-148-zebronics-zeb-county-portable-",
@@ -3086,7 +4187,18 @@ export const products = [
     "isTrending": false,
     "isBestseller": true,
     "isNew": false,
-    "isRecommended": false
+    "isRecommended": false,
+    "sku": "TB-SPE-0105",
+    "moq": 10,
+    "pack_size": 5,
+    "tier1_qty": 10,
+    "tier1_price": 599,
+    "tier2_qty": 50,
+    "tier2_price": 551,
+    "tier3_qty": 100,
+    "tier3_price": 503,
+    "mrp": 999,
+    "suggested_retail_price": 999
   },
   {
     "id": "image-15-lifelong-electric-body-contour",
@@ -3114,7 +4226,18 @@ export const products = [
     "isTrending": false,
     "isBestseller": true,
     "isNew": false,
-    "isRecommended": true
+    "isRecommended": true,
+    "sku": "TB-GRO-0106",
+    "moq": 5,
+    "pack_size": 2,
+    "tier1_qty": 5,
+    "tier1_price": 1299,
+    "tier2_qty": 20,
+    "tier2_price": 1195,
+    "tier3_qty": 50,
+    "tier3_price": 1091,
+    "mrp": 2999,
+    "suggested_retail_price": 2999
   },
   {
     "id": "image-151-lifelong-rechargeable-high-pre",
@@ -3142,11 +4265,22 @@ export const products = [
     "isTrending": false,
     "isBestseller": false,
     "isNew": false,
-    "isRecommended": false
+    "isRecommended": false,
+    "sku": "TB-GRO-0107",
+    "moq": 5,
+    "pack_size": 2,
+    "tier1_qty": 5,
+    "tier1_price": 799,
+    "tier2_qty": 20,
+    "tier2_price": 735,
+    "tier3_qty": 50,
+    "tier3_price": 671,
+    "mrp": 1599,
+    "suggested_retail_price": 1599
   },
   {
-    "id": "image-156-cp-plus-360\u00b0-wi-fi-ptz-securit",
-    "name": "CP PLUS 360\u00b0 Wi-Fi PTZ Security Camera Dual System Kit",
+    "id": "image-156-cp-plus-360°-wi-fi-ptz-securit",
+    "name": "CP PLUS 360° Wi-Fi PTZ Security Camera Dual System Kit",
     "brand": "TechBazaar",
     "category": "cameras-cctv",
     "price": 3499,
@@ -3161,7 +4295,7 @@ export const products = [
     ],
     "shortDescription": "Complete indoor security coverage with two synced 360-degree pan-tilt smart Wi-Fi cameras.",
     "specs": {
-      "Cameras Included": "2x CP PLUS 360\u00b0 Smart PTZ Cameras",
+      "Cameras Included": "2x CP PLUS 360° Smart PTZ Cameras",
       "Resolution": "1080p Full HD Each",
       "Night Vision": "High-Power Infrared LEDs up to 10m",
       "App": "CP PLUS EzyKam+ Cloud App"
@@ -3170,7 +4304,18 @@ export const products = [
     "isTrending": true,
     "isBestseller": false,
     "isNew": true,
-    "isRecommended": true
+    "isRecommended": true,
+    "sku": "TB-CAM-0108",
+    "moq": 5,
+    "pack_size": 2,
+    "tier1_qty": 5,
+    "tier1_price": 3499,
+    "tier2_qty": 20,
+    "tier2_price": 3219,
+    "tier3_qty": 50,
+    "tier3_price": 2974,
+    "mrp": 7800,
+    "suggested_retail_price": 7800
   },
   {
     "id": "image-158-cp-plus-3mp-ultra-hd-smart-sec",
@@ -3190,7 +4335,7 @@ export const products = [
     "shortDescription": "Crisper 3MP sensor captures license plates and facial details with pan-tilt motor and mobile alerts.",
     "specs": {
       "Resolution": "3MP Ultra HD (2304 x 1296)",
-      "Field of View": "360\u00b0 Horizontal & 85\u00b0 Vertical",
+      "Field of View": "360° Horizontal & 85° Vertical",
       "Storage": "MicroSD Slot up to 256GB",
       "Smart Features": "Human Motion Tracking & Mobile Push Alerts"
     },
@@ -3198,7 +4343,18 @@ export const products = [
     "isTrending": false,
     "isBestseller": true,
     "isNew": false,
-    "isRecommended": true
+    "isRecommended": true,
+    "sku": "TB-CAM-0109",
+    "moq": 5,
+    "pack_size": 2,
+    "tier1_qty": 5,
+    "tier1_price": 2199,
+    "tier2_qty": 20,
+    "tier2_price": 2023,
+    "tier3_qty": 50,
+    "tier3_price": 1869,
+    "mrp": 4200,
+    "suggested_retail_price": 4200
   },
   {
     "id": "image-16-gizga-essentials-hard-shell-ev",
@@ -3226,35 +4382,18 @@ export const products = [
     "isTrending": false,
     "isBestseller": true,
     "isNew": false,
-    "isRecommended": true
-  },
-  {
-    "id": "image-17-portronics-clamp-m-car-air-ven",
-    "name": "Portronics Clamp M Car Air Vent Mobile Mount",
-    "brand": "Portronics",
-    "category": "accessories",
-    "price": 399,
-    "originalPrice": 899,
-    "rating": 4.4,
-    "reviewsCount": 630,
-    "image": "/images/image-17.jpg",
-    "tags": [
-      "One-Touch Side Grippers",
-      "Firm Vent Grip Hook",
-      "360\u00b0 Free Angle View"
-    ],
-    "shortDescription": "Minimalist automotive AC vent holder with quick clamp arms and vibration-damping rubber inserts.",
-    "specs": {
-      "Mounting": "Adjustable AC Blade Clip",
-      "Compatibility": "All Smartphones 4.5\" to 6.9\"",
-      "Rotation": "Full 360\u00b0 Ball Pivot",
-      "Material": "ABS + Silicone"
-    },
-    "isFlashSale": true,
-    "isTrending": false,
-    "isBestseller": false,
-    "isNew": false,
-    "isRecommended": false
+    "isRecommended": true,
+    "sku": "TB-ACC-0110",
+    "moq": 5,
+    "pack_size": 2,
+    "tier1_qty": 5,
+    "tier1_price": 499,
+    "tier2_qty": 20,
+    "tier2_price": 459,
+    "tier3_qty": 50,
+    "tier3_price": 419,
+    "mrp": 999,
+    "suggested_retail_price": 999
   },
   {
     "id": "image-17-sandisk-cruzer-blade-64gb-&-ul",
@@ -3282,7 +4421,18 @@ export const products = [
     "isTrending": false,
     "isBestseller": true,
     "isNew": false,
-    "isRecommended": true
+    "isRecommended": true,
+    "sku": "TB-ACC-0112",
+    "moq": 5,
+    "pack_size": 2,
+    "tier1_qty": 5,
+    "tier1_price": 799,
+    "tier2_qty": 20,
+    "tier2_price": 735,
+    "tier3_qty": 50,
+    "tier3_price": 671,
+    "mrp": 1599,
+    "suggested_retail_price": 1599
   },
   {
     "id": "image-19-techbazaar-pro-1-axis-handheld",
@@ -3310,7 +4460,18 @@ export const products = [
     "isTrending": true,
     "isBestseller": false,
     "isNew": true,
-    "isRecommended": true
+    "isRecommended": true,
+    "sku": "TB-ACC-0113",
+    "moq": 5,
+    "pack_size": 2,
+    "tier1_qty": 5,
+    "tier1_price": 1899,
+    "tier2_qty": 20,
+    "tier2_price": 1747,
+    "tier3_qty": 50,
+    "tier3_price": 1595,
+    "mrp": 3999,
+    "suggested_retail_price": 3999
   },
   {
     "id": "image-19-duracell-rechargeable-pre-char",
@@ -3338,7 +4499,18 @@ export const products = [
     "isTrending": false,
     "isBestseller": true,
     "isNew": false,
-    "isRecommended": true
+    "isRecommended": true,
+    "sku": "TB-SMA-0114",
+    "moq": 5,
+    "pack_size": 2,
+    "tier1_qty": 5,
+    "tier1_price": 999,
+    "tier2_qty": 20,
+    "tier2_price": 919,
+    "tier3_qty": 50,
+    "tier3_price": 839,
+    "mrp": 1499,
+    "suggested_retail_price": 1499
   },
   {
     "id": "image-19-spigen-rugged-armor-matte-tpu-",
@@ -3366,7 +4538,18 @@ export const products = [
     "isTrending": true,
     "isBestseller": true,
     "isNew": false,
-    "isRecommended": true
+    "isRecommended": true,
+    "sku": "TB-PHO-0115",
+    "moq": 20,
+    "pack_size": 5,
+    "tier1_qty": 20,
+    "tier1_price": 1199,
+    "tier2_qty": 50,
+    "tier2_price": 1055,
+    "tier3_qty": 100,
+    "tier3_price": 935,
+    "mrp": 1999,
+    "suggested_retail_price": 1999
   },
   {
     "id": "image-2-portronics-modesk-360-rotating",
@@ -3379,13 +4562,13 @@ export const products = [
     "reviewsCount": 880,
     "image": "/images/image-2.jpg",
     "tags": [
-      "360\u00b0 Clicking Ratchet Swivel",
+      "360° Clicking Ratchet Swivel",
       "Solid Heavyweight Metal Base",
       "Cable Pass-Through Slot"
     ],
     "shortDescription": "Satisfying mechanical ratchet sound as you swivel the display effortlessly between orientations.",
     "specs": {
-      "Swivel": "360\u00b0 Rotatable Mechanical Turntable",
+      "Swivel": "360° Rotatable Mechanical Turntable",
       "Material": "Solid Carbon Steel + Silicone",
       "Compatibility": "All Phones and Tablets up to 11 inches",
       "Weight": "280g Weighted Solid Base"
@@ -3394,7 +4577,22 @@ export const products = [
     "isTrending": true,
     "isBestseller": true,
     "isNew": false,
-    "isRecommended": true
+    "isRecommended": true,
+    "sku": "TB-ACC-0116",
+    "moq": 5,
+    "pack_size": 2,
+    "tier1_qty": 5,
+    "tier1_price": 699,
+    "tier2_qty": 20,
+    "tier2_price": 643,
+    "tier3_qty": 50,
+    "tier3_price": 587,
+    "mrp": 1499,
+    "suggested_retail_price": 1499,
+    "images": [
+      "/images/image-2.jpg",
+      "/images/image-8.jpg"
+    ]
   },
   {
     "id": "image-20-techbazaar-pocket-all-in-one-c",
@@ -3422,7 +4620,18 @@ export const products = [
     "isTrending": false,
     "isBestseller": false,
     "isNew": true,
-    "isRecommended": false
+    "isRecommended": false,
+    "sku": "TB-ACC-0117",
+    "moq": 5,
+    "pack_size": 2,
+    "tier1_qty": 5,
+    "tier1_price": 649,
+    "tier2_qty": 20,
+    "tier2_price": 597,
+    "tier3_qty": 50,
+    "tier3_price": 545,
+    "mrp": 1499,
+    "suggested_retail_price": 1499
   },
   {
     "id": "image-21-portronics-modesk-aluminium-er",
@@ -3442,7 +4651,7 @@ export const products = [
     "shortDescription": "Reduces neck fatigue during long Zoom calls with infinite dual-axis angle and height adjustments.",
     "specs": {
       "Material": "Aerospace Anodized Aluminum",
-      "Adjustability": "Dual 180\u00b0 Friction Hinges",
+      "Adjustability": "Dual 180° Friction Hinges",
       "Pads": "Non-Slip Silicone Base & Backing",
       "Foldable": "Folds Completely Flat for Travel"
     },
@@ -3450,7 +4659,18 @@ export const products = [
     "isTrending": false,
     "isBestseller": true,
     "isNew": false,
-    "isRecommended": true
+    "isRecommended": true,
+    "sku": "TB-ACC-0118",
+    "moq": 5,
+    "pack_size": 2,
+    "tier1_qty": 5,
+    "tier1_price": 549,
+    "tier2_qty": 20,
+    "tier2_price": 505,
+    "tier3_qty": 50,
+    "tier3_price": 461,
+    "mrp": 1199,
+    "suggested_retail_price": 1199
   },
   {
     "id": "image-22-portronics-clamp-x-magnetic-ca",
@@ -3472,13 +4692,24 @@ export const products = [
       "Magnets": "4x High Strength Neodymium Disc Magnets",
       "Base": "Rubber Coated Cross Vent Clip",
       "Plate": "Includes 2x Metal Plates for Phone/Case",
-      "Rotation": "Full 360\u00b0 Viewing"
+      "Rotation": "Full 360° Viewing"
     },
     "isFlashSale": false,
     "isTrending": false,
     "isBestseller": false,
     "isNew": false,
-    "isRecommended": false
+    "isRecommended": false,
+    "sku": "TB-ACC-0119",
+    "moq": 5,
+    "pack_size": 2,
+    "tier1_qty": 5,
+    "tier1_price": 399,
+    "tier2_qty": 20,
+    "tier2_price": 367,
+    "tier3_qty": 50,
+    "tier3_price": 335,
+    "mrp": 899,
+    "suggested_retail_price": 899
   },
   {
     "id": "image-23-portronics-clamp-suction-cup-u",
@@ -3499,14 +4730,25 @@ export const products = [
     "specs": {
       "Suction": "Industrial Sticky Silica Gel Vacuum Pad",
       "Arm": "Extendable 5cm Telescopic Arm",
-      "Rotation": "360\u00b0 Swivel Ball Joint",
+      "Rotation": "360° Swivel Ball Joint",
       "Release": "One-Click Quick Arm Release"
     },
     "isFlashSale": false,
     "isTrending": true,
     "isBestseller": true,
     "isNew": false,
-    "isRecommended": true
+    "isRecommended": true,
+    "sku": "TB-ACC-0120",
+    "moq": 5,
+    "pack_size": 2,
+    "tier1_qty": 5,
+    "tier1_price": 599,
+    "tier2_qty": 20,
+    "tier2_price": 551,
+    "tier3_qty": 50,
+    "tier3_price": 503,
+    "mrp": 1299,
+    "suggested_retail_price": 1299
   },
   {
     "id": "image-23-zebronics-4-in-1-usb-3.0-type-",
@@ -3534,7 +4776,18 @@ export const products = [
     "isTrending": false,
     "isBestseller": true,
     "isNew": false,
-    "isRecommended": true
+    "isRecommended": true,
+    "sku": "TB-ACC-0121",
+    "moq": 5,
+    "pack_size": 2,
+    "tier1_qty": 5,
+    "tier1_price": 699,
+    "tier2_qty": 20,
+    "tier2_price": 643,
+    "tier3_qty": 50,
+    "tier3_price": 587,
+    "mrp": 1499,
+    "suggested_retail_price": 1499
   },
   {
     "id": "image-24-portronics-radian-magnetic-rgb",
@@ -3562,7 +4815,18 @@ export const products = [
     "isTrending": true,
     "isBestseller": false,
     "isNew": true,
-    "isRecommended": true
+    "isRecommended": true,
+    "sku": "TB-GAM-0122",
+    "moq": 5,
+    "pack_size": 2,
+    "tier1_qty": 5,
+    "tier1_price": 1399,
+    "tier2_qty": 20,
+    "tier2_price": 1301,
+    "tier3_qty": 50,
+    "tier3_price": 1203,
+    "mrp": 2799,
+    "suggested_retail_price": 2799
   },
   {
     "id": "image-25-portronics-modesk-magnetic-fas",
@@ -3583,14 +4847,25 @@ export const products = [
     "specs": {
       "Compatibility": "iPhone 12/13/14/15/16 Series & MagSafe Cases",
       "Base": "Heavyweight Anti-Tip Solid Steel Base",
-      "Angle": "Optimal 60\u00b0 Face-Unlock Angle",
+      "Angle": "Optimal 60° Face-Unlock Angle",
       "Finish": "Matte Stealth Black"
     },
     "isFlashSale": false,
     "isTrending": false,
     "isBestseller": true,
     "isNew": false,
-    "isRecommended": true
+    "isRecommended": true,
+    "sku": "TB-ACC-0123",
+    "moq": 5,
+    "pack_size": 2,
+    "tier1_qty": 5,
+    "tier1_price": 899,
+    "tier2_qty": 20,
+    "tier2_price": 827,
+    "tier3_qty": 50,
+    "tier3_price": 755,
+    "mrp": 1899,
+    "suggested_retail_price": 1899
   },
   {
     "id": "image-25-qubo-&-cp-plus-dual-zone-smart",
@@ -3609,7 +4884,7 @@ export const products = [
     ],
     "shortDescription": "Curated dual camera bundle designed to monitor front entryway and baby nursery simultaneously.",
     "specs": {
-      "Units": "2x Smart 360\u00b0 Indoor Wi-Fi Cameras",
+      "Units": "2x Smart 360° Indoor Wi-Fi Cameras",
       "Sensors": "High Sensitivity CMOS Infrared Night Vision",
       "Features": "Baby Cry Detection, Two-Way Audio, Siren",
       "App": "Multi-Cam View Mobile App"
@@ -3618,11 +4893,22 @@ export const products = [
     "isTrending": true,
     "isBestseller": false,
     "isNew": true,
-    "isRecommended": true
+    "isRecommended": true,
+    "sku": "TB-CAM-0124",
+    "moq": 5,
+    "pack_size": 2,
+    "tier1_qty": 5,
+    "tier1_price": 4299,
+    "tier2_qty": 20,
+    "tier2_price": 3955,
+    "tier3_qty": 50,
+    "tier3_price": 3654,
+    "mrp": 8499,
+    "suggested_retail_price": 8499
   },
   {
-    "id": "image-26-techbazaar-ergonomic-360\u00b0-swiv",
-    "name": "TechBazaar Ergonomic 360\u00b0 Swivel Aluminum Desktop Tablet & Phone Stand",
+    "id": "image-26-techbazaar-ergonomic-360°-swiv",
+    "name": "TechBazaar Ergonomic 360° Swivel Aluminum Desktop Tablet & Phone Stand",
     "brand": "TechBazaar",
     "category": "accessories",
     "price": 799,
@@ -3631,13 +4917,13 @@ export const products = [
     "reviewsCount": 510,
     "image": "/images/image-26.jpg",
     "tags": [
-      "Full 360\u00b0 Smooth Swivel",
+      "Full 360° Smooth Swivel",
       "Solid CNC Alloy Joints",
       "Anti-Scratch Pads"
     ],
     "shortDescription": "Rotates 360 degrees with tactile click resistance so you can share your screen across the conference desk.",
     "specs": {
-      "Base": "Rotating 360\u00b0 Circular Bearing",
+      "Base": "Rotating 360° Circular Bearing",
       "Material": "Aviation Aluminum Alloy",
       "Hinges": "Dual Damped High-Tension Hinges",
       "Foldable": "Folds Down to 3.5cm Compact Height"
@@ -3646,7 +4932,18 @@ export const products = [
     "isTrending": true,
     "isBestseller": true,
     "isNew": false,
-    "isRecommended": true
+    "isRecommended": true,
+    "sku": "TB-ACC-0125",
+    "moq": 5,
+    "pack_size": 2,
+    "tier1_qty": 5,
+    "tier1_price": 799,
+    "tier2_qty": 20,
+    "tier2_price": 735,
+    "tier3_qty": 50,
+    "tier3_price": 671,
+    "mrp": 1699,
+    "suggested_retail_price": 1699
   },
   {
     "id": "image-27-portronics-telescopic-long-arm",
@@ -3668,13 +4965,24 @@ export const products = [
       "Arm Reach": "Extends up to 18cm closer to driver",
       "Suction": "Washable Sticky Vacuum Gel Pad",
       "Magnets": "6x Rare Earth Magnets",
-      "Pivot": "360\u00b0 Angle Ball Joint"
+      "Pivot": "360° Angle Ball Joint"
     },
     "isFlashSale": true,
     "isTrending": false,
     "isBestseller": false,
     "isNew": false,
-    "isRecommended": false
+    "isRecommended": false,
+    "sku": "TB-ACC-0126",
+    "moq": 5,
+    "pack_size": 2,
+    "tier1_qty": 5,
+    "tier1_price": 649,
+    "tier2_qty": 20,
+    "tier2_price": 597,
+    "tier3_qty": 50,
+    "tier3_price": 545,
+    "mrp": 1399,
+    "suggested_retail_price": 1399
   },
   {
     "id": "image-27-triggr-cyberpunk-aqua-tws-earb",
@@ -3702,7 +5010,18 @@ export const products = [
     "isTrending": true,
     "isBestseller": false,
     "isNew": true,
-    "isRecommended": true
+    "isRecommended": true,
+    "sku": "TB-EAR-0127",
+    "moq": 10,
+    "pack_size": 5,
+    "tier1_qty": 10,
+    "tier1_price": 1799,
+    "tier2_qty": 50,
+    "tier2_price": 1655,
+    "tier3_qty": 100,
+    "tier3_price": 1511,
+    "mrp": 3699,
+    "suggested_retail_price": 3699
   },
   {
     "id": "image-29-belkin-magsafe-iphone-continui",
@@ -3730,7 +5049,18 @@ export const products = [
     "isTrending": true,
     "isBestseller": true,
     "isNew": false,
-    "isRecommended": true
+    "isRecommended": true,
+    "sku": "TB-ACC-0128",
+    "moq": 5,
+    "pack_size": 2,
+    "tier1_qty": 5,
+    "tier1_price": 2499,
+    "tier2_qty": 20,
+    "tier2_price": 2299,
+    "tier3_qty": 50,
+    "tier3_price": 2099,
+    "mrp": 3499,
+    "suggested_retail_price": 3499
   },
   {
     "id": "image-29-spigen-liquid-air-armor-flexib",
@@ -3758,7 +5088,18 @@ export const products = [
     "isTrending": false,
     "isBestseller": true,
     "isNew": false,
-    "isRecommended": true
+    "isRecommended": true,
+    "sku": "TB-PHO-0129",
+    "moq": 20,
+    "pack_size": 5,
+    "tier1_qty": 20,
+    "tier1_price": 999,
+    "tier2_qty": 50,
+    "tier2_price": 879,
+    "tier3_qty": 100,
+    "tier3_price": 779,
+    "mrp": 1799,
+    "suggested_retail_price": 1799
   },
   {
     "id": "image-3-portronics-clamp-go-telescopic",
@@ -3771,13 +5112,13 @@ export const products = [
     "reviewsCount": 780,
     "image": "/images/image-3.jpg",
     "tags": [
-      "Extendable 210\u00b0 Arc Arm",
+      "Extendable 210° Arc Arm",
       "Automatic Grip Clamp",
       "Heavy Duty Suction"
     ],
     "shortDescription": "Arc-shaped extendable neck lets you position your smartphone exactly where you want it on dashboard or glass.",
     "specs": {
-      "Neck Adjustment": "210\u00b0 Vertical Pivot Arc",
+      "Neck Adjustment": "210° Vertical Pivot Arc",
       "Suction": "Double-Lock Gel Suction Cup",
       "Cradle": "Cushioned Anti-Scratch Side Clamps",
       "Compatibility": "All 4.0\" to 6.8\" Smartphones"
@@ -3786,7 +5127,18 @@ export const products = [
     "isTrending": false,
     "isBestseller": true,
     "isNew": false,
-    "isRecommended": false
+    "isRecommended": false,
+    "sku": "TB-ACC-0130",
+    "moq": 5,
+    "pack_size": 2,
+    "tier1_qty": 5,
+    "tier1_price": 549,
+    "tier2_qty": 20,
+    "tier2_price": 505,
+    "tier3_qty": 50,
+    "tier3_price": 461,
+    "mrp": 1199,
+    "suggested_retail_price": 1199
   },
   {
     "id": "image-31-oppo-15w-magnetic-fast-wireles",
@@ -3814,7 +5166,18 @@ export const products = [
     "isTrending": false,
     "isBestseller": false,
     "isNew": true,
-    "isRecommended": true
+    "isRecommended": true,
+    "sku": "TB-CHA-0131",
+    "moq": 20,
+    "pack_size": 5,
+    "tier1_qty": 20,
+    "tier1_price": 1499,
+    "tier2_qty": 50,
+    "tier2_price": 1319,
+    "tier3_qty": 100,
+    "tier3_price": 1169,
+    "mrp": 2999,
+    "suggested_retail_price": 2999
   },
   {
     "id": "image-32-triggr-dual-tone-sports-true-w",
@@ -3842,7 +5205,18 @@ export const products = [
     "isTrending": true,
     "isBestseller": false,
     "isNew": false,
-    "isRecommended": true
+    "isRecommended": true,
+    "sku": "TB-EAR-0132",
+    "moq": 10,
+    "pack_size": 5,
+    "tier1_qty": 10,
+    "tier1_price": 1499,
+    "tier2_qty": 50,
+    "tier2_price": 1379,
+    "tier3_qty": 100,
+    "tier3_price": 1259,
+    "mrp": 2999,
+    "suggested_retail_price": 2999
   },
   {
     "id": "image-33-ambrane-heavy-duty-dual-axis-a",
@@ -3856,21 +5230,32 @@ export const products = [
     "image": "/images/image-33.jpg",
     "tags": [
       "Aviation Aluminum Sheet Base",
-      "Dual 180\u00b0 Tension Joints",
+      "Dual 180° Tension Joints",
       "Thick Silicone Guard"
     ],
     "shortDescription": "Heavyweight stamped aluminum base provides stable non-tipping support for tablets, iPads, and phones.",
     "specs": {
       "Construction": "Cold-Rolled Aluminum Alloy",
       "Compatibility": "Supports Devices up to 13 Inches",
-      "Adjustability": "Dual 180\u00b0 Swivel Friction Joints",
+      "Adjustability": "Dual 180° Swivel Friction Joints",
       "Portability": "Collapses Flat for Travel"
     },
     "isFlashSale": true,
     "isTrending": false,
     "isBestseller": true,
     "isNew": false,
-    "isRecommended": true
+    "isRecommended": true,
+    "sku": "TB-ACC-0133",
+    "moq": 5,
+    "pack_size": 2,
+    "tier1_qty": 5,
+    "tier1_price": 649,
+    "tier2_qty": 20,
+    "tier2_price": 597,
+    "tier3_qty": 50,
+    "tier3_price": 545,
+    "mrp": 1399,
+    "suggested_retail_price": 1399
   },
   {
     "id": "image-34-hammer-rugged-tough-x-ipx7-wat",
@@ -3898,7 +5283,18 @@ export const products = [
     "isTrending": true,
     "isBestseller": false,
     "isNew": true,
-    "isRecommended": true
+    "isRecommended": true,
+    "sku": "TB-SPE-0134",
+    "moq": 10,
+    "pack_size": 5,
+    "tier1_qty": 10,
+    "tier1_price": 1799,
+    "tier2_qty": 50,
+    "tier2_price": 1655,
+    "tier3_qty": 100,
+    "tier3_price": 1511,
+    "mrp": 3499,
+    "suggested_retail_price": 3499
   },
   {
     "id": "image-35-spigen-ultra-hybrid-military-g",
@@ -3926,7 +5322,18 @@ export const products = [
     "isTrending": true,
     "isBestseller": true,
     "isNew": false,
-    "isRecommended": true
+    "isRecommended": true,
+    "sku": "TB-PHO-0135",
+    "moq": 20,
+    "pack_size": 5,
+    "tier1_qty": 20,
+    "tier1_price": 1299,
+    "tier2_qty": 50,
+    "tier2_price": 1143,
+    "tier3_qty": 100,
+    "tier3_price": 1013,
+    "mrp": 2299,
+    "suggested_retail_price": 2299
   },
   {
     "id": "image-36-portronics-windshield-&-dash-p",
@@ -3941,20 +5348,31 @@ export const products = [
     "tags": [
       "Double Lock Suction Grip",
       "Padded Expandable Side Grips",
-      "Full 360\u00b0 Swivel"
+      "Full 360° Swivel"
     ],
     "shortDescription": "Locks firmly to the windshield glass with a double-action vacuum lever, keeping navigation at eye level.",
     "specs": {
       "Mounting": "Vacuum Lever Lock Suction Cup",
       "Arm Width": "Expands up to 9cm for Plus/Ultra Phones",
       "Pads": "Soft Textured Grip Silicone",
-      "Angle": "360\u00b0 Rotatable Swivel Head"
+      "Angle": "360° Rotatable Swivel Head"
     },
     "isFlashSale": false,
     "isTrending": false,
     "isBestseller": true,
     "isNew": false,
-    "isRecommended": false
+    "isRecommended": false,
+    "sku": "TB-ACC-0136",
+    "moq": 5,
+    "pack_size": 2,
+    "tier1_qty": 5,
+    "tier1_price": 549,
+    "tier2_qty": 20,
+    "tier2_price": 505,
+    "tier3_qty": 50,
+    "tier3_price": 461,
+    "mrp": 1199,
+    "suggested_retail_price": 1199
   },
   {
     "id": "image-38-fire-boltt-ring-3-luxury-rose-",
@@ -3982,7 +5400,18 @@ export const products = [
     "isTrending": true,
     "isBestseller": false,
     "isNew": false,
-    "isRecommended": true
+    "isRecommended": true,
+    "sku": "TB-SMA-0137",
+    "moq": 5,
+    "pack_size": 2,
+    "tier1_qty": 5,
+    "tier1_price": 2999,
+    "tier2_qty": 20,
+    "tier2_price": 2789,
+    "tier3_qty": 50,
+    "tier3_price": 2579,
+    "mrp": 8999,
+    "suggested_retail_price": 8999
   },
   {
     "id": "image-39-spigen-liquid-crystal-ultra-th",
@@ -4010,7 +5439,18 @@ export const products = [
     "isTrending": false,
     "isBestseller": true,
     "isNew": false,
-    "isRecommended": true
+    "isRecommended": true,
+    "sku": "TB-PHO-0138",
+    "moq": 20,
+    "pack_size": 5,
+    "tier1_qty": 20,
+    "tier1_price": 899,
+    "tier2_qty": 50,
+    "tier2_price": 791,
+    "tier3_qty": 100,
+    "tier3_price": 701,
+    "mrp": 1599,
+    "suggested_retail_price": 1599
   },
   {
     "id": "image-4-portronics-telescopic-extendab",
@@ -4031,46 +5471,29 @@ export const products = [
     "specs": {
       "Extension": "Extends from 10cm to 16cm",
       "Base": "High-Temperature Heat-Resistant Suction Gel",
-      "Rotation": "360\u00b0 Ball Joint for Landscape/Portrait",
+      "Rotation": "360° Ball Joint for Landscape/Portrait",
       "Weight": "210g Sturdy ABS"
     },
     "isFlashSale": true,
     "isTrending": false,
     "isBestseller": false,
     "isNew": false,
-    "isRecommended": false
+    "isRecommended": false,
+    "sku": "TB-ACC-0139",
+    "moq": 5,
+    "pack_size": 2,
+    "tier1_qty": 5,
+    "tier1_price": 599,
+    "tier2_qty": 20,
+    "tier2_price": 551,
+    "tier3_qty": 50,
+    "tier3_price": 503,
+    "mrp": 1299,
+    "suggested_retail_price": 1299
   },
   {
-    "id": "image-40-apple-watch-ultra-gps-+-cellul",
-    "name": "Apple Watch Ultra GPS + Cellular Titanium Rugged Edition",
-    "brand": "Apple",
-    "category": "smartwatches",
-    "price": 79900,
-    "originalPrice": 89900,
-    "rating": 4.9,
-    "reviewsCount": 410,
-    "image": "/images/image-40.webp",
-    "tags": [
-      "49mm Aerospace Titanium",
-      "Orange Alpine Trail Loop",
-      "Precision Dual-Frequency GPS"
-    ],
-    "shortDescription": "Engineered to withstand extreme environments, deep water dives, and multi-day mountain excursions.",
-    "specs": {
-      "Case": "49mm Natural Titanium",
-      "Display": "Flat Sapphire Crystal OLED Display",
-      "Battery": "Up to 36 Hours Normal / 72h Low Power",
-      "Depth Gauge": "Water Temperature Sensor & Certified EN13319"
-    },
-    "isFlashSale": false,
-    "isTrending": true,
-    "isBestseller": true,
-    "isNew": false,
-    "isRecommended": true
-  },
-  {
-    "id": "image-41-techbazaar-waterproof-360\u00b0-mot",
-    "name": "TechBazaar Waterproof 360\u00b0 Motorcycle & Bike Handlebar Phone Mount Bag",
+    "id": "image-41-techbazaar-waterproof-360°-mot",
+    "name": "TechBazaar Waterproof 360° Motorcycle & Bike Handlebar Phone Mount Bag",
     "brand": "TechBazaar",
     "category": "accessories",
     "price": 699,
@@ -4094,7 +5517,18 @@ export const products = [
     "isTrending": true,
     "isBestseller": true,
     "isNew": false,
-    "isRecommended": true
+    "isRecommended": true,
+    "sku": "TB-ACC-0141",
+    "moq": 5,
+    "pack_size": 2,
+    "tier1_qty": 5,
+    "tier1_price": 699,
+    "tier2_qty": 20,
+    "tier2_price": 643,
+    "tier3_qty": 50,
+    "tier3_price": 587,
+    "mrp": 1499,
+    "suggested_retail_price": 1499
   },
   {
     "id": "image-42-spigen-ultra-clear-shock-absor",
@@ -4122,7 +5556,18 @@ export const products = [
     "isTrending": false,
     "isBestseller": true,
     "isNew": false,
-    "isRecommended": false
+    "isRecommended": false,
+    "sku": "TB-PHO-0142",
+    "moq": 20,
+    "pack_size": 5,
+    "tier1_qty": 20,
+    "tier1_price": 799,
+    "tier2_qty": 50,
+    "tier2_price": 703,
+    "tier3_qty": 100,
+    "tier3_price": 623,
+    "mrp": 1499,
+    "suggested_retail_price": 1499
   },
   {
     "id": "image-42-portronics-power-brick-ii-1000",
@@ -4150,7 +5595,18 @@ export const products = [
     "isTrending": false,
     "isBestseller": true,
     "isNew": false,
-    "isRecommended": true
+    "isRecommended": true,
+    "sku": "TB-POW-0143",
+    "moq": 10,
+    "pack_size": 5,
+    "tier1_qty": 10,
+    "tier1_price": 1199,
+    "tier2_qty": 50,
+    "tier2_price": 1079,
+    "tier3_qty": 100,
+    "tier3_price": 983,
+    "mrp": 2499,
+    "suggested_retail_price": 2499
   },
   {
     "id": "image-43-spigen-tough-armor-extreme-dro",
@@ -4178,7 +5634,18 @@ export const products = [
     "isTrending": true,
     "isBestseller": true,
     "isNew": false,
-    "isRecommended": true
+    "isRecommended": true,
+    "sku": "TB-PHO-0144",
+    "moq": 20,
+    "pack_size": 5,
+    "tier1_qty": 20,
+    "tier1_price": 1399,
+    "tier2_qty": 50,
+    "tier2_price": 1231,
+    "tier3_qty": 100,
+    "tier3_price": 1091,
+    "mrp": 2499,
+    "suggested_retail_price": 2499
   },
   {
     "id": "image-5-portronics-modesk-universal-er",
@@ -4192,7 +5659,7 @@ export const products = [
     "image": "/images/image-5.jpg",
     "tags": [
       "Solid Steel Body",
-      "Optimal 60\u00b0 Angle",
+      "Optimal 60° Angle",
       "Scratchproof Rubber Protection"
     ],
     "shortDescription": "Minimalist one-piece solid metal phone stand keeps notifications visible on your work desk.",
@@ -4206,7 +5673,18 @@ export const products = [
     "isTrending": false,
     "isBestseller": true,
     "isNew": false,
-    "isRecommended": true
+    "isRecommended": true,
+    "sku": "TB-ACC-0145",
+    "moq": 5,
+    "pack_size": 2,
+    "tier1_qty": 5,
+    "tier1_price": 499,
+    "tier2_qty": 20,
+    "tier2_price": 459,
+    "tier3_qty": 50,
+    "tier3_price": 419,
+    "mrp": 999,
+    "suggested_retail_price": 999
   },
   {
     "id": "image-50-portronics-indo-10d-10000mah-t",
@@ -4234,7 +5712,18 @@ export const products = [
     "isTrending": false,
     "isBestseller": false,
     "isNew": false,
-    "isRecommended": false
+    "isRecommended": false,
+    "sku": "TB-POW-0146",
+    "moq": 10,
+    "pack_size": 5,
+    "tier1_qty": 10,
+    "tier1_price": 1099,
+    "tier2_qty": 50,
+    "tier2_price": 989,
+    "tier3_qty": 100,
+    "tier3_price": 901,
+    "mrp": 2199,
+    "suggested_retail_price": 2199
   },
   {
     "id": "image-52-lifelong-22.5w-superfast-charg",
@@ -4262,7 +5751,18 @@ export const products = [
     "isTrending": true,
     "isBestseller": false,
     "isNew": true,
-    "isRecommended": true
+    "isRecommended": true,
+    "sku": "TB-POW-0147",
+    "moq": 10,
+    "pack_size": 5,
+    "tier1_qty": 10,
+    "tier1_price": 1399,
+    "tier2_qty": 50,
+    "tier2_price": 1259,
+    "tier3_qty": 100,
+    "tier3_price": 1147,
+    "mrp": 2899,
+    "suggested_retail_price": 2899
   },
   {
     "id": "image-6-techbazaar-heavy-duty-shockpro",
@@ -4283,42 +5783,25 @@ export const products = [
     "specs": {
       "Locking": "One-Way Mechanical Ratchet Gear Claw",
       "Handlebar Mount": "Heavy Aluminum Alloy Ring Clamp",
-      "Rotation": "360\u00b0 Universal Ball Joint",
+      "Rotation": "360° Universal Ball Joint",
       "Vibration Damping": "Dense Silicone Cushion Pads"
     },
     "isFlashSale": true,
     "isTrending": true,
     "isBestseller": true,
     "isNew": false,
-    "isRecommended": true
-  },
-  {
-    "id": "image-8-portronics-modesk-360-degree-r",
-    "name": "Portronics Modesk 360 Degree Rotating Solid Metal Phone Stand",
-    "brand": "Portronics",
-    "category": "accessories",
-    "price": 699,
-    "originalPrice": 1499,
-    "rating": 4.7,
-    "reviewsCount": 720,
-    "image": "/images/image-8.jpg",
-    "tags": [
-      "360\u00b0 Rotating Turntable Base",
-      "Magnetic Backing Plate",
-      "Heavyweight Solid Steel"
-    ],
-    "shortDescription": "Smooth spinning bearing turntable base allows effortless sharing of videos and presentations across desks.",
-    "specs": {
-      "Swivel": "360\u00b0 Smooth Ball Bearing Rotation",
-      "Material": "Solid Cold-Rolled Alloy Steel",
-      "Base": "Weighted Round Anti-Tip Foundation",
-      "Color": "Matte Stealth Black"
-    },
-    "isFlashSale": false,
-    "isTrending": false,
-    "isBestseller": true,
-    "isNew": false,
-    "isRecommended": true
+    "isRecommended": true,
+    "sku": "TB-ACC-0148",
+    "moq": 5,
+    "pack_size": 2,
+    "tier1_qty": 5,
+    "tier1_price": 799,
+    "tier2_qty": 20,
+    "tier2_price": 735,
+    "tier3_qty": 50,
+    "tier3_price": 671,
+    "mrp": 1699,
+    "suggested_retail_price": 1699
   },
   {
     "id": "image-9-techbazaar-weatherproof-sunsha",
@@ -4340,13 +5823,24 @@ export const products = [
       "Sun Visor": "Integrated Aerodynamic Glare Hood",
       "Cradle": "Spring-Loaded Auto Clamping Arms",
       "Mount": "Rearview Mirror & Handlebar Adapters Included",
-      "Rotation": "360\u00b0 Rotation"
+      "Rotation": "360° Rotation"
     },
     "isFlashSale": true,
     "isTrending": false,
     "isBestseller": false,
     "isNew": true,
-    "isRecommended": false
+    "isRecommended": false,
+    "sku": "TB-ACC-0150",
+    "moq": 5,
+    "pack_size": 2,
+    "tier1_qty": 5,
+    "tier1_price": 599,
+    "tier2_qty": 20,
+    "tier2_price": 551,
+    "tier3_qty": 50,
+    "tier3_price": 503,
+    "mrp": 1299,
+    "suggested_retail_price": 1299
   },
   {
     "id": "image-94-techbazaar-cybercube-rgb-karao",
@@ -4374,7 +5868,18 @@ export const products = [
     "isTrending": true,
     "isBestseller": false,
     "isNew": true,
-    "isRecommended": true
+    "isRecommended": true,
+    "sku": "TB-SPE-0151",
+    "moq": 10,
+    "pack_size": 5,
+    "tier1_qty": 10,
+    "tier1_price": 1899,
+    "tier2_qty": 50,
+    "tier2_price": 1747,
+    "tier3_qty": 100,
+    "tier3_price": 1595,
+    "mrp": 3999,
+    "suggested_retail_price": 3999
   },
   {
     "id": "image-95-portronics-bounce-portable-5w-",
@@ -4402,7 +5907,18 @@ export const products = [
     "isTrending": false,
     "isBestseller": true,
     "isNew": false,
-    "isRecommended": false
+    "isRecommended": false,
+    "sku": "TB-SPE-0152",
+    "moq": 10,
+    "pack_size": 5,
+    "tier1_qty": 10,
+    "tier1_price": 699,
+    "tier2_qty": 50,
+    "tier2_price": 643,
+    "tier3_qty": 100,
+    "tier3_price": 587,
+    "mrp": 1499,
+    "suggested_retail_price": 1499
   },
   {
     "id": "image-96-zebronics-zeb-action-50w-wirel",
@@ -4430,7 +5946,18 @@ export const products = [
     "isTrending": true,
     "isBestseller": true,
     "isNew": false,
-    "isRecommended": true
+    "isRecommended": true,
+    "sku": "TB-SPE-0153",
+    "moq": 10,
+    "pack_size": 5,
+    "tier1_qty": 10,
+    "tier1_price": 2999,
+    "tier2_qty": 50,
+    "tier2_price": 2759,
+    "tier3_qty": 100,
+    "tier3_price": 2519,
+    "mrp": 5999,
+    "suggested_retail_price": 5999
   },
   {
     "id": "image-99-noise-buds-vs102-true-wireless",
@@ -4458,7 +5985,18 @@ export const products = [
     "isTrending": false,
     "isBestseller": true,
     "isNew": false,
-    "isRecommended": true
+    "isRecommended": true,
+    "sku": "TB-EAR-0154",
+    "moq": 10,
+    "pack_size": 5,
+    "tier1_qty": 10,
+    "tier1_price": 1199,
+    "tier2_qty": 50,
+    "tier2_price": 1103,
+    "tier3_qty": 100,
+    "tier3_price": 1007,
+    "mrp": 2499,
+    "suggested_retail_price": 2499
   },
   {
     "id": "case-image-110-f1-grand-prix-racing-paddock-c",
@@ -4490,7 +6028,18 @@ export const products = [
     "isTrending": true,
     "isBestseller": true,
     "isNew": true,
-    "isRecommended": true
+    "isRecommended": true,
+    "sku": "TB-PHO-0155",
+    "moq": 20,
+    "pack_size": 5,
+    "tier1_qty": 20,
+    "tier1_price": 799,
+    "tier2_qty": 50,
+    "tier2_price": 703,
+    "tier3_qty": 100,
+    "tier3_price": 623,
+    "mrp": 1499,
+    "suggested_retail_price": 1499
   },
   {
     "id": "case-image-18-scuderia-carbon-track-edition-",
@@ -4522,7 +6071,18 @@ export const products = [
     "isTrending": true,
     "isBestseller": true,
     "isNew": true,
-    "isRecommended": false
+    "isRecommended": false,
+    "sku": "TB-PHO-0156",
+    "moq": 20,
+    "pack_size": 5,
+    "tier1_qty": 20,
+    "tier1_price": 849,
+    "tier2_qty": 50,
+    "tier2_price": 747,
+    "tier3_qty": 100,
+    "tier3_price": 662,
+    "mrp": 1599,
+    "suggested_retail_price": 1599
   },
   {
     "id": "case-image-63-scuderia-crimson-racing-helmet",
@@ -4554,7 +6114,18 @@ export const products = [
     "isTrending": true,
     "isBestseller": false,
     "isNew": true,
-    "isRecommended": true
+    "isRecommended": true,
+    "sku": "TB-PHO-0157",
+    "moq": 20,
+    "pack_size": 5,
+    "tier1_qty": 20,
+    "tier1_price": 899,
+    "tier2_qty": 50,
+    "tier2_price": 791,
+    "tier3_qty": 100,
+    "tier3_price": 701,
+    "mrp": 1699,
+    "suggested_retail_price": 1699
   },
   {
     "id": "case-image-113-porsche-911-turbo-s-motorsport",
@@ -4586,7 +6157,18 @@ export const products = [
     "isTrending": true,
     "isBestseller": true,
     "isNew": false,
-    "isRecommended": true
+    "isRecommended": true,
+    "sku": "TB-PHO-0158",
+    "moq": 20,
+    "pack_size": 5,
+    "tier1_qty": 20,
+    "tier1_price": 799,
+    "tier2_qty": 50,
+    "tier2_price": 703,
+    "tier3_qty": 100,
+    "tier3_price": 623,
+    "mrp": 1499,
+    "suggested_retail_price": 1499
   },
   {
     "id": "case-image-117-porsche-911-pink-cyber-streetw",
@@ -4618,7 +6200,18 @@ export const products = [
     "isTrending": false,
     "isBestseller": false,
     "isNew": true,
-    "isRecommended": true
+    "isRecommended": true,
+    "sku": "TB-PHO-0159",
+    "moq": 20,
+    "pack_size": 5,
+    "tier1_qty": 20,
+    "tier1_price": 799,
+    "tier2_qty": 50,
+    "tier2_price": 703,
+    "tier3_qty": 100,
+    "tier3_price": 623,
+    "mrp": 1499,
+    "suggested_retail_price": 1499
   },
   {
     "id": "case-image-109-nirvana-in-utero-grunge-rock-v",
@@ -4650,7 +6243,18 @@ export const products = [
     "isTrending": true,
     "isBestseller": true,
     "isNew": false,
-    "isRecommended": true
+    "isRecommended": true,
+    "sku": "TB-PHO-0160",
+    "moq": 20,
+    "pack_size": 5,
+    "tier1_qty": 20,
+    "tier1_price": 699,
+    "tier2_qty": 50,
+    "tier2_price": 615,
+    "tier3_qty": 100,
+    "tier3_price": 545,
+    "mrp": 1299,
+    "suggested_retail_price": 1299
   },
   {
     "id": "case-image-111-nirvana-grunge-guitar-&-lyric-",
@@ -4682,7 +6286,18 @@ export const products = [
     "isTrending": false,
     "isBestseller": false,
     "isNew": true,
-    "isRecommended": false
+    "isRecommended": false,
+    "sku": "TB-PHO-0161",
+    "moq": 20,
+    "pack_size": 5,
+    "tier1_qty": 20,
+    "tier1_price": 699,
+    "tier2_qty": 50,
+    "tier2_price": 615,
+    "tier3_qty": 100,
+    "tier3_price": 545,
+    "mrp": 1299,
+    "suggested_retail_price": 1299
   },
   {
     "id": "case-image-112-the-weeknd-starboy-&-after-hou",
@@ -4714,7 +6329,18 @@ export const products = [
     "isTrending": true,
     "isBestseller": true,
     "isNew": true,
-    "isRecommended": true
+    "isRecommended": true,
+    "sku": "TB-PHO-0162",
+    "moq": 20,
+    "pack_size": 5,
+    "tier1_qty": 20,
+    "tier1_price": 749,
+    "tier2_qty": 50,
+    "tier2_price": 659,
+    "tier3_qty": 100,
+    "tier3_price": 584,
+    "mrp": 1399,
+    "suggested_retail_price": 1399
   },
   {
     "id": "case-image-16-the-weeknd-who-are-you-to-judg",
@@ -4746,7 +6372,18 @@ export const products = [
     "isTrending": false,
     "isBestseller": false,
     "isNew": false,
-    "isRecommended": true
+    "isRecommended": true,
+    "sku": "TB-PHO-0163",
+    "moq": 20,
+    "pack_size": 5,
+    "tier1_qty": 20,
+    "tier1_price": 699,
+    "tier2_qty": 50,
+    "tier2_price": 615,
+    "tier3_qty": 100,
+    "tier3_price": 545,
+    "mrp": 1299,
+    "suggested_retail_price": 1299
   },
   {
     "id": "case-image-67-the-hills---blinding-lights-re",
@@ -4778,7 +6415,18 @@ export const products = [
     "isTrending": true,
     "isBestseller": false,
     "isNew": true,
-    "isRecommended": false
+    "isRecommended": false,
+    "sku": "TB-PHO-0164",
+    "moq": 20,
+    "pack_size": 5,
+    "tier1_qty": 20,
+    "tier1_price": 749,
+    "tier2_qty": 50,
+    "tier2_price": 659,
+    "tier3_qty": 100,
+    "tier3_price": 584,
+    "mrp": 1399,
+    "suggested_retail_price": 1399
   },
   {
     "id": "case-image-116-breaking-bad-hazmat-&-los-poll",
@@ -4810,7 +6458,18 @@ export const products = [
     "isTrending": true,
     "isBestseller": true,
     "isNew": false,
-    "isRecommended": true
+    "isRecommended": true,
+    "sku": "TB-PHO-0165",
+    "moq": 20,
+    "pack_size": 5,
+    "tier1_qty": 20,
+    "tier1_price": 699,
+    "tier2_qty": 50,
+    "tier2_price": 615,
+    "tier3_qty": 100,
+    "tier3_price": 545,
+    "mrp": 1299,
+    "suggested_retail_price": 1299
   },
   {
     "id": "case-image-115-nike-sneakerhead-street-art-co",
@@ -4842,7 +6501,18 @@ export const products = [
     "isTrending": true,
     "isBestseller": true,
     "isNew": true,
-    "isRecommended": true
+    "isRecommended": true,
+    "sku": "TB-PHO-0166",
+    "moq": 20,
+    "pack_size": 5,
+    "tier1_qty": 20,
+    "tier1_price": 749,
+    "tier2_qty": 50,
+    "tier2_price": 659,
+    "tier3_qty": 100,
+    "tier3_price": 584,
+    "mrp": 1399,
+    "suggested_retail_price": 1399
   },
   {
     "id": "case-image-114-urban-street-no-risk-no-story-",
@@ -4874,7 +6544,18 @@ export const products = [
     "isTrending": false,
     "isBestseller": false,
     "isNew": true,
-    "isRecommended": false
+    "isRecommended": false,
+    "sku": "TB-PHO-0167",
+    "moq": 20,
+    "pack_size": 5,
+    "tier1_qty": 20,
+    "tier1_price": 699,
+    "tier2_qty": 50,
+    "tier2_price": 615,
+    "tier3_qty": 100,
+    "tier3_price": 545,
+    "mrp": 1299,
+    "suggested_retail_price": 1299
   },
   {
     "id": "case-image-118-gothic-y2k-cross-grunge-dark-a",
@@ -4906,7 +6587,18 @@ export const products = [
     "isTrending": true,
     "isBestseller": false,
     "isNew": true,
-    "isRecommended": true
+    "isRecommended": true,
+    "sku": "TB-PHO-0168",
+    "moq": 20,
+    "pack_size": 5,
+    "tier1_qty": 20,
+    "tier1_price": 699,
+    "tier2_qty": 50,
+    "tier2_price": 615,
+    "tier3_qty": 100,
+    "tier3_price": 545,
+    "mrp": 1299,
+    "suggested_retail_price": 1299
   },
   {
     "id": "case-image-120-mughal-heritage-royal-courtyar",
@@ -4938,7 +6630,18 @@ export const products = [
     "isTrending": true,
     "isBestseller": true,
     "isNew": true,
-    "isRecommended": true
+    "isRecommended": true,
+    "sku": "TB-PHO-0169",
+    "moq": 20,
+    "pack_size": 5,
+    "tier1_qty": 20,
+    "tier1_price": 799,
+    "tier2_qty": 50,
+    "tier2_price": 703,
+    "tier3_qty": 100,
+    "tier3_price": 623,
+    "mrp": 1499,
+    "suggested_retail_price": 1499
   },
   {
     "id": "case-image-121-jaipur-jharokha-heritage-windo",
@@ -4970,7 +6673,18 @@ export const products = [
     "isTrending": true,
     "isBestseller": true,
     "isNew": true,
-    "isRecommended": true
+    "isRecommended": true,
+    "sku": "TB-PHO-0170",
+    "moq": 20,
+    "pack_size": 5,
+    "tier1_qty": 20,
+    "tier1_price": 799,
+    "tier2_qty": 50,
+    "tier2_price": 703,
+    "tier3_qty": 100,
+    "tier3_price": 623,
+    "mrp": 1499,
+    "suggested_retail_price": 1499
   },
   {
     "id": "case-image-123-royal-peacock-feather-tapestry",
@@ -5002,7 +6716,18 @@ export const products = [
     "isTrending": false,
     "isBestseller": true,
     "isNew": false,
-    "isRecommended": true
+    "isRecommended": true,
+    "sku": "TB-PHO-0171",
+    "moq": 20,
+    "pack_size": 5,
+    "tier1_qty": 20,
+    "tier1_price": 799,
+    "tier2_qty": 50,
+    "tier2_price": 703,
+    "tier3_qty": 100,
+    "tier3_price": 623,
+    "mrp": 1499,
+    "suggested_retail_price": 1499
   },
   {
     "id": "case-image-124-pink-city-hawa-mahal-architect",
@@ -5034,7 +6759,18 @@ export const products = [
     "isTrending": true,
     "isBestseller": false,
     "isNew": true,
-    "isRecommended": true
+    "isRecommended": true,
+    "sku": "TB-PHO-0172",
+    "moq": 20,
+    "pack_size": 5,
+    "tier1_qty": 20,
+    "tier1_price": 799,
+    "tier2_qty": 50,
+    "tier2_price": 703,
+    "tier3_qty": 100,
+    "tier3_price": 623,
+    "mrp": 1499,
+    "suggested_retail_price": 1499
   },
   {
     "id": "case-image-125-mughal-garden-flora-&-peacock-",
@@ -5066,7 +6802,18 @@ export const products = [
     "isTrending": false,
     "isBestseller": true,
     "isNew": false,
-    "isRecommended": true
+    "isRecommended": true,
+    "sku": "TB-PHO-0173",
+    "moq": 20,
+    "pack_size": 5,
+    "tier1_qty": 20,
+    "tier1_price": 799,
+    "tier2_qty": 50,
+    "tier2_price": 703,
+    "tier3_qty": 100,
+    "tier3_price": 623,
+    "mrp": 1499,
+    "suggested_retail_price": 1499
   },
   {
     "id": "case-image-126-pichwai-blue-pavilion-heritage",
@@ -5098,7 +6845,18 @@ export const products = [
     "isTrending": true,
     "isBestseller": false,
     "isNew": true,
-    "isRecommended": true
+    "isRecommended": true,
+    "sku": "TB-PHO-0174",
+    "moq": 20,
+    "pack_size": 5,
+    "tier1_qty": 20,
+    "tier1_price": 799,
+    "tier2_qty": 50,
+    "tier2_price": 703,
+    "tier3_qty": 100,
+    "tier3_price": 623,
+    "mrp": 1499,
+    "suggested_retail_price": 1499
   },
   {
     "id": "case-image-130-shekhawati-carved-teak-haveli-",
@@ -5130,7 +6888,18 @@ export const products = [
     "isTrending": false,
     "isBestseller": false,
     "isNew": true,
-    "isRecommended": true
+    "isRecommended": true,
+    "sku": "TB-PHO-0175",
+    "moq": 20,
+    "pack_size": 5,
+    "tier1_qty": 20,
+    "tier1_price": 799,
+    "tier2_qty": 50,
+    "tier2_price": 703,
+    "tier3_qty": 100,
+    "tier3_price": 623,
+    "mrp": 1499,
+    "suggested_retail_price": 1499
   },
   {
     "id": "case-image-93-sacred-lotus-pond-pichwai-art-",
@@ -5162,7 +6931,18 @@ export const products = [
     "isTrending": true,
     "isBestseller": true,
     "isNew": false,
-    "isRecommended": true
+    "isRecommended": true,
+    "sku": "TB-PHO-0176",
+    "moq": 20,
+    "pack_size": 5,
+    "tier1_qty": 20,
+    "tier1_price": 749,
+    "tier2_qty": 50,
+    "tier2_price": 659,
+    "tier3_qty": 100,
+    "tier3_price": 584,
+    "mrp": 1399,
+    "suggested_retail_price": 1399
   },
   {
     "id": "case-image-94-royal-jaipur-vintage-damask-ta",
@@ -5194,7 +6974,18 @@ export const products = [
     "isTrending": false,
     "isBestseller": true,
     "isNew": false,
-    "isRecommended": false
+    "isRecommended": false,
+    "sku": "TB-PHO-0177",
+    "moq": 20,
+    "pack_size": 5,
+    "tier1_qty": 20,
+    "tier1_price": 749,
+    "tier2_qty": 50,
+    "tier2_price": 659,
+    "tier3_qty": 100,
+    "tier3_price": 584,
+    "mrp": 1399,
+    "suggested_retail_price": 1399
   },
   {
     "id": "case-image-13-deep-wine-magsafe-magnetic-tra",
@@ -5226,7 +7017,18 @@ export const products = [
     "isTrending": true,
     "isBestseller": true,
     "isNew": true,
-    "isRecommended": true
+    "isRecommended": true,
+    "sku": "TB-PHO-0178",
+    "moq": 20,
+    "pack_size": 5,
+    "tier1_qty": 20,
+    "tier1_price": 999,
+    "tier2_qty": 50,
+    "tier2_price": 879,
+    "tier3_qty": 100,
+    "tier3_price": 779,
+    "mrp": 1899,
+    "suggested_retail_price": 1899
   },
   {
     "id": "case-image-108-frosted-matte-black-translucen",
@@ -5258,7 +7060,18 @@ export const products = [
     "isTrending": true,
     "isBestseller": true,
     "isNew": false,
-    "isRecommended": true
+    "isRecommended": true,
+    "sku": "TB-PHO-0179",
+    "moq": 20,
+    "pack_size": 5,
+    "tier1_qty": 20,
+    "tier1_price": 799,
+    "tier2_qty": 50,
+    "tier2_price": 703,
+    "tier3_qty": 100,
+    "tier3_price": 623,
+    "mrp": 1499,
+    "suggested_retail_price": 1499
   },
   {
     "id": "case-image-68-pastel-baby-pink-liquid-silico",
@@ -5290,7 +7103,18 @@ export const products = [
     "isTrending": false,
     "isBestseller": true,
     "isNew": false,
-    "isRecommended": true
+    "isRecommended": true,
+    "sku": "TB-PHO-0180",
+    "moq": 20,
+    "pack_size": 5,
+    "tier1_qty": 20,
+    "tier1_price": 599,
+    "tier2_qty": 50,
+    "tier2_price": 527,
+    "tier3_qty": 100,
+    "tier3_price": 467,
+    "mrp": 1199,
+    "suggested_retail_price": 1199
   },
   {
     "id": "case-image-21-del-to-mdv-airline-boarding-pa",
@@ -5322,7 +7146,18 @@ export const products = [
     "isTrending": true,
     "isBestseller": true,
     "isNew": true,
-    "isRecommended": true
+    "isRecommended": true,
+    "sku": "TB-PHO-0181",
+    "moq": 20,
+    "pack_size": 5,
+    "tier1_qty": 20,
+    "tier1_price": 749,
+    "tier2_qty": 50,
+    "tier2_price": 659,
+    "tier3_qty": 100,
+    "tier3_price": 584,
+    "mrp": 1399,
+    "suggested_retail_price": 1399
   },
   {
     "id": "case-image-144-gothic-ribbon-bow-coquette-pho",
@@ -5354,7 +7189,18 @@ export const products = [
     "isTrending": true,
     "isBestseller": true,
     "isNew": true,
-    "isRecommended": true
+    "isRecommended": true,
+    "sku": "TB-PHO-0182",
+    "moq": 20,
+    "pack_size": 5,
+    "tier1_qty": 20,
+    "tier1_price": 699,
+    "tier2_qty": 50,
+    "tier2_price": 615,
+    "tier3_qty": 100,
+    "tier3_price": 545,
+    "mrp": 1299,
+    "suggested_retail_price": 1299
   },
   {
     "id": "case-image-151-pink-ribbon-bow-soft-coquette-",
@@ -5386,7 +7232,18 @@ export const products = [
     "isTrending": false,
     "isBestseller": false,
     "isNew": true,
-    "isRecommended": false
+    "isRecommended": false,
+    "sku": "TB-PHO-0183",
+    "moq": 20,
+    "pack_size": 5,
+    "tier1_qty": 20,
+    "tier1_price": 699,
+    "tier2_qty": 50,
+    "tier2_price": 615,
+    "tier3_qty": 100,
+    "tier3_price": 545,
+    "mrp": 1299,
+    "suggested_retail_price": 1299
   },
   {
     "id": "case-image-74-sage-green-gingham-&-silk-bow-",
@@ -5418,7 +7275,18 @@ export const products = [
     "isTrending": true,
     "isBestseller": true,
     "isNew": true,
-    "isRecommended": true
+    "isRecommended": true,
+    "sku": "TB-PHO-0184",
+    "moq": 20,
+    "pack_size": 5,
+    "tier1_qty": 20,
+    "tier1_price": 749,
+    "tier2_qty": 50,
+    "tier2_price": 659,
+    "tier3_qty": 100,
+    "tier3_price": 584,
+    "mrp": 1399,
+    "suggested_retail_price": 1399
   },
   {
     "id": "case-image-15-sage-gingham-&-pink-spring-tul",
@@ -5450,14 +7318,25 @@ export const products = [
     "isTrending": false,
     "isBestseller": true,
     "isNew": false,
-    "isRecommended": true
+    "isRecommended": true,
+    "sku": "TB-PHO-0185",
+    "moq": 20,
+    "pack_size": 5,
+    "tier1_qty": 20,
+    "tier1_price": 699,
+    "tier2_qty": 50,
+    "tier2_price": 615,
+    "tier3_qty": 100,
+    "tier3_price": 545,
+    "mrp": 1299,
+    "suggested_retail_price": 1299
   },
   {
-    "id": "case-image-90-parisian-caf\u00e9-butter-croissant",
-    "name": "Parisian Caf\u00e9 Butter Croissant Checkerboard Case",
+    "id": "case-image-90-parisian-café-butter-croissant",
+    "name": "Parisian Café Butter Croissant Checkerboard Case",
     "brand": "TechBazaar Studio",
     "category": "phone-cases",
-    "subCategory": "Parisian Caf\u00e9",
+    "subCategory": "Parisian Café",
     "price": 749,
     "originalPrice": 1399,
     "rating": 4.8,
@@ -5466,11 +7345,11 @@ export const products = [
     "tags": [
       "Golden Flaky Croissant",
       "Powder Blue Gingham",
-      "Cozy Caf\u00e9 Vibes"
+      "Cozy Café Vibes"
     ],
     "shortDescription": "Golden bakery croissant on vintage periwinkle checks for lovers of coffee and Parisian mornings.",
     "specs": {
-      "Collection": "Parisian Caf\u00e9",
+      "Collection": "Parisian Café",
       "Compatible Models": "iPhone 16 / 15 / 14 / 13 Pro",
       "Drop Protection": "Up to 2.5 Meters Shockproof",
       "Material": "Impact Polycarbonate Back + Thermoplastic Polyurethane Bumper",
@@ -5482,7 +7361,18 @@ export const products = [
     "isTrending": true,
     "isBestseller": true,
     "isNew": true,
-    "isRecommended": true
+    "isRecommended": true,
+    "sku": "TB-PHO-0186",
+    "moq": 20,
+    "pack_size": 5,
+    "tier1_qty": 20,
+    "tier1_price": 749,
+    "tier2_qty": 50,
+    "tier2_price": 659,
+    "tier3_qty": 100,
+    "tier3_price": 584,
+    "mrp": 1399,
+    "suggested_retail_price": 1399
   },
   {
     "id": "case-image-100-capri-amalfi-lemon-&-sky-blue-",
@@ -5514,7 +7404,18 @@ export const products = [
     "isTrending": false,
     "isBestseller": false,
     "isNew": true,
-    "isRecommended": true
+    "isRecommended": true,
+    "sku": "TB-PHO-0187",
+    "moq": 20,
+    "pack_size": 5,
+    "tier1_qty": 20,
+    "tier1_price": 699,
+    "tier2_qty": 50,
+    "tier2_price": 615,
+    "tier3_qty": 100,
+    "tier3_price": 545,
+    "mrp": 1299,
+    "suggested_retail_price": 1299
   },
   {
     "id": "case-image-12-retro-sunshine-&-blue-sky-chec",
@@ -5546,7 +7447,18 @@ export const products = [
     "isTrending": false,
     "isBestseller": true,
     "isNew": false,
-    "isRecommended": true
+    "isRecommended": true,
+    "sku": "TB-PHO-0188",
+    "moq": 20,
+    "pack_size": 5,
+    "tier1_qty": 20,
+    "tier1_price": 699,
+    "tier2_qty": 50,
+    "tier2_price": 615,
+    "tier3_qty": 100,
+    "tier3_price": 545,
+    "mrp": 1299,
+    "suggested_retail_price": 1299
   },
   {
     "id": "case-image-10-bordeaux-maroon-plaid-gingham-",
@@ -5578,7 +7490,18 @@ export const products = [
     "isTrending": false,
     "isBestseller": false,
     "isNew": false,
-    "isRecommended": false
+    "isRecommended": false,
+    "sku": "TB-PHO-0189",
+    "moq": 20,
+    "pack_size": 5,
+    "tier1_qty": 20,
+    "tier1_price": 649,
+    "tier2_qty": 50,
+    "tier2_price": 571,
+    "tier3_qty": 100,
+    "tier3_price": 506,
+    "mrp": 1199,
+    "suggested_retail_price": 1199
   },
   {
     "id": "case-image-148-heart-sunglasses-kitty-cat-rib",
@@ -5610,7 +7533,18 @@ export const products = [
     "isTrending": true,
     "isBestseller": false,
     "isNew": true,
-    "isRecommended": true
+    "isRecommended": true,
+    "sku": "TB-PHO-0190",
+    "moq": 20,
+    "pack_size": 5,
+    "tier1_qty": 20,
+    "tier1_price": 699,
+    "tier2_qty": 50,
+    "tier2_price": 615,
+    "tier3_qty": 100,
+    "tier3_price": 545,
+    "mrp": 1299,
+    "suggested_retail_price": 1299
   },
   {
     "id": "case-image-150-vintage-vespa-scooter-puppy-do",
@@ -5642,7 +7576,18 @@ export const products = [
     "isTrending": false,
     "isBestseller": true,
     "isNew": false,
-    "isRecommended": true
+    "isRecommended": true,
+    "sku": "TB-PHO-0191",
+    "moq": 20,
+    "pack_size": 5,
+    "tier1_qty": 20,
+    "tier1_price": 699,
+    "tier2_qty": 50,
+    "tier2_price": 615,
+    "tier3_qty": 100,
+    "tier3_price": 545,
+    "mrp": 1299,
+    "suggested_retail_price": 1299
   },
   {
     "id": "case-image-154-retro-bloom-white-daisies-on-s",
@@ -5674,7 +7619,18 @@ export const products = [
     "isTrending": false,
     "isBestseller": false,
     "isNew": true,
-    "isRecommended": true
+    "isRecommended": true,
+    "sku": "TB-PHO-0192",
+    "moq": 20,
+    "pack_size": 5,
+    "tier1_qty": 20,
+    "tier1_price": 699,
+    "tier2_qty": 50,
+    "tier2_price": 615,
+    "tier3_qty": 100,
+    "tier3_price": 545,
+    "mrp": 1299,
+    "suggested_retail_price": 1299
   },
   {
     "id": "case-image-96-coastal-coral-starfish-on-caba",
@@ -5706,7 +7662,18 @@ export const products = [
     "isTrending": true,
     "isBestseller": false,
     "isNew": true,
-    "isRecommended": false
+    "isRecommended": false,
+    "sku": "TB-PHO-0193",
+    "moq": 20,
+    "pack_size": 5,
+    "tier1_qty": 20,
+    "tier1_price": 699,
+    "tier2_qty": 50,
+    "tier2_price": 615,
+    "tier3_qty": 100,
+    "tier3_price": 545,
+    "mrp": 1299,
+    "suggested_retail_price": 1299
   },
   {
     "id": "case-image-132-ice-bear-cute-magsafe-magnetic",
@@ -5738,7 +7705,18 @@ export const products = [
     "isTrending": true,
     "isBestseller": true,
     "isNew": true,
-    "isRecommended": true
+    "isRecommended": true,
+    "sku": "TB-PHO-0194",
+    "moq": 20,
+    "pack_size": 5,
+    "tier1_qty": 20,
+    "tier1_price": 699,
+    "tier2_qty": 50,
+    "tier2_price": 615,
+    "tier3_qty": 100,
+    "tier3_price": 545,
+    "mrp": 1299,
+    "suggested_retail_price": 1299
   },
   {
     "id": "case-image-133-panda-none-of-your-business-ma",
@@ -5770,7 +7748,18 @@ export const products = [
     "isTrending": true,
     "isBestseller": true,
     "isNew": true,
-    "isRecommended": true
+    "isRecommended": true,
+    "sku": "TB-PHO-0195",
+    "moq": 20,
+    "pack_size": 5,
+    "tier1_qty": 20,
+    "tier1_price": 699,
+    "tier2_qty": 50,
+    "tier2_price": 615,
+    "tier3_qty": 100,
+    "tier3_price": 545,
+    "mrp": 1299,
+    "suggested_retail_price": 1299
   },
   {
     "id": "case-image-134-we-bare-bears-squad-magsafe-ma",
@@ -5802,7 +7791,18 @@ export const products = [
     "isTrending": false,
     "isBestseller": true,
     "isNew": false,
-    "isRecommended": true
+    "isRecommended": true,
+    "sku": "TB-PHO-0196",
+    "moq": 20,
+    "pack_size": 5,
+    "tier1_qty": 20,
+    "tier1_price": 699,
+    "tier2_qty": 50,
+    "tier2_price": 615,
+    "tier3_qty": 100,
+    "tier3_price": 545,
+    "mrp": 1299,
+    "suggested_retail_price": 1299
   },
   {
     "id": "case-image-135-just-grow-with-the-flow-retro-",
@@ -5834,7 +7834,18 @@ export const products = [
     "isTrending": false,
     "isBestseller": false,
     "isNew": true,
-    "isRecommended": true
+    "isRecommended": true,
+    "sku": "TB-PHO-0197",
+    "moq": 20,
+    "pack_size": 5,
+    "tier1_qty": 20,
+    "tier1_price": 699,
+    "tier2_qty": 50,
+    "tier2_price": 615,
+    "tier3_qty": 100,
+    "tier3_price": 545,
+    "mrp": 1299,
+    "suggested_retail_price": 1299
   },
   {
     "id": "case-image-137-when-life-gives-you-lemons-mak",
@@ -5866,7 +7877,18 @@ export const products = [
     "isTrending": true,
     "isBestseller": false,
     "isNew": true,
-    "isRecommended": false
+    "isRecommended": false,
+    "sku": "TB-PHO-0198",
+    "moq": 20,
+    "pack_size": 5,
+    "tier1_qty": 20,
+    "tier1_price": 699,
+    "tier2_qty": 50,
+    "tier2_price": 615,
+    "tier3_qty": 100,
+    "tier3_price": 545,
+    "mrp": 1299,
+    "suggested_retail_price": 1299
   },
   {
     "id": "case-image-86-hot-pink-gingham-shockproof-ai",
@@ -5898,7 +7920,18 @@ export const products = [
     "isTrending": true,
     "isBestseller": true,
     "isNew": true,
-    "isRecommended": true
+    "isRecommended": true,
+    "sku": "TB-PHO-0199",
+    "moq": 20,
+    "pack_size": 5,
+    "tier1_qty": 20,
+    "tier1_price": 499,
+    "tier2_qty": 50,
+    "tier2_price": 439,
+    "tier3_qty": 100,
+    "tier3_price": 389,
+    "mrp": 999,
+    "suggested_retail_price": 999
   },
   {
     "id": "case-image-87-forest-green-&-gold-starburst-",
@@ -5930,7 +7963,18 @@ export const products = [
     "isTrending": false,
     "isBestseller": false,
     "isNew": true,
-    "isRecommended": true
+    "isRecommended": true,
+    "sku": "TB-PHO-0200",
+    "moq": 20,
+    "pack_size": 5,
+    "tier1_qty": 20,
+    "tier1_price": 499,
+    "tier2_qty": 50,
+    "tier2_price": 439,
+    "tier3_qty": 100,
+    "tier3_price": 389,
+    "mrp": 999,
+    "suggested_retail_price": 999
   },
   {
     "id": "case-image-88-french-bakery-fresh-croissant-",
@@ -5962,7 +8006,80 @@ export const products = [
     "isTrending": true,
     "isBestseller": true,
     "isNew": false,
-    "isRecommended": true
+    "isRecommended": true,
+    "sku": "TB-PHO-0201",
+    "moq": 20,
+    "pack_size": 5,
+    "tier1_qty": 20,
+    "tier1_price": 499,
+    "tier2_qty": 50,
+    "tier2_price": 439,
+    "tier3_qty": 100,
+    "tier3_price": 389,
+    "mrp": 999,
+    "suggested_retail_price": 999
+  },
+  {
+    "id": "tb-prod-1795411301799",
+    "name": "Sony WH-1000XM5 Noise Canceling Headphones",
+    "brand": "Sony",
+    "category": "Headphones",
+    "price": 31990,
+    "originalPrice": 34990,
+    "mrp": 34990,
+    "rating": 4.8,
+    "reviewsCount": 385,
+    "image": "/images/image-151.webp",
+    "images": [
+      "/images/image-151.webp"
+    ],
+    "variants": [
+      {
+        "id": "var-sony-black",
+        "name": "Black",
+        "sku": "TB-HEA-5641",
+        "price": 31990,
+        "stock": 15,
+        "image": "/images/image-151.webp"
+      },
+      {
+        "id": "var-sony-silver",
+        "name": "Silver",
+        "sku": "TB-HEA-1344",
+        "price": 31990,
+        "stock": 12,
+        "image": "/images/image-151.webp"
+      }
+    ],
+    "tags": [
+      "Industry Leading ANC",
+      "Auto NC Optimizer",
+      "30hr Battery",
+      "Crystal Clear Hands-Free Calling"
+    ],
+    "shortDescription": "The Sony WH-1000XM5 headphones rewrite the rules for distraction-free listening with two processors and eight microphones for unprecedented noise cancellation.",
+    "specs": {
+      "Noise Cancellation": "Industry Leading ANC with 8 Microphones",
+      "Battery Life": "Up to 30 Hours (ANC On) / 40 Hours (ANC Off)",
+      "Bluetooth Version": "v5.2 (LDAC, AAC, SBC)",
+      "Quick Charge": "3 min charge gives 3 hours playback",
+      "Driver Unit": "30mm Carbon Fiber Composite",
+      "Weight": "250g"
+    },
+    "isFlashSale": false,
+    "isTrending": true,
+    "isBestseller": true,
+    "isNew": false,
+    "isRecommended": true,
+    "sku": "TB-HEA-5641",
+    "moq": 5,
+    "pack_size": 2,
+    "tier1_qty": 5,
+    "tier1_price": 31990,
+    "tier2_qty": 20,
+    "tier2_price": 29431,
+    "tier3_qty": 50,
+    "tier3_price": 26872,
+    "suggested_retail_price": 34990
   }
 ];
-export default products;

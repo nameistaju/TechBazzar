@@ -2,7 +2,11 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { ChevronRight } from 'lucide-react';
 
-export default function Breadcrumbs({ items }) {
+export default function Breadcrumbs({ items = [], customCrumbs }) {
+  const list = Array.isArray(items) && items.length > 0
+    ? items
+    : (Array.isArray(customCrumbs) ? customCrumbs.map(c => ({ label: c.label, link: c.link || c.path })) : []);
+
   return (
     <nav aria-label="Breadcrumb" className="py-4 text-[11px] uppercase tracking-wider text-[#6B6B6B]">
       <ol className="flex items-center flex-wrap gap-1.5">
@@ -11,8 +15,8 @@ export default function Breadcrumbs({ items }) {
             Home
           </Link>
         </li>
-        {items.map((item, index) => {
-          const isLast = index === items.length - 1;
+        {list.map((item, index) => {
+          const isLast = index === list.length - 1;
           return (
             <li key={index} className="flex items-center gap-1.5">
               <ChevronRight size={12} className="text-[#BDBDBD]" />

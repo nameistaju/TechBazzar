@@ -201,7 +201,7 @@ export function calculateRetailCart({
  */
 export function calculateWholesaleCart({
   items = [],
-  user = null,
+  _user = null,
   group = null,
   priceLists = [],
   discount = null,

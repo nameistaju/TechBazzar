@@ -3,7 +3,7 @@ import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ArrowUp } from 'lucide-react';
 
-import { StoreProvider, useStore } from './context/StoreContext';
+import { StoreProvider } from './context/StoreContext';
 import { BrandingProvider } from './context/BrandingContext';
 import useAuthStore from './store/authStore';
 

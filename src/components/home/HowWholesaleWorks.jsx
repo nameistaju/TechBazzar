@@ -1,5 +1,5 @@
 import React from 'react';
-import { Layers, FileCheck2, Truck, TrendingUp, ArrowRight } from 'lucide-react';
+import { Layers, FileCheck2, Truck, TrendingUp } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 export default function HowWholesaleWorks() {

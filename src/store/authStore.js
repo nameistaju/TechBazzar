@@ -3,7 +3,7 @@ import authApi from '../api/authApi';
 import cartApi from '../api/cartApi';
 import { useToastStore } from './toastStore';
 
-export const useAuthStore = create((set, get) => ({
+export const useAuthStore = create((set, _get) => ({
   user: null,
   isAuthenticated: false,
   isLoading: true,
@@ -93,7 +93,11 @@ export const useAuthStore = create((set, get) => ({
 
   register: async (name, email, password, guestOrderNumber = null) => {
     set({ isLoading: true });
-    const res = await authApi.register({ name, email, password, guestOrderNumber });
+    const payload = { name: name.trim(), email: email.trim(), password };
+    if (guestOrderNumber) {
+      payload.guestOrderNumber = guestOrderNumber;
+    }
+    const res = await authApi.register(payload);
 
     if (res.error) {
       set({ isLoading: false });
