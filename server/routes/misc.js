@@ -1,9 +1,22 @@
 import { Router } from 'express';
 import { z } from 'zod';
+import rateLimit from 'express-rate-limit';
 import db from '../db/index.js';
 import { validateBody } from '../middleware/validate.js';
 
 const router = Router();
+
+const newsletterLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 10,
+  message: { data: null, error: 'Too many subscription attempts. Please try again later.' }
+});
+
+const notifyLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 20,
+  message: { data: null, error: 'Too many notification requests. Please try again later.' }
+});
 
 const newsletterSchema = z.object({
   email: z.string().email('Please enter a valid email address')
@@ -15,7 +28,7 @@ const notifyMeSchema = z.object({
 });
 
 // POST /api/newsletter
-router.post('/newsletter', validateBody(newsletterSchema), (req, res) => {
+router.post('/newsletter', newsletterLimiter, validateBody(newsletterSchema), (req, res) => {
   const email = req.body.email.trim().toLowerCase();
   
   try {
@@ -30,7 +43,7 @@ router.post('/newsletter', validateBody(newsletterSchema), (req, res) => {
 });
 
 // POST /api/notify-me
-router.post('/notify-me', validateBody(notifyMeSchema), (req, res) => {
+router.post('/notify-me', notifyLimiter, validateBody(notifyMeSchema), (req, res) => {
   const { productId, email } = req.body;
   const cleanEmail = email.trim().toLowerCase();
 

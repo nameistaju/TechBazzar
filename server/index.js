@@ -17,16 +17,34 @@ import adminRoutes from './routes/admin.js';
 import miscRoutes from './routes/misc.js';
 import bannersRoutes from './routes/banners.js';
 import quotesRoutes from './routes/quotes.js';
+import wholesaleRoutes from './routes/wholesale.js';
+import brandingRoutes from './routes/branding.js';
 import { errorHandler } from './middleware/error.js';
+import { getJwtSecret } from './middleware/auth.js';
+
+// Validate JWT secret on startup (refuses to boot in production without strong JWT_SECRET)
+getJwtSecret();
 
 const app = express();
 const PORT = process.env.PORT || 5000;
 const CLIENT_URL = process.env.CLIENT_URL || 'http://localhost:3000';
 
-// Security Headers with Helmet
+// Security Headers with Helmet + CSP
 app.use(helmet({
   crossOriginResourcePolicy: false,
-  contentSecurityPolicy: false // Allows local development and preview without strict CSP blocking
+  contentSecurityPolicy: {
+    directives: {
+      defaultSrc: ["'self'"],
+      scriptSrc: ["'self'", "'unsafe-inline'"],
+      styleSrc: ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com"],
+      fontSrc: ["'self'", "https://fonts.gstatic.com", "data:"],
+      imgSrc: ["'self'", "data:", "blob:"],
+      connectSrc: ["'self'"],
+      objectSrc: ["'none'"],
+      baseUri: ["'self'"],
+      frameAncestors: ["'self'"]
+    }
+  }
 }));
 
 // CORS Configuration
@@ -68,6 +86,8 @@ app.use('/api/addresses', addressesRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/banners', bannersRoutes);
 app.use('/api/quotes', quotesRoutes);
+app.use('/api/wholesale', wholesaleRoutes);
+app.use('/api', brandingRoutes);
 app.use('/api', miscRoutes);
 
 // Fallback 404 for unhandled API endpoints

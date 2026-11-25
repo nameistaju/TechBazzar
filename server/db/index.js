@@ -19,4 +19,12 @@ db.pragma('foreign_keys = ON');
 const schema = fs.readFileSync(schemaPath, 'utf-8');
 db.exec(schema);
 
+// Ensure token_version column exists for session invalidation on password change
+try {
+  const userCols = db.prepare("PRAGMA table_info('users')").all();
+  if (!userCols.some(c => c.name === 'token_version')) {
+    db.exec('ALTER TABLE users ADD COLUMN token_version INTEGER NOT NULL DEFAULT 0');
+  }
+} catch {}
+
 export default db;

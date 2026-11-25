@@ -1,7 +1,40 @@
 import { Router } from 'express';
+import { z } from 'zod';
+import rateLimit from 'express-rate-limit';
 import db from '../db/index.js';
+import { optionalAuth } from '../middleware/auth.js';
+import { validateBody } from '../middleware/validate.js';
 
 const router = Router();
+
+const quoteLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 20,
+  message: { data: null, error: 'Too many quote requests. Please try again later.' }
+});
+
+const createQuoteSchema = z.object({
+  businessName: z.string().max(150).optional().nullable(),
+  contactName: z.string().min(2).max(120).optional(),
+  name: z.string().min(2).max(120).optional(),
+  email: z.string().email('Valid email address is required'),
+  phone: z.string().min(10, 'Valid phone number is required').max(20),
+  gstin: z.string().max(20).optional().nullable(),
+  pincode: z.string().max(10).optional().nullable(),
+  items: z.union([
+    z.array(z.object({
+      productId: z.string().optional(),
+      name: z.string().min(1),
+      quantity: z.coerce.number().int().positive(),
+      targetPrice: z.coerce.number().nonnegative().optional().nullable()
+    })).min(1),
+    z.string().min(2)
+  ]),
+  targetPrice: z.coerce.number().nonnegative().optional().nullable(),
+  notes: z.string().max(2000).optional().nullable()
+}).refine(d => Boolean((d.contactName || d.name || '').trim()), {
+  message: 'Contact name is required'
+});
 
 function getNextRfqNumber() {
   const currentYear = new Date().getFullYear();
@@ -21,7 +54,7 @@ function getNextRfqNumber() {
 }
 
 // POST /api/quotes - Submit new quote request (guest or registered)
-router.post('/', (req, res, next) => {
+router.post('/', quoteLimiter, validateBody(createQuoteSchema), (req, res, next) => {
   try {
     const {
       businessName,
@@ -37,15 +70,6 @@ router.post('/', (req, res, next) => {
     } = req.body;
 
     const contactName = rawContactName || name;
-
-    if (!contactName || !email || !phone) {
-      return res.status(400).json({ data: null, error: 'Contact name, email, and phone are required' });
-    }
-
-    if (!items || (Array.isArray(items) && items.length === 0)) {
-      return res.status(400).json({ data: null, error: 'At least one item is required in the quote request' });
-    }
-
     const quoteNumber = getNextRfqNumber();
     const itemsJson = typeof items === 'string' ? items : JSON.stringify(items);
     const targetPriceInt = targetPrice ? Math.round(Number(targetPrice)) : null;
@@ -82,8 +106,8 @@ router.post('/', (req, res, next) => {
   }
 });
 
-// GET /api/quotes/:quoteNumber - Check quote request status
-router.get('/:quoteNumber', (req, res, next) => {
+// GET /api/quotes/:quoteNumber - Check quote request status (Protected: Admin, Owner, or matching contact)
+router.get('/:quoteNumber', quoteLimiter, optionalAuth, (req, res, next) => {
   try {
     const { quoteNumber } = req.params;
     const quote = db.prepare(`
@@ -94,6 +118,20 @@ router.get('/:quoteNumber', (req, res, next) => {
     `).get(quoteNumber);
 
     if (!quote) {
+      return res.status(404).json({ data: null, error: 'Quote request not found' });
+    }
+
+    const contactParam = typeof req.query.contact === 'string' ? req.query.contact.trim() : '';
+    const isAdmin = req.user?.role === 'admin';
+    const isOwner = Boolean(req.user?.email && quote.email && req.user.email.toLowerCase() === quote.email.toLowerCase());
+    const hasMatchingContact = Boolean(
+      contactParam && (
+        (quote.email && contactParam.toLowerCase() === quote.email.toLowerCase()) ||
+        (quote.phone && contactParam === quote.phone)
+      )
+    );
+
+    if (!isAdmin && !isOwner && !hasMatchingContact) {
       return res.status(404).json({ data: null, error: 'Quote request not found' });
     }
 

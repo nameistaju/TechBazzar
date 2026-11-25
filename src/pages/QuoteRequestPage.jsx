@@ -67,6 +67,7 @@ export default function QuoteRequestPage() {
 
   // Quote Tracking
   const [trackingNumber, setTrackingNumber] = useState('');
+  const [trackContact, setTrackContact] = useState('');
   const [trackedQuote, setTrackedQuote] = useState(null);
   const [trackingLoading, setTrackingLoading] = useState(false);
   const [trackError, setTrackError] = useState('');
@@ -140,7 +141,8 @@ export default function QuoteRequestPage() {
     setTrackedQuote(null);
 
     try {
-      const res = await fetch(`/api/quotes/${encodeURIComponent(trackingNumber.trim())}`);
+      const qs = trackContact.trim() ? `?contact=${encodeURIComponent(trackContact.trim())}` : '';
+      const res = await fetch(`/api/quotes/${encodeURIComponent(trackingNumber.trim())}${qs}`);
       const json = await res.json();
       if (!res.ok || json.error) {
         throw new Error(json.error || 'Quote request not found');
@@ -468,15 +470,23 @@ export default function QuoteRequestPage() {
           <div className="max-w-xl mx-auto space-y-6">
             <form onSubmit={handleTrackQuote} className="space-y-3">
               <label className="text-xs font-semibold uppercase tracking-wider text-[#0A0A0A] block">
-                Enter Quote Reference Number
+                Enter Quote Reference Number &amp; Registered Email or Phone
               </label>
-              <div className="flex gap-2">
+              <div className="flex flex-col sm:flex-row gap-2">
                 <input
                   type="text"
                   placeholder="e.g. RFQ-2026-0001"
                   value={trackingNumber}
                   onChange={(e) => setTrackingNumber(e.target.value)}
                   className="flex-1 px-3 py-2.5 border border-[#EAEAEA] rounded font-mono text-xs uppercase outline-none focus:border-[#0A0A0A]"
+                  required
+                />
+                <input
+                  type="text"
+                  placeholder="Email or 10-digit phone"
+                  value={trackContact}
+                  onChange={(e) => setTrackContact(e.target.value)}
+                  className="flex-1 px-3 py-2.5 border border-[#EAEAEA] rounded text-xs outline-none focus:border-[#0A0A0A]"
                   required
                 />
                 <button

@@ -325,18 +325,14 @@ export default function AuthModal() {
             )}
           </button>
 
-          {/* Quick Demo Credentials Helper */}
-          <div className="pt-3 border-t border-[#F2F2F2] text-[11px] text-[#8A8A8A] text-center">
-            {tab === 'login' ? (
-              <span>
-                Demo Admin: <code className="text-[#0A0A0A] font-mono">admin@techbazaar.com</code> / <code className="text-[#0A0A0A] font-mono">admin123</code>
-              </span>
-            ) : (
+          {/* Guest Checkout Note */}
+          {tab === 'register' && (
+            <div className="pt-3 border-t border-[#F2F2F2] text-[11px] text-[#8A8A8A] text-center">
               <span>
                 Guest-first: You can also shop & place orders without an account.
               </span>
-            )}
-          </div>
+            </div>
+          )}
         </form>
       </div>
     </div>

@@ -18,6 +18,18 @@ const orderLimiter = rateLimit({
   message: { data: null, error: 'Too many order requests. Please try again in a few minutes.' }
 });
 
+const trackLimiter = rateLimit({
+  windowMs: 10 * 60 * 1000,
+  max: 30,
+  message: { data: null, error: 'Too many tracking requests. Please try again later.' }
+});
+
+const invoiceLimiter = rateLimit({
+  windowMs: 10 * 60 * 1000,
+  max: 30,
+  message: { data: null, error: 'Too many invoice requests. Please try again later.' }
+});
+
 const createOrderSchema = z.object({
   customer: z.object({
     name: z.string().min(2, 'Full name is required'),
@@ -42,9 +54,10 @@ const createOrderSchema = z.object({
     productId: z.string(),
     quantity: z.number().int().positive()
   })).min(1, 'Order must contain at least one item'),
-  paymentMethod: z.enum(['cod', 'card', 'upi', 'bank_transfer']).default('card'),
+  paymentMethod: z.enum(['cod', 'card', 'upi', 'bank_transfer', 'credit_terms', 'advance_50']).default('card'),
   discountCode: z.string().optional(),
-  isAdvancePayment: z.boolean().optional()
+  isAdvancePayment: z.boolean().optional(),
+  channel: z.enum(['retail', 'wholesale']).default('retail')
 });
 
 const trackOrderSchema = z.object({
@@ -59,10 +72,27 @@ function generateOrderNumber() {
   return `TB-${new Date().getFullYear()}-${randomSuffix}`;
 }
 
-// POST /api/orders (Guest or Logged-in Wholesale Order)
+// POST /api/orders (Guest or Logged-in Order - Retail only; Wholesale must use /api/wholesale/orders)
 router.post('/', orderLimiter, optionalAuth, validateBody(createOrderSchema), async (req, res) => {
-  const { customer, shippingAddress, billingAddress, items, paymentMethod, discountCode, isAdvancePayment } = req.body;
+  const { customer, shippingAddress, billingAddress, items, paymentMethod, discountCode, isAdvancePayment, channel = 'retail' } = req.body;
   const userId = req.user ? req.user.id : null;
+  const isWholesaleChannel = channel === 'wholesale';
+
+  if (isWholesaleChannel) {
+    const isApprovedWholesale = Boolean(
+      req.user && (req.user.role === 'admin' || (req.user.buyer_type === 'wholesale' && req.user.wholesale_status === 'approved'))
+    );
+    if (!isApprovedWholesale) {
+      return res.status(403).json({
+        data: null,
+        error: 'Wholesale orders require an approved wholesale business account.'
+      });
+    }
+    return res.status(400).json({
+      data: null,
+      error: 'Wholesale orders must be placed through /api/wholesale/orders.'
+    });
+  }
 
   try {
     // Execute stock check, price recalculation, and order insertion inside SQLite transaction
@@ -71,7 +101,7 @@ router.post('/', orderLimiter, optionalAuth, validateBody(createOrderSchema), as
       const orderItemsToInsert = [];
       const stockMovementRecords = [];
 
-      // 1. Verify, calculate wholesale tier price, and decrement stock
+      // 1. Verify stock and calculate appropriate channel price
       for (const item of items) {
         const product = db.prepare('SELECT * FROM products WHERE id = ?').get(item.productId);
 
@@ -90,9 +120,17 @@ router.post('/', orderLimiter, optionalAuth, validateBody(createOrderSchema), as
         // Decrement product stock
         db.prepare('UPDATE products SET stock = stock - ? WHERE id = ?').run(item.quantity, product.id);
 
-        const tierInfo = getWholesaleTier(product, item.quantity);
-        const unitPrice = tierInfo.unitPrice;
-        const lineTotal = tierInfo.lineTotal;
+        let unitPrice = Number(product.price || 0);
+        let tierApplied = 1;
+        let lineTotal = unitPrice * item.quantity;
+
+        if (isWholesaleChannel) {
+          const tierInfo = getWholesaleTier(product, item.quantity);
+          unitPrice = tierInfo.unitPrice;
+          tierApplied = tierInfo.activeTier || 1;
+          lineTotal = tierInfo.lineTotal;
+        }
+
         const taxRate = product.gst_rate !== undefined ? Number(product.gst_rate) : 18;
         const taxAmount = Math.round(lineTotal * (taxRate / 100));
 
@@ -106,7 +144,7 @@ router.post('/', orderLimiter, optionalAuth, validateBody(createOrderSchema), as
           price: unitPrice,
           quantity: item.quantity,
           image: product.image,
-          tierApplied: tierInfo.tierIndex,
+          tierApplied,
           unitPrice: unitPrice,
           taxRate: taxRate,
           taxAmount: taxAmount,
@@ -121,11 +159,13 @@ router.post('/', orderLimiter, optionalAuth, validateBody(createOrderSchema), as
         });
       }
 
-      // Check Wholesale Minimum Order Value (MOV)
-      const movRow = db.prepare("SELECT value FROM settings WHERE key = 'min_order_value'").get();
-      const minOrderValue = movRow ? Number(movRow.value) : 2500;
-      if (subtotal < minOrderValue) {
-        throw new Error(`Minimum Wholesale Order Value is ₹${minOrderValue.toLocaleString('en-IN')}. Your subtotal is ₹${subtotal.toLocaleString('en-IN')}.`);
+      // Check Minimum Order Value (MOV) ONLY for wholesale channel
+      if (isWholesaleChannel) {
+        const movRow = db.prepare("SELECT value FROM settings WHERE key = 'min_order_value'").get();
+        const minOrderValue = movRow ? Number(movRow.value) : 2500;
+        if (subtotal < minOrderValue) {
+          throw new Error(`Minimum Wholesale Order Value is ₹${minOrderValue.toLocaleString('en-IN')}. Your subtotal is ₹${subtotal.toLocaleString('en-IN')}.`);
+        }
       }
 
       // Handle Discount Code if provided
@@ -135,18 +175,24 @@ router.post('/', orderLimiter, optionalAuth, validateBody(createOrderSchema), as
       if (discountCode) {
         const discRow = db.prepare('SELECT * FROM discounts WHERE UPPER(code) = UPPER(?) AND active = 1').get(discountCode.trim());
         if (discRow) {
-          const evalResult = evaluateDiscount(discRow, { items: orderItemsToInsert });
+          const evalResult = evaluateDiscount(discRow, { items: orderItemsToInsert }, req.user, channel);
           if (evalResult.valid) {
-            discountAmount = evalResult.discountAmount;
+            discountAmount = evalResult.discountAmount + (evalResult.volumeDiscountAmount || 0);
             appliedDiscount = discRow;
           }
         }
       }
 
-      // Free shipping over ₹10,000 threshold, else ₹250 flat pallet freight
-      const freeShipRow = db.prepare("SELECT value FROM settings WHERE key = 'free_shipping_threshold'").get();
-      const freeShippingThreshold = freeShipRow ? Number(freeShipRow.value) : 10000;
-      const shipping = subtotal >= freeShippingThreshold ? 0 : 250;
+      // Shipping threshold: Retail free over ₹1,499, else ₹99. Wholesale free over ₹10,000, else ₹250
+      let shipping = 0;
+      if (isWholesaleChannel) {
+        const freeShipRow = db.prepare("SELECT value FROM settings WHERE key = 'free_shipping_threshold'").get();
+        const freeShippingThreshold = freeShipRow ? Number(freeShipRow.value) : 10000;
+        shipping = subtotal >= freeShippingThreshold ? 0 : 250;
+      } else {
+        shipping = subtotal >= 1499 ? 0 : 99;
+      }
+
       const total = Math.max(0, subtotal - discountAmount + shipping);
 
       // Advance payment calculations (50% booking advance)
@@ -173,12 +219,12 @@ router.post('/', orderLimiter, optionalAuth, validateBody(createOrderSchema), as
           order_number, user_id, guest_name, guest_email, guest_phone,
           business_name, gstin, billing_address, advance_amount, balance_amount, is_advance_payment,
           tracking_token, status, status_history, subtotal, shipping,
-          discount_code, discount_amount, total, address, payment_method, created_at
+          discount_code, discount_amount, total, address, payment_method, channel, created_at
         ) VALUES (
           ?, ?, ?, ?, ?,
           ?, ?, ?, ?, ?, ?,
           ?, 'Placed', ?, ?, ?,
-          ?, ?, ?, ?, ?, ?
+          ?, ?, ?, ?, ?, ?, ?
         )
       `);
 
@@ -203,6 +249,7 @@ router.post('/', orderLimiter, optionalAuth, validateBody(createOrderSchema), as
         total,
         JSON.stringify(shippingAddress),
         paymentMethod,
+        channel,
         now
       );
 
@@ -276,13 +323,15 @@ router.post('/', orderLimiter, optionalAuth, validateBody(createOrderSchema), as
             customer_gstin, place_of_supply, billing_address, shipping_address,
             invoice_date, due_date, payment_terms, status, subtotal, discount_amount,
             taxable_value, cgst_amount, sgst_amount, igst_amount, shipping_amount,
-            round_off, total, amount_paid, balance_due, amount_in_words, notes, terms, template
+            round_off, total, amount_paid, balance_due, amount_in_words, notes, terms, template,
+            channel, invoice_type
           ) VALUES (
             ?, ?, ?, ?, ?,
             ?, 'Karnataka (29)', ?, ?,
             ?, ?, ?, ?, ?, ?,
             ?, ?, ?, 0, ?,
-            0, ?, ?, ?, 'Rupees Only', 'Thank you for your wholesale business with TechBazaar.', 'Standard 1-year bulk manufacturer warranty.', 'standard'
+            0, ?, ?, ?, 'Rupees Only', ?, 'Standard 1-year bulk manufacturer warranty.', 'standard',
+            ?, ?
           )
         `).run(
           invoiceNumber,
@@ -305,7 +354,10 @@ router.post('/', orderLimiter, optionalAuth, validateBody(createOrderSchema), as
           shipping,
           total,
           paymentMethod === 'cod' ? 0 : advanceAmount,
-          paymentMethod === 'cod' ? total : balanceAmount
+          paymentMethod === 'cod' ? total : balanceAmount,
+          isWholesaleChannel ? 'Wholesale commercial tax invoice.' : 'Retail consumer invoice.',
+          channel,
+          isWholesaleChannel ? 'gst' : 'retail'
         );
 
         invoiceId = invInsert.lastInsertRowid;
@@ -417,7 +469,7 @@ router.post('/', orderLimiter, optionalAuth, validateBody(createOrderSchema), as
 });
 
 // POST /api/orders/track (Public, Non-enumerable Guest Tracking)
-router.post('/track', validateBody(trackOrderSchema), (req, res) => {
+router.post('/track', trackLimiter, validateBody(trackOrderSchema), (req, res) => {
   const { orderNumber, contact, trackingToken } = req.body;
 
   let order = null;
@@ -512,12 +564,33 @@ router.get('/my', requireAuth, (req, res) => {
   });
 });
 
-// GET /api/orders/:orderNumber/invoice (Public/Guest Tax Invoice download/view)
-router.get('/:orderNumber/invoice', async (req, res) => {
+// GET /api/orders/:orderNumber/invoice (Protected: Admin, Order Owner, valid trackingToken, or matching contact)
+router.get('/:orderNumber/invoice', invoiceLimiter, optionalAuth, async (req, res) => {
   const { orderNumber } = req.params;
   const order = db.prepare('SELECT * FROM orders WHERE order_number = ?').get(orderNumber);
   if (!order) {
-    return res.status(404).json({ data: null, error: 'Order not found' });
+    return res.status(404).json({ data: null, error: 'Order or invoice not found' });
+  }
+
+  const tokenParam = typeof req.query.token === 'string' ? req.query.token.trim() : '';
+  const contactParam = typeof req.query.contact === 'string' ? req.query.contact.trim() : '';
+  const isAdmin = req.user?.role === 'admin';
+  const isOwner = Boolean(
+    req.user && (
+      (order.user_id && order.user_id === req.user.id) ||
+      (order.guest_email && req.user.email && order.guest_email.toLowerCase() === req.user.email.toLowerCase())
+    )
+  );
+  const hasValidToken = Boolean(tokenParam && order.tracking_token && tokenParam === order.tracking_token);
+  const hasMatchingContact = Boolean(
+    contactParam && (
+      (order.guest_email && contactParam.toLowerCase() === order.guest_email.toLowerCase()) ||
+      (order.guest_phone && contactParam === order.guest_phone)
+    )
+  );
+
+  if (!isAdmin && !isOwner && !hasValidToken && !hasMatchingContact) {
+    return res.status(404).json({ data: null, error: 'Order or invoice not found' });
   }
 
   let invoice = null;

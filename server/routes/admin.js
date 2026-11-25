@@ -4,11 +4,14 @@
 import { Router } from 'express';
 import fs from 'fs';
 import path from 'path';
+import crypto from 'crypto';
 import bcrypt from 'bcryptjs';
 import { z } from 'zod';
 import db from '../db/index.js';
 import { requireAdmin, COOKIE_OPTIONS, generateToken } from '../middleware/auth.js';
-import { validateBody } from '../middleware/validate.js';
+import { validateBody, validateQuery } from '../middleware/validate.js';
+import { validateImageUpload } from '../utils/imageSecurity.js';
+import * as adminSchemas from '../validators/adminSchemas.js';
 import { formatProduct } from './products.js';
 import { 
   formatINR, 
@@ -18,6 +21,12 @@ import {
   evaluateDiscount 
 } from '../services/calculation.js';
 import { generateDocumentPDF } from '../services/pdfGenerator.js';
+import { 
+  findDuplicateGroups, 
+  mergeProductGroup, 
+  undoMerge, 
+  checkDuplicateName 
+} from '../services/dedupService.js';
 
 const router = Router();
 
@@ -102,31 +111,46 @@ router.get('/me', (req, res) => {
   return res.json({ data: { admin: adminUser }, error: null });
 });
 
+const COMMON_WEAK_PASSWORDS = new Set([
+  'admin12345', 'password123', 'password1234', '1234567890', 'qwerty12345',
+  'techbazaar', 'techbazaar123', 'letmein1234', 'welcome1234', 'changeme123'
+]);
+
 // POST /api/admin/change-password
-router.post('/change-password', (req, res) => {
+router.post('/change-password', validateBody(adminSchemas.changePasswordSchema), (req, res) => {
   const { currentPassword, newPassword } = req.body;
-  if (!newPassword || newPassword.length < 6) {
-    return res.status(400).json({ data: null, error: 'New password must be at least 6 characters.' });
+  const user = db.prepare('SELECT id, email, role, password_hash, token_version FROM users WHERE id = ?').get(req.user.id);
+  if (!user) {
+    return res.status(404).json({ data: null, error: 'Admin account not found.' });
   }
 
-  const user = db.prepare('SELECT id, password_hash, must_change_password FROM users WHERE id = ?').get(req.user.id);
-  
-  // If must_change_password is 1, current password check is optional or verified
-  if (!user.must_change_password && currentPassword) {
-    if (!bcrypt.compareSync(currentPassword, user.password_hash)) {
-      return res.status(400).json({ data: null, error: 'Current password is incorrect.' });
-    }
+  if (!bcrypt.compareSync(currentPassword, user.password_hash)) {
+    return res.status(400).json({ data: null, error: 'Current password is incorrect.' });
+  }
+
+  if (newPassword.trim().toLowerCase() === user.email.toLowerCase()) {
+    return res.status(400).json({ data: null, error: 'New password cannot be the same as your email address.' });
+  }
+
+  if (COMMON_WEAK_PASSWORDS.has(newPassword.trim().toLowerCase())) {
+    return res.status(400).json({ data: null, error: 'Please choose a stronger password (too common).' });
   }
 
   const newHash = bcrypt.hashSync(newPassword, 10);
-  db.prepare('UPDATE users SET password_hash = ?, must_change_password = 0 WHERE id = ?').run(newHash, req.user.id);
+  const newTokenVersion = (user.token_version ?? 0) + 1;
+  db.prepare('UPDATE users SET password_hash = ?, must_change_password = 0, token_version = ? WHERE id = ?')
+    .run(newHash, newTokenVersion, req.user.id);
 
-  logActivity('update', 'admin', req.user.id, 'Admin password changed successfully');
+  // Re-issue cookie for current session so admin stays signed in while all other sessions are invalidated
+  const token = generateToken({ ...user, token_version: newTokenVersion });
+  res.cookie('token', token, COOKIE_OPTIONS);
+
+  logActivity('update', 'admin', req.user.id, 'Admin password changed and other sessions invalidated');
   return res.json({ data: { message: 'Password updated successfully' }, error: null });
 });
 
 // PATCH /api/admin/profile
-router.patch('/profile', (req, res) => {
+router.patch('/profile', validateBody(adminSchemas.updateProfileSchema), (req, res) => {
   const { name, email } = req.body;
   if (!name || !email) {
     return res.status(400).json({ data: null, error: 'Name and email are required.' });
@@ -318,8 +342,69 @@ router.get('/products/images', (req, res) => {
   }
 });
 
+// GET /api/admin/products/duplicates
+router.get('/products/duplicates', (req, res) => {
+  try {
+    const groups = findDuplicateGroups();
+    return res.json({
+      data: {
+        groups,
+        totalGroups: groups.length,
+        totalDuplicates: groups.reduce((acc, g) => acc + (g.duplicates ? g.duplicates.length : 0), 0)
+      },
+      error: null
+    });
+  } catch (err) {
+    return res.status(500).json({ data: null, error: err.message });
+  }
+});
+
+// POST /api/admin/products/merge
+router.post('/products/merge', validateBody(adminSchemas.mergeProductsSchema), (req, res) => {
+  const { canonicalId, duplicateIds } = req.body;
+  if (!canonicalId || !Array.isArray(duplicateIds) || duplicateIds.length === 0) {
+    return res.status(400).json({ data: null, error: 'canonicalId and duplicateIds array are required.' });
+  }
+
+  try {
+    const result = mergeProductGroup(canonicalId, duplicateIds);
+    return res.json({ data: result, error: null });
+  } catch (err) {
+    return res.status(400).json({ data: null, error: err.message });
+  }
+});
+
+// POST /api/admin/products/merge-all
+router.post('/products/merge-all', (req, res) => {
+  try {
+    const groups = findDuplicateGroups();
+    const results = [];
+    let mergedTotal = 0;
+
+    for (const g of groups) {
+      if (g.canonicalId && g.duplicates?.length > 0) {
+        const dupIds = g.duplicates.map(d => d.id);
+        const res = mergeProductGroup(g.canonicalId, dupIds);
+        results.push(res);
+        mergedTotal += dupIds.length;
+      }
+    }
+
+    return res.json({
+      data: {
+        mergedGroupsCount: results.length,
+        mergedProductsCount: mergedTotal,
+        results
+      },
+      error: null
+    });
+  } catch (err) {
+    return res.status(500).json({ data: null, error: err.message });
+  }
+});
+
 // GET /api/admin/products
-router.get('/products', (req, res) => {
+router.get('/products', validateQuery(adminSchemas.adminProductsQuerySchema), (req, res) => {
   const {
     search,
     category,
@@ -331,7 +416,9 @@ router.get('/products', (req, res) => {
     includeDeleted = 'false',
     limit = 100,
     offset = 0
-  } = req.query;
+  } = req.validatedQuery;
+  const safeLimit = Math.min(100, Math.max(1, Number(limit) || 100));
+  const safeOffset = Math.max(0, Number(offset) || 0);
 
   let query = 'SELECT * FROM products WHERE 1=1';
   const params = [];
@@ -385,7 +472,7 @@ router.get('/products', (req, res) => {
   else query += ' ORDER BY rowid DESC';
 
   query += ' LIMIT ? OFFSET ?';
-  params.push(Number(limit), Number(offset));
+  params.push(safeLimit, safeOffset);
 
   const rows = db.prepare(query).all(...params);
 
@@ -471,7 +558,7 @@ router.get('/products/:id', (req, res) => {
 });
 
 // POST /api/admin/products
-router.post('/products', (req, res) => {
+router.post('/products', validateBody(adminSchemas.createProductSchema), (req, res) => {
   const p = req.body;
   if (!p.name || !p.price || !p.category) {
     return res.status(400).json({ data: null, error: 'Name, price, and category are required.' });
@@ -575,7 +662,7 @@ router.post('/products', (req, res) => {
 });
 
 // PATCH /api/admin/products/:id
-router.patch('/products/:id', (req, res) => {
+router.patch('/products/:id', validateBody(adminSchemas.updateProductSchema), (req, res) => {
   const p = req.body;
   const existing = db.prepare('SELECT * FROM products WHERE id = ?').get(req.params.id);
   if (!existing) {
@@ -717,7 +804,7 @@ router.post('/products/:id/restore', (req, res) => {
 });
 
 // POST /api/admin/products/bulk
-router.post('/products/bulk', (req, res) => {
+router.post('/products/bulk', validateBody(adminSchemas.bulkProductsSchema), (req, res) => {
   const { ids, action, value } = req.body;
   if (!ids || !Array.isArray(ids) || ids.length === 0) {
     return res.status(400).json({ data: null, error: 'No product IDs selected.' });
@@ -847,7 +934,7 @@ router.get('/inventory', (req, res) => {
 });
 
 // POST /api/admin/inventory/adjust
-router.post('/inventory/adjust', (req, res) => {
+router.post('/inventory/adjust', validateBody(adminSchemas.adjustInventorySchema), (req, res) => {
   const { productId, type, quantity, reason, notes, referenceId } = req.body;
   if (!productId || quantity === undefined || !reason) {
     return res.status(400).json({ data: null, error: 'Product ID, quantity, and reason are required.' });
@@ -922,8 +1009,9 @@ router.get('/inventory/movements', (req, res) => {
 // ==========================================
 
 // GET /api/admin/orders
-router.get('/orders', (req, res) => {
+router.get('/orders', validateQuery(adminSchemas.paginationQuerySchema), (req, res) => {
   const { status, paymentMethod, search, from, to, limit = 50 } = req.query;
+  const safeLimit = Math.min(100, Math.max(1, Number(limit) || 50));
 
   let query = 'SELECT * FROM orders WHERE 1=1';
   const params = [];
@@ -954,7 +1042,7 @@ router.get('/orders', (req, res) => {
   }
 
   query += ' ORDER BY id DESC LIMIT ?';
-  params.push(Number(limit));
+  params.push(safeLimit);
 
   const orders = db.prepare(query).all(...params);
 
@@ -996,7 +1084,7 @@ router.get('/orders/:id', (req, res) => {
 });
 
 // PATCH /api/admin/orders/:id
-router.patch('/orders/:id', (req, res) => {
+router.patch('/orders/:id', validateBody(adminSchemas.updateOrderSchema), (req, res) => {
   const { status, note, courierName, trackingNumber, internalNotes, paymentStatus } = req.body;
   const existing = db.prepare('SELECT * FROM orders WHERE id = ?').get(req.params.id);
   if (!existing) {
@@ -1142,7 +1230,7 @@ router.post('/orders/:id/create-invoice', (req, res) => {
 });
 
 // POST /api/admin/orders/manual (Manual telephone / walk-in sales)
-router.post('/orders/manual', (req, res) => {
+router.post('/orders/manual', validateBody(adminSchemas.manualOrderSchema), (req, res) => {
   const { customer, shippingAddress, items, paymentMethod = 'cash', internalNotes } = req.body;
   if (!customer?.name || !items || items.length === 0) {
     return res.status(400).json({ data: null, error: 'Customer name and items are required.' });
@@ -1231,7 +1319,7 @@ router.get('/discounts', (req, res) => {
 });
 
 // POST /api/admin/discounts
-router.post('/discounts', (req, res) => {
+router.post('/discounts', validateBody(adminSchemas.discountSchema), (req, res) => {
   const d = req.body;
   if (!d.title || !d.type) {
     return res.status(400).json({ data: null, error: 'Title and type are required.' });
@@ -1278,7 +1366,7 @@ router.post('/discounts', (req, res) => {
 });
 
 // PATCH /api/admin/discounts/:id
-router.patch('/discounts/:id', (req, res) => {
+router.patch('/discounts/:id', validateBody(adminSchemas.discountUpdateSchema), (req, res) => {
   const d = req.body;
   const existing = db.prepare('SELECT * FROM discounts WHERE id = ?').get(req.params.id);
   if (!existing) return res.status(404).json({ data: null, error: 'Discount not found.' });
@@ -1320,7 +1408,7 @@ router.delete('/discounts/:id', (req, res) => {
 });
 
 // POST /api/admin/discounts/simulate (Live Test Simulator Panel)
-router.post('/discounts/simulate', (req, res) => {
+router.post('/discounts/simulate', validateBody(adminSchemas.simulateDiscountSchema), (req, res) => {
   const { discountId, code, cartItems } = req.body;
   let discount = null;
 
@@ -1394,7 +1482,7 @@ router.get('/estimates/:id', (req, res) => {
 });
 
 // POST /api/admin/estimates
-router.post('/estimates', (req, res) => {
+router.post('/estimates', validateBody(adminSchemas.documentCreateSchema), (req, res) => {
   const { customer, items, estimateDate, validUntil, notes, terms, discountAmount, shippingAmount } = req.body;
   if (!customer?.name || !items || items.length === 0) {
     return res.status(400).json({ data: null, error: 'Customer name and line items are required.' });
@@ -1632,7 +1720,7 @@ router.get('/invoices/:id', (req, res) => {
 });
 
 // POST /api/admin/invoices
-router.post('/invoices', (req, res) => {
+router.post('/invoices', validateBody(adminSchemas.documentCreateSchema), (req, res) => {
   const { customer, items, invoiceDate, dueDate, paymentTerms, placeOfSupply, notes, terms, discountAmount, shippingAmount, template } = req.body;
   if (!customer?.name || !items || items.length === 0) {
     return res.status(400).json({ data: null, error: 'Customer name and line items are required.' });
@@ -1736,7 +1824,7 @@ router.post('/invoices', (req, res) => {
 });
 
 // POST /api/admin/invoices/:id/payments (Record Partial or Full Payment)
-router.post('/invoices/:id/payments', (req, res) => {
+router.post('/invoices/:id/payments', validateBody(adminSchemas.recordPaymentSchema), (req, res) => {
   const { amount, paymentMethod, paymentDate, referenceNumber, notes } = req.body;
   const inv = db.prepare('SELECT * FROM invoices WHERE id = ?').get(req.params.id);
   if (!inv) return res.status(404).json({ data: null, error: 'Invoice not found.' });
@@ -1775,7 +1863,7 @@ router.post('/invoices/:id/payments', (req, res) => {
 });
 
 // POST /api/admin/invoices/:id/void (Void Invoice with Stock Restoration)
-router.post('/invoices/:id/void', (req, res) => {
+router.post('/invoices/:id/void', validateBody(adminSchemas.voidInvoiceSchema), (req, res) => {
   const { voidReason } = req.body;
   if (!voidReason) {
     return res.status(400).json({ data: null, error: 'Void reason is required.' });
@@ -1910,7 +1998,7 @@ router.get('/customers/:id', (req, res) => {
 });
 
 // POST /api/admin/customers
-router.post('/customers', (req, res) => {
+router.post('/customers', validateBody(adminSchemas.customerCreateSchema), (req, res) => {
   const c = req.body;
   if (!c.name || !c.email) {
     return res.status(400).json({ data: null, error: 'Name and email are required.' });
@@ -1942,7 +2030,7 @@ router.post('/customers', (req, res) => {
 });
 
 // POST /api/admin/customers/merge (Merge Duplicate Customers)
-router.post('/customers/merge', (req, res) => {
+router.post('/customers/merge', validateBody(adminSchemas.customerMergeSchema), (req, res) => {
   const { primaryId, secondaryId } = req.body;
   if (!primaryId || !secondaryId || primaryId === secondaryId) {
     return res.status(400).json({ data: null, error: 'Select two distinct customer accounts to merge.' });
@@ -2189,8 +2277,9 @@ router.post('/settings/purge-logs', (req, res) => {
 // ==========================================
 
 // GET /api/admin/activity-log
-router.get('/activity-log', (req, res) => {
+router.get('/activity-log', validateQuery(adminSchemas.paginationQuerySchema), (req, res) => {
   const { entity, action, limit = 100 } = req.query;
+  const safeLimit = Math.min(100, Math.max(1, Number(limit) || 100));
   let query = 'SELECT * FROM activity_log WHERE 1=1';
   const params = [];
 
@@ -2204,7 +2293,7 @@ router.get('/activity-log', (req, res) => {
   }
 
   query += ' ORDER BY id DESC LIMIT ?';
-  params.push(Number(limit));
+  params.push(safeLimit);
 
   const logs = db.prepare(query).all(...params);
   return res.json({ data: { logs }, error: null });
@@ -2221,6 +2310,15 @@ router.post('/activity-log/:id/undo', (req, res) => {
   const before = log.before_state ? JSON.parse(log.before_state) : null;
   if (!before) {
     return res.status(400).json({ data: null, error: 'No previous snapshot available for undo.' });
+  }
+
+  if (log.action === 'merge_products') {
+    try {
+      const undoRes = undoMerge(log.id);
+      return res.json({ data: undoRes, error: null });
+    } catch (err) {
+      return res.status(400).json({ data: null, error: err.message });
+    }
   }
 
   if (log.entity_type === 'product') {
@@ -2251,7 +2349,7 @@ router.post('/activity-log/:id/undo', (req, res) => {
 
 // GET /api/admin/banners - list all banners with analytics
 router.get('/banners', (req, res) => {
-  const banners = db.prepare(`
+  const rawBanners = db.prepare(`
     SELECT b.*,
       COALESCE(SUM(s.impressions), 0) AS total_impressions,
       COALESCE(SUM(s.clicks), 0) AS total_clicks,
@@ -2264,89 +2362,131 @@ router.get('/banners', (req, res) => {
     ORDER BY b.slot ASC, b.sort_order ASC, b.id ASC
   `).all();
 
+  const banners = rawBanners.map(b => ({
+    ...b,
+    image_desktop: b.desktop_image,
+    image_mobile: b.mobile_image,
+    label_pill: b.label,
+    is_active: b.active,
+    priority: b.sort_order,
+    impressions: b.total_impressions,
+    clicks: b.total_clicks
+  }));
+
   return res.json({ data: { banners }, error: null });
 });
 
 // POST /api/admin/banners - create banner
-router.post('/banners', (req, res) => {
+router.post('/banners', validateBody(adminSchemas.bannerCreateSchema), (req, res) => {
   const b = req.body;
-  if (!b.title || !b.slot || !b.desktop_image) {
+  const desktop_image = b.desktop_image || b.image_desktop;
+  if (!b.title || !b.slot || !desktop_image) {
     return res.status(400).json({ data: null, error: 'Title, slot, and desktop image are required.' });
   }
+
+  const mobile_image = b.mobile_image || b.image_mobile || desktop_image;
+  const label = b.label !== undefined ? b.label : (b.label_pill !== undefined ? b.label_pill : null);
+  const active = b.active !== undefined ? (b.active ? 1 : 0) : (b.is_active !== undefined ? (b.is_active ? 1 : 0) : 1);
+  const sort_order = b.sort_order !== undefined ? Number(b.sort_order) : (b.priority !== undefined ? Number(b.priority) : 0);
+  const audience = b.audience || 'both';
 
   const result = db.prepare(`
     INSERT INTO banners (
       title, slot, desktop_image, mobile_image, thumb, focal_x, focal_y,
       alt, link_type, link_target, new_tab, label, starts_at, ends_at,
-      active, sort_order
+      active, sort_order, audience
     ) VALUES (
       ?, ?, ?, ?, ?, ?, ?,
       ?, ?, ?, ?, ?, ?, ?,
-      ?, ?
+      ?, ?, ?
     )
   `).run(
     b.title.trim(),
     b.slot,
-    b.desktop_image,
-    b.mobile_image || b.desktop_image,
-    b.thumb || b.mobile_image || b.desktop_image,
+    desktop_image,
+    mobile_image,
+    b.thumb || mobile_image || desktop_image,
     b.focal_x !== undefined ? Number(b.focal_x) : 50,
     b.focal_y !== undefined ? Number(b.focal_y) : 50,
     b.alt ? b.alt.trim() : b.title.trim(),
     b.link_type || 'none',
     b.link_target || '',
     b.new_tab ? 1 : 0,
-    b.label || null,
+    label,
     b.starts_at || null,
     b.ends_at || null,
-    b.active !== undefined ? (b.active ? 1 : 0) : 1,
-    b.sort_order !== undefined ? Number(b.sort_order) : 0
+    active,
+    sort_order,
+    audience
   );
 
   const banner = db.prepare('SELECT * FROM banners WHERE id = ?').get(result.lastInsertRowid);
   logActivity('create', 'banner', banner.id, `Created banner "${banner.title}" for slot "${banner.slot}"`);
 
-  return res.status(201).json({ data: { banner }, error: null });
+  return res.status(201).json({ data: { banner: {
+    ...banner,
+    image_desktop: banner.desktop_image,
+    image_mobile: banner.mobile_image,
+    label_pill: banner.label,
+    is_active: banner.active,
+    priority: banner.sort_order
+  } }, error: null });
 });
 
 // PUT /api/admin/banners/:id - update banner
-router.put('/banners/:id', (req, res) => {
+router.put('/banners/:id', validateBody(adminSchemas.bannerUpdateSchema), (req, res) => {
   const b = req.body;
   const existing = db.prepare('SELECT * FROM banners WHERE id = ?').get(req.params.id);
   if (!existing) {
     return res.status(404).json({ data: null, error: 'Banner not found.' });
   }
 
+  const desktop_image = b.desktop_image || b.image_desktop || existing.desktop_image;
+  const mobile_image = b.mobile_image || b.image_mobile || existing.mobile_image;
+  const label = b.label !== undefined ? b.label : (b.label_pill !== undefined ? b.label_pill : existing.label);
+  const active = b.active !== undefined ? (b.active ? 1 : 0) : (b.is_active !== undefined ? (b.is_active ? 1 : 0) : existing.active);
+  const sort_order = b.sort_order !== undefined ? Number(b.sort_order) : (b.priority !== undefined ? Number(b.priority) : existing.sort_order);
+  const audience = b.audience !== undefined ? b.audience : (existing.audience || 'both');
+
   db.prepare(`
     UPDATE banners SET
       title = ?, slot = ?, desktop_image = ?, mobile_image = ?, thumb = ?,
       focal_x = ?, focal_y = ?, alt = ?, link_type = ?, link_target = ?,
-      new_tab = ?, label = ?, starts_at = ?, ends_at = ?, active = ?, sort_order = ?
+      new_tab = ?, label = ?, starts_at = ?, ends_at = ?, active = ?, sort_order = ?,
+      audience = ?
     WHERE id = ?
   `).run(
     b.title ? b.title.trim() : existing.title,
     b.slot || existing.slot,
-    b.desktop_image || existing.desktop_image,
-    b.mobile_image || existing.mobile_image,
-    b.thumb || existing.thumb,
+    desktop_image,
+    mobile_image,
+    b.thumb || existing.thumb || mobile_image,
     b.focal_x !== undefined ? Number(b.focal_x) : existing.focal_x,
     b.focal_y !== undefined ? Number(b.focal_y) : existing.focal_y,
     b.alt ? b.alt.trim() : existing.alt,
     b.link_type !== undefined ? b.link_type : existing.link_type,
     b.link_target !== undefined ? b.link_target : existing.link_target,
     b.new_tab !== undefined ? (b.new_tab ? 1 : 0) : existing.new_tab,
-    b.label !== undefined ? b.label : existing.label,
+    label,
     b.starts_at !== undefined ? b.starts_at : existing.starts_at,
     b.ends_at !== undefined ? b.ends_at : existing.ends_at,
-    b.active !== undefined ? (b.active ? 1 : 0) : existing.active,
-    b.sort_order !== undefined ? Number(b.sort_order) : existing.sort_order,
+    active,
+    sort_order,
+    audience,
     req.params.id
   );
 
   const updated = db.prepare('SELECT * FROM banners WHERE id = ?').get(req.params.id);
   logActivity('update', 'banner', updated.id, `Updated banner "${updated.title}"`);
 
-  return res.json({ data: { banner: updated }, error: null });
+  return res.json({ data: { banner: {
+    ...updated,
+    image_desktop: updated.desktop_image,
+    image_mobile: updated.mobile_image,
+    label_pill: updated.label,
+    is_active: updated.active,
+    priority: updated.sort_order
+  } }, error: null });
 });
 
 // DELETE /api/admin/banners/:id
@@ -2376,7 +2516,7 @@ router.patch('/banners/:id/toggle', (req, res) => {
 });
 
 // POST /api/admin/banners/reorder
-router.post('/banners/reorder', (req, res) => {
+router.post('/banners/reorder', validateBody(adminSchemas.bannerReorderSchema), (req, res) => {
   const { bannerIds } = req.body;
   if (!Array.isArray(bannerIds)) {
     return res.status(400).json({ data: null, error: 'bannerIds array required' });
@@ -2391,23 +2531,16 @@ router.post('/banners/reorder', (req, res) => {
   return res.json({ data: { message: 'Banners reordered successfully' }, error: null });
 });
 
-// POST /api/admin/banners/upload - saves cropped base64 webp to public/uploads/banners/
-router.post('/banners/upload', (req, res) => {
+// POST /api/admin/banners/upload - PNG/JPEG/WebP only (rejects SVG, validates magic bytes & dimensions)
+router.post('/banners/upload', validateBody(adminSchemas.bannerUploadSchema), (req, res) => {
   try {
-    const { base64, type = 'banner' } = req.body;
-    if (!base64 || typeof base64 !== 'string') {
-      return res.status(400).json({ data: null, error: 'Base64 image data is required' });
-    }
+    const base64 = req.body.base64 || req.body.imageBase64 || req.body.image;
+    const rawType = req.body.type || req.body.deviceType || 'banner';
+    const safeType = String(rawType).replace(/[^a-zA-Z0-9_-]/g, '').slice(0, 20) || 'banner';
 
-    const matches = base64.match(/^data:([A-Za-z-+\/]+);base64,(.+)$/);
-    let buffer;
-    let ext = 'webp';
-    if (matches && matches.length === 3) {
-      if (matches[1].includes('png')) ext = 'png';
-      else if (matches[1].includes('jpeg') || matches[1].includes('jpg')) ext = 'jpg';
-      buffer = Buffer.from(matches[2], 'base64');
-    } else {
-      buffer = Buffer.from(base64, 'base64');
+    const check = validateImageUpload(base64, { maxBytes: 5 * 1024 * 1024, minDim: 16, maxDim: 4096 });
+    if (!check.valid) {
+      return res.status(400).json({ data: null, error: check.error });
     }
 
     const uploadDir = path.join(process.cwd(), 'public', 'uploads', 'banners');
@@ -2415,12 +2548,15 @@ router.post('/banners/upload', (req, res) => {
       fs.mkdirSync(uploadDir, { recursive: true });
     }
 
-    const filename = `${type}_${Date.now()}_${Math.random().toString(36).substring(2, 7)}.${ext}`;
-    const filePath = path.join(uploadDir, filename);
-    fs.writeFileSync(filePath, buffer);
+    const cleanFilename = `${safeType}_${crypto.randomBytes(12).toString('hex')}.${check.ext}`;
+    const filePath = path.join(uploadDir, cleanFilename);
+    fs.writeFileSync(filePath, check.buffer);
 
-    const publicUrl = `/uploads/banners/${filename}`;
-    return res.json({ data: { url: publicUrl, filename }, error: null });
+    const publicUrl = `/uploads/banners/${cleanFilename}`;
+    return res.json({
+      data: { url: publicUrl, filename: cleanFilename, width: check.width, height: check.height },
+      error: null
+    });
   } catch (err) {
     return res.status(500).json({ data: null, error: err.message });
   }
@@ -2474,7 +2610,7 @@ router.get('/quotes', (req, res) => {
 });
 
 // PATCH /api/admin/quotes/:id
-router.patch('/quotes/:id', (req, res) => {
+router.patch('/quotes/:id', validateBody(adminSchemas.quoteUpdateSchema), (req, res) => {
   const { status, notes } = req.body;
   const quote = db.prepare('SELECT * FROM quote_requests WHERE id = ?').get(req.params.id);
   if (!quote) return res.status(404).json({ data: null, error: 'Quote request not found' });

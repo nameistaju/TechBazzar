@@ -1,105 +1,142 @@
 import bcrypt from 'bcryptjs';
 import db from './index.js';
 import { products } from '../../src/data/products.js';
+import { computeNormalizedName } from '../services/dedupService.js';
 
 console.log('🌱 Starting TechBazaar Database Seeding...');
 
 // 1. Seed Admin & Test Customer Users
 const seedUsers = () => {
-  const adminPasswordHash = bcrypt.hashSync('admin123', 10);
+  const adminEmail = (process.env.ADMIN_EMAIL || 'admin@techbazaar.com').trim().toLowerCase();
+  const adminPassword = process.env.ADMIN_PASSWORD || 'admin123';
+  if (!process.env.ADMIN_EMAIL || !process.env.ADMIN_PASSWORD) {
+    console.warn('⚠️  WARNING: ADMIN_EMAIL or ADMIN_PASSWORD not set in env! Using default dev seed credentials and forcing password change on login.');
+  }
+
+  const adminPasswordHash = bcrypt.hashSync(adminPassword, 10);
   const customerPasswordHash = bcrypt.hashSync('customer123', 10);
 
   const insertUser = db.prepare(`
-    INSERT INTO users (email, password_hash, name, role)
-    VALUES (?, ?, ?, ?)
+    INSERT INTO users (email, password_hash, name, role, must_change_password)
+    VALUES (?, ?, ?, ?, ?)
     ON CONFLICT(email) DO UPDATE SET
       password_hash = excluded.password_hash,
       name = excluded.name,
-      role = excluded.role
+      role = excluded.role,
+      must_change_password = excluded.must_change_password
   `);
 
-  insertUser.run('admin@techbazaar.com', adminPasswordHash, 'TechBazaar Administrator', 'admin');
-  insertUser.run('customer@techbazaar.com', customerPasswordHash, 'Aarav Sharma', 'customer');
+  insertUser.run(adminEmail, adminPasswordHash, 'TechBazaar Administrator', 'admin', 1);
+  insertUser.run('customer@techbazaar.com', customerPasswordHash, 'Aarav Sharma', 'customer', 0);
 
-  console.log('  ✓ Seeded admin user: admin@techbazaar.com / admin123');
-  console.log('  ✓ Seeded demo customer: customer@techbazaar.com / customer123');
+  console.log(`  ✓ Seeded admin user: ${adminEmail} (must_change_password = 1)`);
+  console.log('  ✓ Seeded demo customer: customer@techbazaar.com');
 };
 
 // 2. Seed Products
 const seedProducts = () => {
-  const insertProduct = db.prepare(`
+  // Ensure performance & dedup indices exist
+  db.prepare('CREATE UNIQUE INDEX IF NOT EXISTS idx_products_sku ON products(sku) WHERE deleted_at IS NULL').run();
+  db.prepare('CREATE INDEX IF NOT EXISTS idx_products_brand_norm ON products(brand, normalized_name)').run();
+  db.prepare('CREATE INDEX IF NOT EXISTS idx_products_merged_into ON products(merged_into)').run();
+
+  const findExistingStmt = db.prepare(`
+    SELECT id, deleted_at, merged_into FROM products WHERE id = ?
+  `);
+
+  const findByBrandNormStmt = db.prepare(`
+    SELECT id, deleted_at, merged_into FROM products 
+    WHERE LOWER(brand) = LOWER(?) AND normalized_name = ?
+  `);
+
+  const insertStmt = db.prepare(`
     INSERT INTO products (
-      id, name, brand, category, price, original_price, rating, reviews_count,
-      image, stock, is_flash_sale, is_trending, is_bestseller, is_new, is_recommended,
-      tags, specs, short_description
+      id, name, brand, category, price, original_price, mrp, rating, reviews_count,
+      image, images, variants, stock, is_flash_sale, is_trending, is_bestseller, is_new, is_recommended,
+      tags, specs, short_description, sku, normalized_name, moq, pack_size,
+      tier1_qty, tier1_price, tier2_qty, tier2_price, tier3_qty, tier3_price, suggested_retail_price
     ) VALUES (
-      ?, ?, ?, ?, ?, ?, ?, ?,
+      ?, ?, ?, ?, ?, ?, ?, ?, ?,
+      ?, ?, ?, ?, ?, ?, ?, ?, ?,
       ?, ?, ?, ?, ?, ?, ?,
-      ?, ?, ?
+      ?, ?, ?, ?, ?, ?, ?
     )
-    ON CONFLICT(id) DO UPDATE SET
-      name = excluded.name,
-      brand = excluded.brand,
-      category = excluded.category,
-      price = excluded.price,
-      original_price = excluded.original_price,
-      rating = excluded.rating,
-      reviews_count = excluded.reviews_count,
-      image = excluded.image,
-      stock = excluded.stock,
-      is_flash_sale = excluded.is_flash_sale,
-      is_trending = excluded.is_trending,
-      is_bestseller = excluded.is_bestseller,
-      is_new = excluded.is_new,
-      is_recommended = excluded.is_recommended,
-      tags = excluded.tags,
-      specs = excluded.specs,
-      short_description = excluded.short_description
+  `);
+
+  const updateStmt = db.prepare(`
+    UPDATE products SET
+      name = ?, brand = ?, category = ?, price = ?, original_price = ?, mrp = ?,
+      rating = ?, reviews_count = ?, image = ?, images = ?, variants = ?, stock = ?,
+      is_flash_sale = ?, is_trending = ?, is_bestseller = ?, is_new = ?, is_recommended = ?,
+      tags = ?, specs = ?, short_description = ?, sku = ?, normalized_name = ?,
+      moq = ?, pack_size = ?, tier1_qty = ?, tier1_price = ?, tier2_qty = ?, tier2_price = ?,
+      tier3_qty = ?, tier3_price = ?, suggested_retail_price = ?
+    WHERE id = ?
   `);
 
   const seedTransaction = db.transaction((items) => {
     let count = 0;
     for (const [index, p] of items.entries()) {
-      // Allocate realistic stock:
-      // Index 3 and 7: Out of stock (0) to test Out-of-Stock badge & Notify Me
-      // Index 2 and 5: Low stock (2) to test "Only 2 left" in orange
-      // Others: 15-45 units
+      const brand = p.brand || 'TechBazaar';
+      const normName = computeNormalizedName(p.name, brand);
+
+      // Check if product was soft-deleted/merged
+      const existingById = findExistingStmt.get(p.id);
+      if (existingById && existingById.deleted_at) {
+        continue;
+      }
+
+      const existingByNorm = findByBrandNormStmt.get(brand, normName);
+      if (existingByNorm && existingByNorm.deleted_at) {
+        continue;
+      }
+
+      const targetId = existingById ? existingById.id : (existingByNorm ? existingByNorm.id : p.id);
+
       let stock = 25;
       if (index === 3 || index === 17) {
-        stock = 0; // Out of stock
+        stock = 0;
       } else if (index === 2 || index === 12) {
-        stock = 2; // Low stock
+        stock = 2;
       } else {
         stock = 10 + ((index * 7) % 35);
       }
 
-      insertProduct.run(
-        p.id,
-        p.name,
-        p.brand || 'TechBazaar',
-        p.category,
-        p.price,
-        p.originalPrice || null,
-        p.rating || 4.5,
-        p.reviewsCount || 0,
-        p.image,
-        stock,
-        p.isFlashSale ? 1 : 0,
-        p.isTrending ? 1 : 0,
-        p.isBestseller ? 1 : 0,
-        p.isNew ? 1 : 0,
-        p.isRecommended ? 1 : 0,
-        JSON.stringify(p.tags || []),
-        JSON.stringify(p.specs || {}),
-        p.shortDescription || ''
-      );
+      const basePrice = Number(p.price || 0);
+      const mrp = Number(p.mrp || p.originalPrice || Math.round(basePrice * 1.35));
+      const moq = Number(p.moq || 10);
+      const packSize = Number(p.pack_size || p.packSize || 5);
+      const t1Price = Number(p.tier1_price || p.tier1Price || basePrice);
+      const t2Price = Number(p.tier2_price || p.tier2Price || Math.round(basePrice * 0.9));
+      const t3Price = Number(p.tier3_price || p.tier3Price || Math.round(basePrice * 0.8));
+      const imagesJson = JSON.stringify(p.images && p.images.length > 0 ? p.images : [p.image]);
+      const variantsJson = JSON.stringify(p.variants || []);
+
+      if (existingById || existingByNorm) {
+        updateStmt.run(
+          p.name, brand, p.category, basePrice, p.originalPrice || mrp, mrp,
+          p.rating || 4.5, p.reviewsCount || 0, p.image, imagesJson, variantsJson, stock,
+          p.isFlashSale ? 1 : 0, p.isTrending ? 1 : 0, p.isBestseller ? 1 : 0, p.isNew ? 1 : 0, p.isRecommended ? 1 : 0,
+          JSON.stringify(p.tags || []), JSON.stringify(p.specs || {}), p.shortDescription || '',
+          p.sku, normName, moq, packSize, moq, t1Price, 50, t2Price, 100, t3Price, p.suggestedRetailPrice || mrp,
+          targetId
+        );
+      } else {
+        insertStmt.run(
+          p.id, p.name, brand, p.category, basePrice, p.originalPrice || mrp, mrp,
+          p.rating || 4.5, p.reviewsCount || 0, p.image, imagesJson, variantsJson, stock,
+          p.isFlashSale ? 1 : 0, p.isTrending ? 1 : 0, p.isBestseller ? 1 : 0, p.isNew ? 1 : 0, p.isRecommended ? 1 : 0,
+          JSON.stringify(p.tags || []), JSON.stringify(p.specs || {}), p.shortDescription || '',
+          p.sku, normName, moq, packSize, moq, t1Price, 50, t2Price, 100, t3Price, p.suggestedRetailPrice || mrp
+        );
+      }
       count++;
     }
     return count;
   });
 
   const totalSeeded = seedTransaction(products);
-  console.log(`  ✓ Successfully seeded ${totalSeeded} products with stock allocations`);
+  console.log(`  ✓ Successfully seeded / synced ${totalSeeded} products with unique SKUs and galleries`);
 };
 
 // 3. Seed demo address for customer

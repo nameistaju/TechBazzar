@@ -23,6 +23,7 @@ import { formatINR } from '../../utils/formatters';
  * Force Password Change Modal (Shown on First Login)
  */
 export function ForcePasswordChangeModal({ isOpen, onClose, onPasswordChanged }) {
+  const [currentPassword, setCurrentPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [error, setError] = useState('');
@@ -34,8 +35,12 @@ export function ForcePasswordChangeModal({ isOpen, onClose, onPasswordChanged })
     e.preventDefault();
     setError('');
 
-    if (newPassword.length < 6) {
-      setError('Password must be at least 6 characters long.');
+    if (!currentPassword) {
+      setError('Current password is required.');
+      return;
+    }
+    if (newPassword.length < 10) {
+      setError('Password must be at least 10 characters long.');
       return;
     }
     if (newPassword !== confirmPassword) {
@@ -44,7 +49,7 @@ export function ForcePasswordChangeModal({ isOpen, onClose, onPasswordChanged })
     }
 
     setLoading(true);
-    const res = await adminApi.changePassword({ newPassword });
+    const res = await adminApi.changePassword({ currentPassword, newPassword });
     setLoading(false);
 
     if (res.error) {
@@ -80,6 +85,20 @@ export function ForcePasswordChangeModal({ isOpen, onClose, onPasswordChanged })
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
             <label className="block text-xs font-mono uppercase tracking-wider text-[#6B6B6B] mb-1">
+              Current Password
+            </label>
+            <input
+              type="password"
+              required
+              value={currentPassword}
+              onChange={(e) => setCurrentPassword(e.target.value)}
+              placeholder="Enter current password"
+              className="w-full px-3 py-2 border border-[#EAEAEA] text-sm focus:border-[#0A0A0A] outline-none font-mono"
+            />
+          </div>
+
+          <div>
+            <label className="block text-xs font-mono uppercase tracking-wider text-[#6B6B6B] mb-1">
               New Password
             </label>
             <input
@@ -87,7 +106,7 @@ export function ForcePasswordChangeModal({ isOpen, onClose, onPasswordChanged })
               required
               value={newPassword}
               onChange={(e) => setNewPassword(e.target.value)}
-              placeholder="Minimum 6 characters"
+              placeholder="Minimum 10 characters"
               className="w-full px-3 py-2 border border-[#EAEAEA] text-sm focus:border-[#0A0A0A] outline-none font-mono"
             />
           </div>
@@ -302,7 +321,15 @@ export function GlobalSearchModal({ isOpen, onClose, onNavigate }) {
                     className="p-2.5 flex items-center justify-between hover:bg-[#F7F7F7] cursor-pointer transition-colors"
                   >
                     <div className="flex items-center gap-3">
-                      <img src={p.image} alt={p.name} className="w-9 h-9 object-contain bg-white border border-[#EAEAEA] p-0.5" />
+                      <img
+                        src={p.image || '/images/placeholder-product.svg'}
+                        alt={p.name}
+                        onError={(e) => {
+                          e.currentTarget.onerror = null;
+                          e.currentTarget.src = '/images/placeholder-product.svg';
+                        }}
+                        className="w-9 h-9 object-contain bg-white border border-[#EAEAEA] p-0.5"
+                      />
                       <div>
                         <div className="text-xs font-medium text-[#0A0A0A]">{p.name}</div>
                         <div className="text-[11px] font-mono text-[#6B6B6B]">SKU: {p.sku || p.id} • Stock: {p.stock}</div>
