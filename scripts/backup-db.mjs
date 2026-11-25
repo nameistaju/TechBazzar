@@ -1,8 +1,9 @@
 import fs from 'node:fs';
 import path from 'node:path';
-import db from '../server/db/index.js';
+import db from '../apps/api/db/index.js';
+import { DB_BACKUPS_DIR } from '../apps/api/config/paths.js';
 
-const backupsDir = path.resolve(process.cwd(), 'server', 'db', 'backups');
+const backupsDir = DB_BACKUPS_DIR;
 fs.mkdirSync(backupsDir, { recursive: true });
 
 const stamp = new Date().toISOString().replace(/[:.]/g, '-').slice(0, 19);

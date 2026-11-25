@@ -1,0 +1,7 @@
+{
+  "name": "@techbazaar/shared",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Reserved shared contracts/utilities package (intentionally empty in this refactor)"
+}

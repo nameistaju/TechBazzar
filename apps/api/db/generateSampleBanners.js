@@ -4,9 +4,10 @@
 
 import fs from 'fs';
 import path from 'path';
+import { UPLOADS_DIR } from '../config/paths.js';
 
 export function generateSampleBanners() {
-  const uploadDir = path.resolve('public/uploads/banners');
+  const uploadDir = path.join(UPLOADS_DIR, 'banners');
   if (!fs.existsSync(uploadDir)) {
     fs.mkdirSync(uploadDir, { recursive: true });
   }

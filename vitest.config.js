@@ -5,11 +5,11 @@ export default defineConfig({
   plugins: [react()],
   test: {
     globals: true,
-    include: ['tests/backend/**/*.test.js', 'tests/frontend/**/*.test.{js,jsx}'],
+    include: ['apps/api/tests/**/*.test.js', 'apps/web/tests/**/*.test.{js,jsx}'],
     environment: 'node',
     environmentMatchGlobs: [
-      ['tests/frontend/**', 'jsdom'],
-      ['tests/backend/**', 'node']
+      ['apps/web/tests/**', 'jsdom'],
+      ['apps/api/tests/**', 'node']
     ]
   }
 });

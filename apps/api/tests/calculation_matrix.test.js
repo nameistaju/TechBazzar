@@ -3,9 +3,9 @@ import request from 'supertest';
 import { setupTempDb } from './testDb.js';
 
 const { cleanup } = setupTempDb('tb-calc-matrix-');
-const { default: app } = await import('../../server/index.js');
-const { default: db } = await import('../../server/db/index.js');
-const { calculateRetailCart, calculateWholesaleCart } = await import('../../server/services/calculation.js');
+const { default: app } = await import('../index.js');
+const { default: db } = await import('../db/index.js');
+const { calculateRetailCart, calculateWholesaleCart } = await import('../services/calculation.js');
 
 // Deterministic PRNG (Mulberry32)
 function mulberry32(seed) {

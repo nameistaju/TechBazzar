@@ -1,10 +1,13 @@
 import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
+import { fileURLToPath } from 'node:url';
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 export function setupTempDb(prefix = 'tb-test-') {
   const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), prefix));
-  const srcBase = path.resolve(process.cwd(), 'server/db/techbazaar.db');
+  const srcBase = path.resolve(__dirname, '../db/techbazaar.db');
   const destBase = path.join(tempDir, 'test.db');
 
   fs.copyFileSync(srcBase, destBase);

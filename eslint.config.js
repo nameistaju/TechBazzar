@@ -1,9 +1,9 @@
 export default [
   {
-    ignores: ['dist/**', 'node_modules/**', 'AUDIT/**', 'public/**', 'tests/e2e/**']
+    ignores: ['**/dist/**', '**/node_modules/**', 'docs/**', 'apps/web/public/**', 'e2e/**', 'packages/**']
   },
   {
-    files: ['src/**/*.{js,jsx}', 'server/**/*.js'],
+    files: ['apps/web/src/**/*.{js,jsx}', 'apps/api/**/*.js'],
     languageOptions: {
       ecmaVersion: 2024,
       sourceType: 'module',

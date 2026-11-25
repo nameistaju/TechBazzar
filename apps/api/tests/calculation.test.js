@@ -4,7 +4,7 @@ import {
   numberToWordsIndian,
   calculateRetailCart,
   calculateWholesaleCart
-} from '../../server/services/calculation.js';
+} from '../services/calculation.js';
 
 describe('Calculation Engine (Integer Paise)', () => {
   it('formats paise into Indian Rupees cleanly', () => {

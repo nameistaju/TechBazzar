@@ -4,8 +4,8 @@ import bcrypt from 'bcryptjs';
 import { setupTempDb } from './testDb.js';
 
 const { cleanup } = setupTempDb('tb-admin-hard-');
-const { default: app } = await import('../../server/index.js');
-const { default: db } = await import('../../server/db/index.js');
+const { default: app } = await import('../index.js');
+const { default: db } = await import('../db/index.js');
 
 async function getReadyAdminCookie() {
   // Set known strong password on temp admin with must_change_password = 0

@@ -5,17 +5,17 @@ import sharp from 'sharp';
 
 const require = createRequire(import.meta.url);
 const Database = require(path.join(process.cwd(), 'node_modules/better-sqlite3'));
-const db = new Database(path.join(process.cwd(), 'server/db/techbazaar.db'));
+const db = new Database(path.join(process.cwd(), 'apps/api/db/techbazaar.db'));
 
 // 1. Normalize Headphones -> headphones in DB
 const r1 = db.prepare("UPDATE products SET category = 'headphones' WHERE category = 'Headphones'").run();
 const r2 = db.prepare("UPDATE discounts SET scope_values = REPLACE(scope_values, 'Headphones', 'headphones') WHERE scope_values LIKE '%Headphones%'").run();
 console.log('Normalized Headphones in DB:', { productsUpdated: r1.changes, discountsUpdated: r2.changes });
 
-// 2. Scan public/images & public/images/phone cases
+// 2. Scan apps/web/public/images & apps/web/public/images/phone cases
 const dirs = [
-  path.join(process.cwd(), 'public/images'),
-  path.join(process.cwd(), 'public/images/phone cases')
+  path.join(process.cwd(), 'apps/web/public/images'),
+  path.join(process.cwd(), 'apps/web/public/images/phone cases')
 ];
 
 let totalBeforeBytes = 0;

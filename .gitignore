@@ -16,6 +16,10 @@ server/db/*.db
 server/db/*.db-wal
 server/db/*.db-shm
 server/db/backups/
+apps/api/db/*.db
+apps/api/db/*.db-wal
+apps/api/db/*.db-shm
+apps/api/db/backups/
 *.db
 *.sqlite
 
@@ -27,20 +31,30 @@ public/images/phone cases/*-200.webp
 public/images/phone cases/*-480.webp
 public/images/phone cases/*-1000.webp
 public/uploads/
+apps/web/public/images/*-200.webp
+apps/web/public/images/*-480.webp
+apps/web/public/images/*-1000.webp
+apps/web/public/images/phone cases/*-200.webp
+apps/web/public/images/phone cases/*-480.webp
+apps/web/public/images/phone cases/*-1000.webp
+apps/web/public/uploads/
 
 # Production build & test artifacts
 dist/
+apps/*/dist/
 dist-ssr/
 build/
 coverage/
 playwright-report/
 test-results/
 AUDIT/lighthouse/
+docs/audit/lighthouse/
 *.local
 
 # Stray / temporary artifacts
 shot_*.png
 public/logo-backup.png
+apps/web/public/logo-backup.png
 server/db/database.sqlite
 
 # Logs

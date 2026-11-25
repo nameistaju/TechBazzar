@@ -2,13 +2,14 @@ import Database from 'better-sqlite3';
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import { DB_PATH } from '../config/paths.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const dbPath = process.env.TECHBAZAAR_DB_PATH
   ? path.resolve(process.env.TECHBAZAAR_DB_PATH)
-  : path.resolve(__dirname, 'techbazaar.db');
+  : DB_PATH;
 const schemaPath = path.resolve(__dirname, 'schema.sql');
 
 export const db = new Database(dbPath);

@@ -1,13 +1,14 @@
-import dotenv from 'dotenv';
-dotenv.config();
+import './config/env.js';
 
 import express from 'express';
 import helmet from 'helmet';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
 import rateLimit from 'express-rate-limit';
-import fs from 'fs';
-import path from 'path';
+import fs from 'node:fs';
+import path from 'node:path';
+
+import { UPLOADS_DIR, resolveDistDir } from './config/paths.js';
 
 import authRoutes from './routes/auth.js';
 import productsRoutes from './routes/products.js';
@@ -72,7 +73,7 @@ const apiLimiter = rateLimit({
 app.use('/api', apiLimiter);
 
 // Serve uploads statically
-app.use('/uploads', express.static(path.join(process.cwd(), 'public', 'uploads')));
+app.use('/uploads', express.static(UPLOADS_DIR));
 
 // Health check
 app.get('/api/health', (req, res) => {
@@ -98,7 +99,7 @@ app.use('/api', (req, res) => {
 });
 
 // Serve production SPA build & fallback if dist/ exists
-const distDir = path.join(process.cwd(), 'dist');
+const distDir = resolveDistDir();
 if (fs.existsSync(path.join(distDir, 'index.html'))) {
   app.use(express.static(distDir));
   app.get(/^\/(?!api|uploads).*/, (req, res) => {

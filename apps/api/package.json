@@ -1,0 +1,13 @@
+{
+  "name": "@techbazaar/api",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "node --watch index.js",
+    "start": "node index.js",
+    "seed": "node db/seed.js",
+    "migrate": "node db/migrate.js",
+    "test": "vitest run --config ../../vitest.config.js tests"
+  }
+}

@@ -24,7 +24,9 @@ const BASE_URL = `http://localhost:${PORT}`;
 function resolvePaths() {
   const serverEntry = fs.existsSync(path.join(ROOT, 'apps/api/src/server.js'))
     ? path.join(ROOT, 'apps/api/src/server.js')
-    : path.join(ROOT, 'server/index.js');
+    : fs.existsSync(path.join(ROOT, 'apps/api/index.js'))
+      ? path.join(ROOT, 'apps/api/index.js')
+      : path.join(ROOT, 'server/index.js');
 
   const dbPath = fs.existsSync(path.join(ROOT, 'apps/api/db/techbazaar.db'))
     ? path.join(ROOT, 'apps/api/db/techbazaar.db')

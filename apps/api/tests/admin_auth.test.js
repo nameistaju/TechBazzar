@@ -3,7 +3,7 @@ import request from 'supertest';
 import { setupTempDb } from './testDb.js';
 
 const { cleanup } = setupTempDb('tb-admin-auth-');
-const { default: app } = await import('../../server/index.js');
+const { default: app } = await import('../index.js');
 
 describe('Part 1: Admin Default Credentials & Session Enforcement', () => {
   afterAll(cleanup);

@@ -4,8 +4,8 @@ import bcrypt from 'bcryptjs';
 import { setupTempDb } from './testDb.js';
 
 const { cleanup } = setupTempDb('tb-orders-stock-');
-const { default: app } = await import('../../server/index.js');
-const { default: db } = await import('../../server/db/index.js');
+const { default: app } = await import('../index.js');
+const { default: db } = await import('../db/index.js');
 
 describe('Part 2.3, 2.5 & 2.7: Wholesale Enforcement, Stock Concurrency, Idempotency & Coupons', () => {
   afterAll(cleanup);

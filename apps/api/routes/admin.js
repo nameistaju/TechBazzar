@@ -7,6 +7,7 @@ import path from 'path';
 import crypto from 'crypto';
 import bcrypt from 'bcryptjs';
 import db from '../db/index.js';
+import { DB_PATH, UPLOADS_DIR } from '../config/paths.js';
 import { requireAdmin, COOKIE_OPTIONS, generateToken } from '../middleware/auth.js';
 import { validateBody, validateQuery } from '../middleware/validate.js';
 import { validateImageUpload } from '../utils/imageSecurity.js';
@@ -2303,7 +2304,7 @@ router.post('/settings', (req, res) => {
 
 // GET /api/admin/settings/backup (Download full SQLite database)
 router.get('/settings/backup', (req, res) => {
-  const dbPath = path.resolve('server/db/techbazaar.db');
+  const dbPath = DB_PATH;
   if (!fs.existsSync(dbPath)) {
     return res.status(404).send('Database file not found');
   }
@@ -2591,7 +2592,7 @@ router.post('/banners/upload', validateBody(adminSchemas.bannerUploadSchema), (r
       return res.status(400).json({ data: null, error: check.error });
     }
 
-    const uploadDir = path.join(process.cwd(), 'public', 'uploads', 'banners');
+    const uploadDir = path.join(UPLOADS_DIR, 'banners');
     if (!fs.existsSync(uploadDir)) {
       fs.mkdirSync(uploadDir, { recursive: true });
     }

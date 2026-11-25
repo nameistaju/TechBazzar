@@ -5,6 +5,7 @@ import fs from 'fs';
 import path from 'path';
 import crypto from 'crypto';
 import db from '../db/index.js';
+import { UPLOADS_DIR, WEB_PUBLIC_DIR } from '../config/paths.js';
 import { requireAdmin } from '../middleware/auth.js';
 import { validateImageUpload } from '../utils/imageSecurity.js';
 
@@ -234,7 +235,7 @@ router.post('/admin/branding/logo', requireAdmin, (req, res) => {
       return res.status(400).json({ data: null, error: check.error });
     }
 
-    const uploadDir = path.resolve('public/uploads/brand');
+    const uploadDir = path.join(UPLOADS_DIR, 'brand');
     if (!fs.existsSync(uploadDir)) {
       fs.mkdirSync(uploadDir, { recursive: true });
     }
@@ -248,7 +249,7 @@ router.post('/admin/branding/logo', requireAdmin, (req, res) => {
     // If target is favicon, also copy to public/favicon.png for browser direct loads
     if (safeTarget === 'favicon' && check.ext === 'png') {
       try {
-        fs.writeFileSync(path.resolve('public/favicon.png'), check.buffer);
+        fs.writeFileSync(path.join(WEB_PUBLIC_DIR, 'favicon.png'), check.buffer);
       } catch {}
     }
 
