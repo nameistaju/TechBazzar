@@ -10,6 +10,7 @@
     "build": "vite build",
     "preview": "vite preview",
     "seed": "node server/db/seed.js",
+    "images": "node scripts/optimize-images.mjs",
     "backup": "node scripts/backup-db.mjs",
     "test": "vitest run",
     "test:e2e": "playwright test",

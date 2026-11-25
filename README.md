@@ -19,6 +19,7 @@ npm run dev            # Starts Express API (:5000) + Vite client (:3000)
 - `npm run build`: Build production frontend bundle to `dist/`.
 - `npm run preview`: Preview production build locally.
 - `npm run seed`: Seed products, users, and default addresses.
+- `npm run images`: Convert GIFs to static WebP posters and generate responsive `-200/-480/-1000.webp` variants (ignored by git).
 - `npm run backup`: Create a consistent SQLite snapshot in `server/db/backups/`.
 - `npm run verify`: Run lint, unit/integration tests, and production build.
 

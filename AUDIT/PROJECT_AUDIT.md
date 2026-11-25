@@ -511,3 +511,51 @@ TOP 5 STRATEGIC DECISIONS FOR THE OWNER:
 - `npm run build`: **Succeeded in 6.89s**
 - `npm run backup`: **Succeeded (616.0 KB snapshot)**
 - `npm audit --omit=dev`: **2 moderate CVEs** (`react-router` / `react-router-dom` 6.x — fix requires breaking upgrade to v7; no critical/high CVEs)
+
+
+---
+
+## PHASE 1.5: VERIFY AND HARDEN — REPORT
+
+### Phase 1.5 Status Table
+
+| Part | Scope | Status | Evidence |
+| :--- | :--- | :--- | :--- |
+| **Part 1** | Admin DB audit, `must_change_password = 1`, `token_version` enforcement in `requireAdmin` & `auth.js`, git history secret scan | Done | `tests/backend/admin_auth.test.js` (blocks `/api/admin/stats` with `403 MUST_CHANGE_PASSWORD` until changed; invalidates old token); `git log -S` reported `9f46eab` & `e3527b2` |
+| **Part 2** | 63 Vitest/Supertest tests against isolated temp WAL DB copies (20 retail + 20 wholesale seeded carts, invoice/quote 404, leak scan, stock race, cancel+void, idempotency, coupons, admin approval/Zod/uploads) | Done | `npm test` -> **7 files, 63/63 passed in 3.78s** |
+| **Part 3** | Playwright E2E real flows (`375/768/1280/1440` overflow, Bag visibility & 125% zoom, retail checkout + `WELCOME10` + `/order-success` refresh, quick order `"ear buds"`, mode switch) | Done | `npx playwright test --reporter=list` -> **4/4 passed in 7.3s** |
+| **Part 4** | Production Lighthouse (mobile & desktop on 5 routes), PDP CLS fix (`0.149 -> 0.038`), 30 screenshots in `AUDIT/screenshots/phase1-5/`, `dist/` leak scan | Done | `AUDIT/lighthouse/summary.json`, `product_desktop` CLS `0.038` (< 0.1), `TECH10`/`admin123`/`/100` 0 hits |
+| **Part 5** | Full DB reconciliation (`orders`, `invoices`, `estimates`), paise settings/groups check, backup restore check | Done | `orders` 22/22 clean; `invoices` new clean, 19 pre-Phase-1 legacy offsets listed; `estimates` 8 pre-Phase-1 legacy offsets listed; fresh backup `636.0 KB` |
+| **Part 6** | `.gitignore` updated, `npm run images` documented, ESLint warnings reduced `272 -> 48` (`0` errors), stray files listed for approval | Done | `npm run lint` (`0` errors, `48` warnings), `git commit` on `main` |
+| **Part 7** | `react-router` / `react-router-dom` CVE assessment (no v7 upgrade in this pass) | Done | Assessed below |
+
+### Production Lighthouse Scores (`http://localhost:5000`)
+
+| Route | Mode | Perf | A11y | SEO | LCP | CLS | TBT |
+| :--- | :--- | :---: | :---: | :---: | :---: | :---: | :---: |
+| `/` (Home) | Mobile | 58 | 89 | 83 | 25.6 s | 0.000 | 600 ms |
+| `/` (Home) | Desktop | 80 | 90 | 83 | 3.8 s | 0.032 | 0 ms |
+| `/shop?category=earbuds` | Mobile | 71 | 88 | 92 | 11.8 s | 0.000 | 190 ms |
+| `/shop?category=earbuds` | Desktop | 88 | 84 | 92 | 2.2 s | 0.085 | 0 ms |
+| `/product/boat-airdopes-141-anc` | Mobile | 73 | 87 | 92 | 11.1 s | 0.000 | 130 ms |
+| `/product/boat-airdopes-141-anc` | Desktop | **91** | 89 | 92 | **2.0 s** | **0.038** | 0 ms |
+| `/cart` | Mobile | 74 | 94 | 92 | 10.1 s | 0.000 | 90 ms |
+| `/cart` | Desktop | 100 | 94 | 92 | 0.6 s | 0.004 | 0 ms |
+| `/checkout` | Mobile | 99 | 96 | 92 | 1.5 s | 0.000 | 100 ms |
+| `/checkout` | Desktop | 100 | 96 | 92 | 0.6 s | 0.003 | 0 ms |
+
+### Part 5 Data Reconciliation Findings
+- **`orders` (22 rows):** **0 mismatches** (`subtotal - discount_amount + shipping === total`).
+- **`invoices` (28 rows):** All post-Phase-1 invoices (`id >= 21`, `INV-2026-1072`+) have **0 mismatches**. **19 pre-Phase-1 invoices** (`id` 2–20, `INV-2026-0002`..`INV-2026-1071`, created `2026-11-23`) have negative `diff` equal to `-tax_amount` (`-12600` to `-977400` paise) because pre-fix code stored tax-inclusive `subtotal` as `taxable_value` while leaving `total = subtotal - discount`. Preserved untouched pending owner approval for credit-note/regeneration.
+- **`estimates` (8 rows):** All 8 pre-Phase-1 estimates (`EST-0001`..`EST-0008`, created `2026-11-23`) have the same pre-fix tax-inclusive vs `tax_amount` offset (`-73100` to `-914900` paise). Preserved untouched.
+- **Paise Consistency:** `wholesale_groups` (`min_order_value` `200000–250000`, `free_shipping_threshold` `0–1000000`, `credit_limit` `0–25000000`), `settings`, and `discounts` are 100% in integer paise; Platinum `free_shipping_threshold = 0` is preserved.
+
+### Part 6 Stray Files Pending Owner Approval for Deletion
+- `server/db/database.sqlite` (0 bytes, unused)
+- `public/logo-backup.png` (pre-branding backup)
+- `images/` (root-level duplicate folder, if superseded by `public/images/`)
+
+### Part 7 Dependency Assessment (`react-router` / `react-router-dom` 6.30.6)
+- **CVEs:** `GHSA-wrjc-x8rr-h8h6` (Open redirect via backslash in `<Link>` / `useNavigate`, moderate) and `GHSA-337j-9hxr-rhxg` (Arbitrary Constructor Injection via `deserializeErrors()` in SSR Hydration, moderate).
+- **Impact on TechBazaar:** TechBazaar is a client-side `BrowserRouter` SPA with **no SSR / framework mode / `deserializeErrors()`**, so the SSR hydration CVE does not apply; the open-redirect CVE only matters if untrusted external URLs are passed directly to `<Link to>` or `navigate()`, which this app does not do for user-supplied redirect targets.
+- **Upgrade Path & Risks:** `npm audit fix --force` jumps to `react-router-dom@7.18.7` (major version). Dedicated upgrade step: install `react-router@7` / `react-router-dom@7` (or migrate imports to `react-router`), enable v7 future flags or update `BrowserRouter`/`Routes` types, and re-run `npm run verify` + Playwright E2E.

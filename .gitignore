@@ -15,13 +15,26 @@ node_modules/
 server/db/*.db
 server/db/*.db-wal
 server/db/*.db-shm
+server/db/backups/
 *.db
 *.sqlite
 
-# Production build outputs
+# Generated responsive image variants (regenerated via npm run images)
+public/images/*-200.webp
+public/images/*-480.webp
+public/images/*-1000.webp
+public/images/phone cases/*-200.webp
+public/images/phone cases/*-480.webp
+public/images/phone cases/*-1000.webp
+public/uploads/
+
+# Production build & test artifacts
 dist/
 dist-ssr/
 build/
+playwright-report/
+test-results/
+AUDIT/lighthouse/
 *.local
 
 # Logs
