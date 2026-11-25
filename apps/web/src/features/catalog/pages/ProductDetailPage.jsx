@@ -1,28 +1,24 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { 
-  Heart, 
-  ShoppingBag, 
   Check, 
   Star, 
   Truck, 
   ShieldCheck, 
   RotateCcw, 
-  Plus, 
-  Minus, 
   MapPin, 
   Share2,
-  ArrowRight,
-  Package,
-  Bell,
-  AlertCircle
+  Package
 } from 'lucide-react';
 import { useStore } from '@app/providers/StoreContext';
 import { useCategories, useProduct, useProducts } from '@shared/hooks/useCatalog';
 import Breadcrumbs from '@shared/ui/Breadcrumbs';
 import ProductCard from '@shared/ui/ProductCard';
 import BannerSlot from '@shared/ui/BannerSlot';
-import { getWholesaleTier } from '@shared/utils/wholesaleCalculation';
+import ProductDetailGallery from '@features/catalog/components/ProductDetailGallery';
+import ProductDetailPricingBox from '@features/catalog/components/ProductDetailPricingBox';
+import ProductDetailPurchaseActions from '@features/catalog/components/ProductDetailPurchaseActions';
+import ProductDetailTabs from '@features/catalog/components/ProductDetailTabs';
 import miscApi from '@shared/api/miscApi';
 
 export default function ProductDetailPage() {
@@ -210,47 +206,14 @@ export default function ProductDetailPage() {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-14 py-8 items-start">
           
           {/* Left Column: Image Gallery with Zoom */}
-          <div className="lg:col-span-6 space-y-4">
-            <div 
-              className="bg-[#FAFAFA] border border-[#EAEAEA] rounded-[4px] aspect-square p-8 sm:p-12 flex items-center justify-center relative overflow-hidden group cursor-crosshair"
-              onMouseEnter={() => setIsZoomed(true)}
-              onMouseLeave={() => setIsZoomed(false)}
-              onMouseMove={handleMouseMove}
-            >
-              {discountPercent && (
-                <span className="absolute top-4 left-4 bg-[#FF4D00] text-white text-[10px] font-bold tracking-wider px-2.5 py-1 rounded-[2px] uppercase z-10">
-                  Save {discountPercent}%
-                </span>
-              )}
-
-              {/* Zoomable Image Container */}
-              <div 
-                className="w-full h-full flex items-center justify-center transition-transform duration-100"
-                style={{
-                  transformOrigin: `${mousePos.x}% ${mousePos.y}%`,
-                  transform: isZoomed ? 'scale(1.8)' : 'scale(1)'
-                }}
-              >
-                <img
-                  src={product.image}
-                  alt={product.name}
-                  className="w-full h-full object-contain filter drop-shadow-[0_10px_20px_rgba(0,0,0,0.06)]"
-                />
-              </div>
-
-              {/* Hover Zoom hint */}
-              <div className="absolute bottom-4 right-4 bg-white/90 backdrop-blur-sm text-[10px] uppercase tracking-wider text-[#6B6B6B] px-2 py-1 rounded border border-[#EAEAEA] pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity">
-                Hover to Zoom
-              </div>
-            </div>
-
-            {/* Thumbnail preview */}
-            <div className="flex gap-3">
-              <div className="w-16 h-16 rounded-[4px] border-2 border-[#0A0A0A] p-1 bg-white cursor-pointer">
-                <img src={product.image} alt="Thumbnail 1" className="w-full h-full object-contain" />
-              </div>
-            </div>
-          </div>
+          <ProductDetailGallery
+            product={product}
+            discountPercent={discountPercent}
+            isZoomed={isZoomed}
+            setIsZoomed={setIsZoomed}
+            mousePos={mousePos}
+            handleMouseMove={handleMouseMove}
+          />
 
           {/* Right Column: Details, Pricing, CTAs */}
           <div className="lg:col-span-6 space-y-6">
@@ -307,150 +270,13 @@ export default function ProductDetailPage() {
             </div>
 
             {/* Mode-Aware Pricing Block */}
-            {isWholesale ? (
-              /* Wholesale Pricing & Volume Tiers Box */
-              (() => {
-                const tierInfo = getWholesaleTier(product, quantity);
-                const mrp = Number(product.mrp || product.originalPrice || Math.round((product.price || 1000) * 1.35));
-                return (
-                  <div className="p-4 bg-[#FAFAFA] border border-[#EAEAEA] rounded-[4px] space-y-3">
-                    <div className="flex flex-wrap items-baseline justify-between gap-2">
-                      <div>
-                        <div className="text-[10px] uppercase tracking-wider text-[#6B6B6B] font-semibold">
-                          Wholesale Unit Price
-                        </div>
-                        <div className="flex items-baseline gap-2.5">
-                          <span className="text-3xl font-bold text-[#0A0A0A] tabular-nums">
-                            ₹{tierInfo.unitPrice.toLocaleString('en-IN')}
-                          </span>
-                          <span className="text-xs text-[#8A8A8A] line-through tabular-nums">
-                            MRP ₹{mrp.toLocaleString('en-IN')}
-                          </span>
-                        </div>
-                      </div>
-                      <div className="text-right">
-                        <div className="text-[10px] uppercase tracking-wider text-[#6B6B6B] font-semibold">
-                          Line Total ({quantity} units)
-                        </div>
-                        <div className="text-xl font-bold text-[#FF4D00] tabular-nums">
-                          ₹{tierInfo.lineTotal.toLocaleString('en-IN')}
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* Volume Discount Tiers Table */}
-                    <div className="grid grid-cols-3 gap-2 pt-2 border-t border-[#EAEAEA]">
-                      {tierInfo.tiers.map((t, idx) => (
-                        <div
-                          key={idx}
-                          onClick={() => setQuantity(t.minQty)}
-                          className={`p-2 rounded-[3px] border cursor-pointer text-center transition-all ${
-                            t.active
-                              ? 'bg-[#FFF0EB] border-[#FF4D00] shadow-xs'
-                              : 'bg-white border-[#EAEAEA] hover:border-[#BDBDBD]'
-                          }`}
-                        >
-                          <div className={`text-[10px] font-semibold uppercase tracking-wider ${t.active ? 'text-[#FF4D00]' : 'text-[#6B6B6B]'}`}>
-                            {t.label}
-                          </div>
-                          <div className={`text-sm font-bold tabular-nums mt-0.5 ${t.active ? 'text-[#FF4D00]' : 'text-[#0A0A0A]'}`}>
-                            ₹{t.price.toLocaleString('en-IN')}
-                          </div>
-                          <div className="text-[9px] text-[#8A8A8A] mt-0.5">
-                            {mrp > 0 ? `${Math.round(((mrp - t.price) / mrp) * 100)}% off MRP` : ''}
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-
-                    {/* Margin and Savings pill */}
-                    <div className="flex flex-wrap items-center justify-between gap-2 pt-1 text-[11px]">
-                      <span className="text-emerald-700 font-semibold bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">
-                        You save ₹{tierInfo.savingsVsMrp.toLocaleString('en-IN')} vs MRP ({tierInfo.savingsPercent}%)
-                      </span>
-                      <span className="text-[#0A0A0A] font-medium bg-neutral-100 px-2 py-0.5 rounded border border-neutral-200">
-                        Est. Resale Margin: <strong className="text-[#FF4D00] font-bold">{tierInfo.resaleMarginPercent}%</strong>
-                      </span>
-                    </div>
-
-                    {/* Next Tier Upsell Nudge */}
-                    {tierInfo.nextTier && (
-                      <div className="p-2 bg-white border border-dashed border-[#FF4D00]/60 rounded text-[11px] text-[#0A0A0A] flex items-center justify-between">
-                        <span>
-                          Add <strong className="text-[#FF4D00]">{tierInfo.nextTier.unitsNeeded} more</strong> to unlock <strong>Tier {tierInfo.nextTier.targetTier} (₹{tierInfo.nextTier.targetUnitPrice}/unit)</strong>
-                        </span>
-                        <button
-                          type="button"
-                          onClick={() => setQuantity(tierInfo.nextTier.targetQty)}
-                          className="text-[10px] font-bold text-[#FF4D00] hover:underline uppercase tracking-wider ml-2 cursor-pointer"
-                        >
-                          Upgrade
-                        </button>
-                      </div>
-                    )}
-                  </div>
-                );
-              })()
-            ) : (
-              /* Retail Pricing Box */
-              (() => {
-                const retailPrice = Number(product.price || 1000);
-                const mrp = Number(product.mrp || product.originalPrice || Math.round(retailPrice * 1.35));
-                const savings = mrp - retailPrice;
-                const savingsPercent = mrp > 0 ? Math.round((savings / mrp) * 100) : 0;
-                const lineTotal = retailPrice * quantity;
-
-                return (
-                  <div className="p-4 bg-[#FAFAFA] border border-[#EAEAEA] rounded-[4px] space-y-3">
-                    <div className="flex flex-wrap items-baseline justify-between gap-2">
-                      <div>
-                        <div className="text-[10px] uppercase tracking-wider text-[#6B6B6B] font-semibold">
-                          Retail Price
-                        </div>
-                        <div className="flex items-baseline gap-2.5">
-                          <span className="text-3xl font-bold text-[#0A0A0A] tabular-nums">
-                            ₹{retailPrice.toLocaleString('en-IN')}
-                          </span>
-                          {mrp > retailPrice && (
-                            <span className="text-sm text-[#8A8A8A] line-through tabular-nums">
-                              ₹{mrp.toLocaleString('en-IN')}
-                            </span>
-                          )}
-                          {savingsPercent > 0 && (
-                            <span className="text-[11px] font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">
-                              Save {savingsPercent}%
-                            </span>
-                          )}
-                        </div>
-                      </div>
-
-                      {quantity > 1 && (
-                        <div className="text-right">
-                          <div className="text-[10px] uppercase tracking-wider text-[#6B6B6B] font-semibold">
-                            Total ({quantity} items)
-                          </div>
-                          <div className="text-xl font-bold text-[#0A0A0A] tabular-nums">
-                            ₹{lineTotal.toLocaleString('en-IN')}
-                          </div>
-                        </div>
-                      )}
-                    </div>
-
-                    {/* Subtle wholesale teaser */}
-                    <div className="p-2.5 bg-white border border-[#EAEAEA] rounded text-[11px] text-[#6B6B6B] flex items-center justify-between">
-                      <span>Buying in bulk for business or resale?</span>
-                      <button
-                        type="button"
-                        onClick={() => switchMode('wholesale')}
-                        className="text-[#FF4D00] font-semibold hover:underline inline-flex items-center gap-1 cursor-pointer"
-                      >
-                        Switch to Wholesale <ArrowRight size={11} />
-                      </button>
-                    </div>
-                  </div>
-                );
-              })()
-            )}
+            <ProductDetailPricingBox
+              isWholesale={isWholesale}
+              product={product}
+              quantity={quantity}
+              setQuantity={setQuantity}
+              switchMode={switchMode}
+            />
 
             {/* Spec Highlights Chips */}
             <div className="flex flex-wrap gap-2">
@@ -470,172 +296,27 @@ export default function ProductDetailPage() {
             </p>
 
             {/* Quantity Stepper & CTAs or Notify Me Form */}
-            <div className="pt-2 space-y-3">
-              {!isOutOfStock ? (
-                <>
-                  <div className="flex items-center gap-4">
-                    <span className="text-xs uppercase tracking-wider text-[#6B6B6B] font-medium">
-                      Quantity:
-                    </span>
-                    <div className="flex items-center border border-[#EAEAEA] rounded-[4px] bg-white">
-                      <button
-                        type="button"
-                        onClick={() => {
-                          if (isWholesale) {
-                            setQuantity(Math.max(moq, quantity - packSize));
-                          } else {
-                            setQuantity(Math.max(1, quantity - 1));
-                          }
-                        }}
-                        disabled={isWholesale ? quantity <= moq : quantity <= 1}
-                        className="p-2 hover:bg-[#F7F7F7] text-[#0A0A0A] transition-colors disabled:opacity-30 cursor-pointer"
-                      >
-                        <Minus size={14} />
-                      </button>
-                      <span className="px-4 text-xs font-semibold tabular-nums text-[#0A0A0A]">
-                        {quantity}
-                      </span>
-                      <button
-                        type="button"
-                        onClick={() => {
-                          if (isWholesale) {
-                            setQuantity(Math.min(stock, quantity + packSize));
-                          } else {
-                            setQuantity(Math.min(stock, quantity + 1));
-                          }
-                        }}
-                        className="p-2 hover:bg-[#F7F7F7] text-[#0A0A0A] transition-colors disabled:opacity-40 cursor-pointer"
-                        disabled={quantity >= stock}
-                      >
-                        <Plus size={14} />
-                      </button>
-                    </div>
-
-                    {isWholesale ? (
-                      <span className="text-[11px] text-[#6B6B6B]">
-                        MOQ: <strong className="text-[#0A0A0A]">{moq}</strong> (Pack: {packSize})
-                      </span>
-                    ) : (
-                      <span className="text-[11px] text-[#6B6B6B]">
-                        Single unit purchase
-                      </span>
-                    )}
-                  </div>
-
-                  {/* Action Buttons: Add to Cart, Buy Now, Wishlist */}
-                  <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 pt-2">
-                    <button
-                      type="button"
-                      onClick={handleAddToCart}
-                      className={`flex-1 py-4 px-6 rounded-[4px] text-xs font-semibold uppercase tracking-widest transition-all duration-200 flex items-center justify-center gap-2 shadow-sm cursor-pointer ${
-                        isAdded 
-                          ? 'bg-emerald-600 text-white' 
-                          : 'bg-[#0A0A0A] text-white hover:bg-[#FF4D00]'
-                      }`}
-                    >
-                      {isAdded ? (
-                        <>
-                          <Check size={16} /> Added to Cart
-                        </>
-                      ) : (
-                        <>
-                          <ShoppingBag size={16} strokeWidth={1.75} />
-                          <span>{isWholesale ? `Add ${quantity} Units` : 'Add to Bag'}</span>
-                        </>
-                      )}
-                    </button>
-
-                    <button
-                      type="button"
-                      onClick={handleBuyNow}
-                      className="flex-1 py-4 px-6 rounded-[4px] text-xs font-semibold uppercase tracking-widest bg-[#FF4D00] hover:bg-[#E04400] text-white transition-colors flex items-center justify-center gap-2 shadow-sm cursor-pointer"
-                    >
-                      <span>{isWholesale ? 'Bulk Checkout' : 'Buy Now'}</span>
-                      <ArrowRight size={15} />
-                    </button>
-
-                    <button
-                      type="button"
-                      onClick={() => toggleWishlist(product)}
-                      className={`p-4 rounded-[4px] border border-[#EAEAEA] transition-colors flex items-center justify-center cursor-pointer ${
-                        inWishlist ? 'text-[#FF4D00] bg-[#FFF0EB] border-[#FF4D00]' : 'text-[#6B6B6B] hover:text-[#0A0A0A] hover:bg-[#F7F7F7]'
-                      }`}
-                      aria-label="Wishlist"
-                    >
-                      <Heart size={18} className={inWishlist ? 'fill-current' : ''} />
-                    </button>
-                  </div>
-
-                  {/* Wholesale Quote CTA */}
-                  {isWholesale && (
-                    <button
-                      type="button"
-                      onClick={() => navigate(`/quote?productId=${product.id}&qty=${quantity}`)}
-                      className="w-full py-2.5 px-4 rounded-[4px] border border-[#0A0A0A] text-[#0A0A0A] hover:bg-[#0A0A0A] hover:text-white text-xs font-semibold uppercase tracking-wider transition-colors flex items-center justify-center gap-2 mt-2 cursor-pointer"
-                    >
-                      Request Custom Bulk Quote →
-                    </button>
-                  )}
-                </>
-              ) : (
-                /* Out of stock: disabled buttons + Notify Me form */
-                <div className="space-y-4 pt-2">
-                  <div className="p-4 bg-gray-50 border border-[#EAEAEA] rounded-[4px]">
-                    <div className="flex items-center gap-2 text-xs font-semibold text-[#0A0A0A] mb-1">
-                      <AlertCircle size={16} className="text-[#FF4D00]" />
-                      <span>This product is currently out of stock</span>
-                    </div>
-                    <p className="text-xs text-[#6B6B6B] mb-3">
-                      Leave your email below and we will notify you immediately once new inventory arrives.
-                    </p>
-
-                    {notifySuccess ? (
-                      <div className="p-3 bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs rounded-[4px] flex items-center gap-2">
-                        <Check size={14} /> You're on the priority notification list!
-                      </div>
-                    ) : (
-                      <form onSubmit={handleNotifyMe} className="flex gap-2">
-                        <input
-                          type="email"
-                          required
-                          value={notifyEmail}
-                          onChange={(e) => setNotifyEmail(e.target.value)}
-                          placeholder="Enter your email address"
-                          className="flex-1 h-10 px-3 text-xs bg-white border border-[#EAEAEA] rounded-[4px] focus:outline-none focus:border-[#0A0A0A]"
-                        />
-                        <button
-                          type="submit"
-                          disabled={notifyLoading}
-                          className="h-10 px-4 bg-[#0A0A0A] hover:bg-[#FF4D00] text-white text-xs font-semibold uppercase tracking-wider rounded-[4px] transition-colors flex items-center gap-1.5 cursor-pointer disabled:opacity-50"
-                        >
-                          <Bell size={13} /> {notifyLoading ? 'Saving...' : 'Notify Me'}
-                        </button>
-                      </form>
-                    )}
-                  </div>
-
-                  <div className="flex gap-3">
-                    <button
-                      type="button"
-                      disabled
-                      className="flex-1 py-3 px-4 bg-[#EAEAEA] text-[#8A8A8A] text-xs font-semibold uppercase tracking-widest rounded-[4px] cursor-not-allowed"
-                    >
-                      Out of Stock
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => toggleWishlist(product)}
-                      className={`p-3 rounded-[4px] border border-[#EAEAEA] transition-colors flex items-center justify-center cursor-pointer ${
-                        inWishlist ? 'text-[#FF4D00] bg-[#FFF0EB] border-[#FF4D00]' : 'text-[#6B6B6B] hover:text-[#0A0A0A] hover:bg-[#F7F7F7]'
-                      }`}
-                      aria-label="Wishlist"
-                    >
-                      <Heart size={18} className={inWishlist ? 'fill-current' : ''} />
-                    </button>
-                  </div>
-                </div>
-              )}
-            </div>
+            <ProductDetailPurchaseActions
+              product={product}
+              isOutOfStock={isOutOfStock}
+              isWholesale={isWholesale}
+              quantity={quantity}
+              setQuantity={setQuantity}
+              moq={moq}
+              packSize={packSize}
+              stock={stock}
+              isAdded={isAdded}
+              handleAddToCart={handleAddToCart}
+              handleBuyNow={handleBuyNow}
+              toggleWishlist={toggleWishlist}
+              inWishlist={inWishlist}
+              navigate={navigate}
+              notifySuccess={notifySuccess}
+              handleNotifyMe={handleNotifyMe}
+              notifyEmail={notifyEmail}
+              setNotifyEmail={setNotifyEmail}
+              notifyLoading={notifyLoading}
+            />
 
             {/* Pincode Delivery Check */}
             <div className="pt-4 border-t border-[#EAEAEA]">
@@ -695,106 +376,7 @@ export default function ProductDetailPage() {
         </div>
 
         {/* Tabbed Info Section: Specs, Description, Reviews */}
-        <div className="mt-16 pt-10 border-t border-[#EAEAEA]">
-          <div className="flex gap-8 border-b border-[#EAEAEA] mb-8">
-            <button
-              type="button"
-              onClick={() => setActiveTab('specs')}
-              className={`pb-3 text-xs font-semibold uppercase tracking-wider transition-all cursor-pointer ${
-                activeTab === 'specs'
-                  ? 'border-b-2 border-[#FF4D00] text-[#0A0A0A]'
-                  : 'text-[#8A8A8A] hover:text-[#0A0A0A]'
-              }`}
-            >
-              Technical Specifications
-            </button>
-            <button
-              type="button"
-              onClick={() => setActiveTab('description')}
-              className={`pb-3 text-xs font-semibold uppercase tracking-wider transition-all cursor-pointer ${
-                activeTab === 'description'
-                  ? 'border-b-2 border-[#FF4D00] text-[#0A0A0A]'
-                  : 'text-[#8A8A8A] hover:text-[#0A0A0A]'
-              }`}
-            >
-              Overview & Architecture
-            </button>
-            <button
-              type="button"
-              onClick={() => setActiveTab('reviews')}
-              className={`pb-3 text-xs font-semibold uppercase tracking-wider transition-all cursor-pointer ${
-                activeTab === 'reviews'
-                  ? 'border-b-2 border-[#FF4D00] text-[#0A0A0A]'
-                  : 'text-[#8A8A8A] hover:text-[#0A0A0A]'
-              }`}
-            >
-              Reviews ({product.reviewsCount || 420})
-            </button>
-          </div>
-
-          <div className="max-w-3xl">
-            {activeTab === 'specs' && (
-              <div className="divide-y divide-[#F2F2F2]">
-                {Object.entries(product.specs || {}).map(([key, value]) => (
-                  <div key={key} className="py-3 grid grid-cols-3 gap-4 text-xs">
-                    <span className="font-semibold text-[#0A0A0A]">{key}</span>
-                    <span className="col-span-2 text-[#6B6B6B]">{value}</span>
-                  </div>
-                ))}
-              </div>
-            )}
-
-            {activeTab === 'description' && (
-              <div className="space-y-4 text-xs text-[#6B6B6B] leading-relaxed">
-                <p>
-                  The {product.name} represents high-precision industrial craft tailored for discerning technology enthusiasts. Every component is rigorously calibrated for enduring performance, tactile satisfaction, and minimalist elegance.
-                </p>
-                <p>
-                  Engineered with premium materials and backed by TechBazaar's 100% authenticity guarantee, this hardware is inspected, sealed, and dispatched with climate-conscious packaging.
-                </p>
-              </div>
-            )}
-
-            {activeTab === 'reviews' && (
-              <div className="space-y-6">
-                <div className="p-4 bg-[#F7F7F7] rounded-[4px] border border-[#EAEAEA] flex items-center justify-between">
-                  <div>
-                    <div className="text-2xl font-bold text-[#0A0A0A] tabular-nums">
-                      {product.rating} / 5.0
-                    </div>
-                    <p className="text-xs text-[#6B6B6B]">Based on verified customer purchases across India</p>
-                  </div>
-                  <div className="flex text-amber-400">
-                    {[...Array(5)].map((_, i) => (
-                      <Star key={i} size={18} className="fill-current" />
-                    ))}
-                  </div>
-                </div>
-
-                <div className="space-y-4 divide-y divide-[#F2F2F2]">
-                  <div className="pt-4">
-                    <div className="flex items-center justify-between mb-1">
-                      <span className="text-xs font-semibold text-[#0A0A0A]">Kavya M. (Bengaluru)</span>
-                      <span className="text-[10px] text-[#8A8A8A]">3 days ago</span>
-                    </div>
-                    <p className="text-xs text-[#6B6B6B] leading-relaxed">
-                      "Spectacular build quality and the finish is even cleaner in person. Fast dispatch by TechBazaar — reached me in 48 hours."
-                    </p>
-                  </div>
-                  <div className="pt-4">
-                    <div className="flex items-center justify-between mb-1">
-                      <span className="text-xs font-semibold text-[#0A0A0A]">Rohan S. (Mumbai)</span>
-                      <span className="text-[10px] text-[#8A8A8A]">1 week ago</span>
-                    </div>
-                    <p className="text-xs text-[#6B6B6B] leading-relaxed">
-                      "Authentic sealed unit. Battery life and acoustic fidelity easily match the manufacturer claims. Highly recommended!"
-                    </p>
-                  </div>
-                </div>
-              </div>
-            )}
-          </div>
-        </div>
+        <ProductDetailTabs product={product} activeTab={activeTab} setActiveTab={setActiveTab} />
 
         {/* Slot 6: product-below Banner */}
         <div className="my-12">
