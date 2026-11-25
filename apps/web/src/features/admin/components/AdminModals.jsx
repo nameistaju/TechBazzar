@@ -59,9 +59,9 @@ export function ForcePasswordChangeModal({ isOpen, _onClose, onPasswordChanged }
   return (
     <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
       <div className="w-full max-w-md bg-white border border-[#0A0A0A] p-6 sm:p-8 shadow-2xl relative animate-in fade-in zoom-in-95 duration-150">
-        <div className="flex items-center gap-3 mb-4 text-[#FF4D00]">
-          <div className="w-10 h-10 rounded-full bg-[#FF4D00]/10 flex items-center justify-center">
-            <Lock className="w-5 h-5 text-[#FF4D00]" />
+        <div className="flex items-center gap-3 mb-4 text-accent-text">
+          <div className="w-10 h-10 rounded-full bg-accent/10 flex items-center justify-center">
+            <Lock className="w-5 h-5 text-accent-text" />
           </div>
           <div>
             <h3 className="font-mono text-sm uppercase tracking-wider font-bold text-[#0A0A0A]">Security Requirement</h3>
@@ -125,7 +125,7 @@ export function ForcePasswordChangeModal({ isOpen, _onClose, onPasswordChanged }
           <button
             type="submit"
             disabled={loading}
-            className="w-full py-2.5 px-4 bg-[#0A0A0A] text-white font-mono text-xs uppercase tracking-wider hover:bg-[#FF4D00] transition-colors font-semibold flex items-center justify-center gap-2"
+            className="w-full py-2.5 px-4 bg-[#0A0A0A] text-accent-contrast font-mono text-xs uppercase tracking-wider hover:bg-accent transition-colors font-semibold flex items-center justify-center gap-2"
           >
             {loading ? 'Saving...' : 'Set New Password & Enter'}
           </button>
@@ -167,8 +167,8 @@ export function SessionTimeoutModal({ isOpen, onReauthenticated }) {
   return (
     <div className="fixed inset-0 z-[110] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
       <div className="w-full max-w-sm bg-white border border-[#0A0A0A] p-6 shadow-2xl relative animate-in fade-in zoom-in-95 duration-150">
-        <div className="flex items-center gap-3 mb-4 text-[#FF4D00]">
-          <ShieldAlert className="w-6 h-6 text-[#FF4D00]" />
+        <div className="flex items-center gap-3 mb-4 text-accent-text">
+          <ShieldAlert className="w-6 h-6 text-accent-text" />
           <div>
             <h3 className="font-mono text-sm uppercase tracking-wider font-bold text-[#0A0A0A]">Session Expired</h3>
             <p className="text-xs text-[#6B6B6B]">Unsaved form inputs are preserved</p>
@@ -204,7 +204,7 @@ export function SessionTimeoutModal({ isOpen, onReauthenticated }) {
           <button
             type="submit"
             disabled={loading}
-            className="w-full py-2 px-4 bg-[#0A0A0A] text-white font-mono text-xs uppercase tracking-wider hover:bg-[#FF4D00] transition-colors"
+            className="w-full py-2 px-4 bg-[#0A0A0A] text-accent-contrast font-mono text-xs uppercase tracking-wider hover:bg-accent transition-colors"
           >
             {loading ? 'Verifying...' : 'Unlock & Continue Working'}
           </button>
@@ -307,7 +307,7 @@ export function GlobalSearchModal({ isOpen, onClose, onNavigate }) {
           {results.products.length > 0 && (
             <div>
               <div className="flex items-center gap-2 text-xs font-mono uppercase tracking-wider text-[#6B6B6B] mb-2">
-                <Package className="w-3.5 h-3.5 text-[#FF4D00]" />
+                <Package className="w-3.5 h-3.5 text-accent-text" />
                 Products ({results.products.length})
               </div>
               <div className="divide-y divide-[#F0F0F0] border border-[#F0F0F0]">
@@ -343,7 +343,7 @@ export function GlobalSearchModal({ isOpen, onClose, onNavigate }) {
           {results.orders.length > 0 && (
             <div>
               <div className="flex items-center gap-2 text-xs font-mono uppercase tracking-wider text-[#6B6B6B] mb-2">
-                <ShoppingBag className="w-3.5 h-3.5 text-[#FF4D00]" />
+                <ShoppingBag className="w-3.5 h-3.5 text-accent-text" />
                 Orders ({results.orders.length})
               </div>
               <div className="divide-y divide-[#F0F0F0] border border-[#F0F0F0]">
@@ -371,7 +371,7 @@ export function GlobalSearchModal({ isOpen, onClose, onNavigate }) {
           {results.invoices.length > 0 && (
             <div>
               <div className="flex items-center gap-2 text-xs font-mono uppercase tracking-wider text-[#6B6B6B] mb-2">
-                <FileText className="w-3.5 h-3.5 text-[#FF4D00]" />
+                <FileText className="w-3.5 h-3.5 text-accent-text" />
                 Invoices ({results.invoices.length})
               </div>
               <div className="divide-y divide-[#F0F0F0] border border-[#F0F0F0]">
@@ -399,7 +399,7 @@ export function GlobalSearchModal({ isOpen, onClose, onNavigate }) {
           {results.customers.length > 0 && (
             <div>
               <div className="flex items-center gap-2 text-xs font-mono uppercase tracking-wider text-[#6B6B6B] mb-2">
-                <Users className="w-3.5 h-3.5 text-[#FF4D00]" />
+                <Users className="w-3.5 h-3.5 text-accent-text" />
                 Customers ({results.customers.length})
               </div>
               <div className="divide-y divide-[#F0F0F0] border border-[#F0F0F0]">
@@ -452,7 +452,7 @@ export function PackingSlipModal({ order, settings, isOpen, onClose }) {
           <div className="flex items-center gap-2">
             <button
               onClick={handlePrint}
-              className="px-3 py-1.5 bg-[#0A0A0A] text-white text-xs font-mono uppercase tracking-wider flex items-center gap-1.5 hover:bg-[#FF4D00] transition-colors"
+              className="px-3 py-1.5 bg-[#0A0A0A] text-accent-contrast text-xs font-mono uppercase tracking-wider flex items-center gap-1.5 hover:bg-accent transition-colors"
             >
               <Printer className="w-3.5 h-3.5" />
               Print Slip

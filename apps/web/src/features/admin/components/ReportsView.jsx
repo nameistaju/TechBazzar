@@ -86,7 +86,7 @@ export default function ReportsView() {
             onClick={() => setActiveTab(t.id)}
             className={`py-3 px-4 border-b-2 font-semibold transition-colors whitespace-nowrap ${
               activeTab === t.id
-                ? 'border-[#FF4D00] text-[#0A0A0A]'
+                ? 'border-accent text-[#0A0A0A]'
                 : 'border-transparent text-[#6B6B6B] hover:text-[#0A0A0A]'
             }`}
           >
@@ -116,7 +116,7 @@ export default function ReportsView() {
 
             <div className="p-4 bg-white border border-[#EAEAEA]">
               <div className="text-[10px] font-mono uppercase text-[#6B6B6B]">Total Discounts Given</div>
-              <div className="text-xl font-bold font-mono text-[#FF4D00] mt-1">
+              <div className="text-xl font-bold font-mono text-accent-text mt-1">
                 -{formatINR(salesData.stats?.total_discounts || 0)}
               </div>
             </div>
@@ -239,7 +239,7 @@ export default function ReportsView() {
             <tbody className="divide-y divide-[#F0F0F0]">
               {discountsData.map(d => (
                 <tr key={d.id} className="hover:bg-gray-50">
-                  <td className="p-3 font-bold text-[#FF4D00]">{d.code || 'Automatic'}</td>
+                  <td className="p-3 font-bold text-accent-text">{d.code || 'Automatic'}</td>
                   <td className="p-3 font-sans text-[#0A0A0A]">{d.title}</td>
                   <td className="p-3 text-center font-bold">{d.used_count || 0}</td>
                   <td className="p-3 text-right font-bold text-[#0A0A0A]">{formatINR(d.total_discount_given || 0)}</td>
@@ -271,7 +271,7 @@ export default function ReportsView() {
 
             <div className="p-4 bg-white border border-[#0A0A0A] font-mono">
               <div className="text-[10px] uppercase text-[#6B6B6B]">Total Tax Liability</div>
-              <div className="text-xl font-bold text-[#FF4D00] mt-1">{formatINR(taxData.summary?.totalTax || 0)}</div>
+              <div className="text-xl font-bold text-accent-text mt-1">{formatINR(taxData.summary?.totalTax || 0)}</div>
             </div>
           </div>
 

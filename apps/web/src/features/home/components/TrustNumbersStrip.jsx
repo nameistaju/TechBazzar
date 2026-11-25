@@ -15,7 +15,7 @@ export default function TrustNumbersStrip() {
           {stats.map((s, idx) => (
             <div key={idx} className={idx > 0 ? 'pt-6 md:pt-0' : ''}>
               <div className="text-2xl sm:text-3xl lg:text-4xl font-light tracking-tight text-white mb-1 tabular-nums font-mono">
-                <span className="text-[#FF4D00]">{s.value.slice(0, 1)}</span>
+                <span className="text-accent-text">{s.value.slice(0, 1)}</span>
                 {s.value.slice(1)}
               </div>
               <div className="text-[11px] uppercase tracking-widest text-[#BDBDBD] font-medium">

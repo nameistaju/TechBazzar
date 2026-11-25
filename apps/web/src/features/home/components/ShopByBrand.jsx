@@ -12,7 +12,7 @@ export default function ShopByBrand() {
         <div className="flex items-end justify-between mb-10">
           <div>
             <div className="flex items-center gap-1.5 text-[10px] uppercase tracking-[0.2em] text-[#6B6B6B] font-bold mb-1">
-              <Award size={13} className="text-[#FF4D00]" /> Authorized Partners
+              <Award size={13} className="text-accent-text" /> Authorized Partners
             </div>
             <h2 className="text-2xl sm:text-3xl font-light uppercase tracking-widest text-[#0A0A0A]">
               Shop by Brand
@@ -20,7 +20,7 @@ export default function ShopByBrand() {
           </div>
           <Link
             to="/shop"
-            className="text-xs font-semibold uppercase tracking-wider text-[#0A0A0A] hover:text-[#FF4D00] transition-colors flex items-center gap-1 group"
+            className="text-xs font-semibold uppercase tracking-wider text-[#0A0A0A] hover:text-accent-text transition-colors flex items-center gap-1 group"
           >
             All Brands <ArrowRight size={13} className="group-hover:translate-x-1 transition-transform" />
           </Link>

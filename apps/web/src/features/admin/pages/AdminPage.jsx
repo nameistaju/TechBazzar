@@ -168,7 +168,7 @@ export default function AdminPage() {
   const navItems = [
     { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
     { id: 'products', label: 'Products', icon: Package },
-    { id: 'inventory', label: 'Inventory', icon: Boxes, badge: badges.lowStock, badgeColor: 'bg-[#FF4D00]' },
+    { id: 'inventory', label: 'Inventory', icon: Boxes, badge: badges.lowStock, badgeColor: 'bg-accent' },
     { id: 'orders', label: 'Orders', icon: ShoppingBag, badge: badges.pendingOrders, badgeColor: 'bg-[#0A0A0A]' },
     { id: 'quotes', label: 'RFQ Inquiries', icon: MessageSquare },
     { id: 'estimates', label: 'Estimates', icon: FileSpreadsheet },
@@ -193,7 +193,7 @@ export default function AdminPage() {
     return (
       <div className="min-h-screen bg-[#F7F7F7] flex flex-col items-center justify-center p-6 text-center">
         <div className="w-12 h-12 bg-[#0A0A0A] text-white flex items-center justify-center rounded-full mb-4">
-          <ShieldCheck className="w-6 h-6 text-[#FF4D00]" />
+          <ShieldCheck className="w-6 h-6 text-accent-text" />
         </div>
         <h2 className="text-xl font-bold font-mono uppercase text-[#0A0A0A]">
           Single Owner Back-Office Access
@@ -203,7 +203,7 @@ export default function AdminPage() {
         </p>
         <button
           onClick={() => openAuthModal('login')}
-          className="px-6 py-2.5 bg-[#0A0A0A] text-white font-mono text-xs uppercase tracking-wider hover:bg-[#FF4D00] transition-colors font-bold"
+          className="px-6 py-2.5 bg-[#0A0A0A] text-accent-contrast font-mono text-xs uppercase tracking-wider hover:bg-accent transition-colors font-bold"
         >
           Sign In as Admin
         </button>

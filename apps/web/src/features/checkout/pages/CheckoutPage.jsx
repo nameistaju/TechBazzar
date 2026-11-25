@@ -242,7 +242,7 @@ export default function CheckoutPage() {
         </p>
         <Link
           to="/shop"
-          className="bg-[#0A0A0A] text-white text-xs font-semibold uppercase tracking-widest px-6 py-3.5 rounded-[4px] hover:bg-[#FF4D00] transition-colors"
+          className="bg-[#0A0A0A] text-accent-contrast text-xs font-semibold uppercase tracking-widest px-6 py-3.5 rounded-[4px] hover:bg-accent transition-colors"
         >
           Explore Catalog
         </Link>
@@ -275,7 +275,7 @@ export default function CheckoutPage() {
               <button
                 type="button"
                 onClick={() => openAuthModal('login')}
-                className="text-[#FF4D00] font-semibold hover:underline"
+                className="text-accent-text font-semibold hover:underline"
               >
                 Sign in for faster checkout
               </button>
@@ -310,7 +310,7 @@ export default function CheckoutPage() {
                       isDone
                         ? 'bg-[#0A0A0A] text-white'
                         : isCurrent
-                        ? 'bg-[#FF4D00] text-white ring-4 ring-[#FFF0EB]'
+                        ? 'bg-accent text-accent-contrast ring-4 ring-accent/30'
                         : 'bg-white border-2 border-[#EAEAEA] text-[#8A8A8A]'
                     }`}
                   >

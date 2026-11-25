@@ -8,89 +8,18 @@ import db from '../../../db/index.js';
 import { UPLOADS_DIR, WEB_PUBLIC_DIR } from '../../../config/paths.js';
 import { requireAdmin } from '../../core/middleware/auth.js';
 import { validateImageUpload } from '../../core/utils/imageSecurity.js';
+import {
+  hexToRgb,
+  rgbToHex,
+  getRelativeLuminance as getLuminance,
+  getContrastRatio,
+  deriveColorTokens,
+  parseHex
+} from '../../../../web/src/shared/utils/colorContrast.js';
+
+export { hexToRgb, rgbToHex, getLuminance, getContrastRatio, deriveColorTokens };
 
 const router = Router();
-
-// ==========================================
-// COLOR MATH & ACCESSIBILITY HELPERS
-// ==========================================
-
-export function hexToRgb(hex) {
-  let c = hex.replace('#', '').trim();
-  if (c.length === 3) c = c.split('').map(x => x + x).join('');
-  const num = parseInt(c, 16);
-  return {
-    r: (num >> 16) & 255,
-    g: (num >> 8) & 255,
-    b: num & 255
-  };
-}
-
-export function rgbToHex(r, g, b) {
-  const clamp = (v) => Math.min(255, Math.max(0, Math.round(v)));
-  return '#' + [clamp(r), clamp(g), clamp(b)].map(x => x.toString(16).padStart(2, '0')).join('').toUpperCase();
-}
-
-// Relative luminance per WCAG 2.1
-export function getLuminance(r, g, b) {
-  const a = [r, g, b].map(v => {
-    v /= 255;
-    return v <= 0.03928 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4);
-  });
-  return a[0] * 0.2126 + a[1] * 0.7152 + a[2] * 0.0722;
-}
-
-// Contrast ratio per WCAG 2.1 (returns e.g. 4.5 for 4.5:1)
-export function getContrastRatio(hex1, hex2) {
-  const rgb1 = hexToRgb(hex1);
-  const rgb2 = hexToRgb(hex2);
-  const l1 = getLuminance(rgb1.r, rgb1.g, rgb1.b);
-  const l2 = getLuminance(rgb2.r, rgb2.g, rgb2.b);
-  const lighter = Math.max(l1, l2);
-  const darker = Math.min(l1, l2);
-  return Number(((lighter + 0.05) / (darker + 0.05)).toFixed(2));
-}
-
-// Derive hover (darker), pressed, tint (10% on white), border tint, focus ring, contrast text
-export function deriveColorTokens(hex) {
-  const cleanHex = hex.startsWith('#') ? hex : `#${hex}`;
-  const rgb = hexToRgb(cleanHex);
-
-  // Darker for hover (-12%) and pressed (-22%)
-  const hoverHex = rgbToHex(rgb.r * 0.88, rgb.g * 0.88, rgb.b * 0.88);
-  const pressedHex = rgbToHex(rgb.r * 0.78, rgb.g * 0.78, rgb.b * 0.78);
-
-  // 10% tint on white
-  const tintHex = rgbToHex(rgb.r * 0.1 + 255 * 0.9, rgb.g * 0.1 + 255 * 0.9, rgb.b * 0.1 + 255 * 0.9);
-  // 25% tint for soft borders
-  const borderHex = rgbToHex(rgb.r * 0.25 + 255 * 0.75, rgb.g * 0.25 + 255 * 0.75, rgb.b * 0.25 + 255 * 0.75);
-
-  // Focus ring with 35% opacity
-  const ringRgba = `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, 0.35)`;
-
-  // Contrast text: choose white (#FFFFFF) vs near-black (#0A0A0A)
-  const contrastWithWhite = getContrastRatio(cleanHex, '#FFFFFF');
-  const contrastWithBlack = getContrastRatio(cleanHex, '#0A0A0A');
-  const textContrast = contrastWithWhite >= 3.0 ? '#FFFFFF' : '#0A0A0A';
-
-  // AA pass check: normal text requires 4.5:1, large/UI components require 3:1
-  const aaTextPass = Math.max(contrastWithWhite, contrastWithBlack) >= 4.5;
-  const aaUiPass = contrastWithWhite >= 3.0 || contrastWithBlack >= 3.0;
-
-  return {
-    accent_hex: cleanHex,
-    accent_hover: hoverHex,
-    accent_pressed: pressedHex,
-    accent_tint: tintHex,
-    accent_border: borderHex,
-    accent_ring: ringRgba,
-    accent_contrast: textContrast,
-    contrast_ratio_white: contrastWithWhite,
-    contrast_ratio_black: contrastWithBlack,
-    aa_pass: aaTextPass,
-    aa_ui_pass: aaUiPass
-  };
-}
 
 // Default system branding values
 export const DEFAULT_BRANDING = {
@@ -149,7 +78,7 @@ router.get('/branding', (req, res) => {
     }
 
     res.setHeader('ETag', etag);
-    res.setHeader('Cache-Control', 'public, max-age=60, stale-while-revalidate=300');
+    res.setHeader('Cache-Control', 'no-cache');
     return res.json({ data: branding, error: null });
   } catch (err) {
     console.error('Failed to load branding:', err);
@@ -170,10 +99,14 @@ router.put('/admin/branding', requireAdmin, (req, res) => {
 
   const beforeState = getBrandingData();
 
-  // Validate hex if provided
-  let accentHex = body.accent_hex ? body.accent_hex.trim() : beforeState.accent_hex;
-  if (!/^#([0-9A-F]{3}){1,2}$/i.test(accentHex)) {
-    accentHex = '#FF4D00';
+  // Validate hex if provided (accepts 3 or 6 digits, with or without #)
+  let accentHex = beforeState.accent_hex;
+  if (body.accent_hex !== undefined && String(body.accent_hex).trim() !== '') {
+    const parsed = parseHex(String(body.accent_hex));
+    if (!parsed.valid) {
+      return res.status(400).json({ data: null, error: parsed.error });
+    }
+    accentHex = parsed.hex;
   }
 
   const upsert = db.prepare(`

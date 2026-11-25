@@ -62,19 +62,19 @@ export default function NavbarMobileDrawer({
 
           {/* Mobile Navigation Links */}
           <nav className="flex flex-col gap-3 text-xs font-semibold uppercase tracking-wider text-[#0A0A0A] pt-2">
-            <Link to="/shop" onClick={() => setIsMobileMenuOpen(false)} className="hover:text-pop py-1.5">
+            <Link to="/shop" onClick={() => setIsMobileMenuOpen(false)} className="hover:text-accent-text py-1.5">
               All Products
             </Link>
-            <Link to="/shop?flag=flashSale" onClick={() => setIsMobileMenuOpen(false)} className="text-pop py-1.5 flex items-center gap-1.5">
+            <Link to="/shop?flag=flashSale" onClick={() => setIsMobileMenuOpen(false)} className="text-accent-text py-1.5 flex items-center gap-1.5">
               <Zap size={14} /> Flash Sale
             </Link>
-            <Link to="/quick-order" onClick={() => setIsMobileMenuOpen(false)} className="hover:text-pop py-1.5">
+            <Link to="/quick-order" onClick={() => setIsMobileMenuOpen(false)} className="hover:text-accent-text py-1.5">
               Quick Order Matrix
             </Link>
-            <Link to="/quote" onClick={() => setIsMobileMenuOpen(false)} className="hover:text-pop py-1.5">
+            <Link to="/quote" onClick={() => setIsMobileMenuOpen(false)} className="hover:text-accent-text py-1.5">
               Request Bulk Quote
             </Link>
-            <Link to="/track" onClick={() => setIsMobileMenuOpen(false)} className="hover:text-pop py-1.5 flex items-center gap-1.5">
+            <Link to="/track" onClick={() => setIsMobileMenuOpen(false)} className="hover:text-accent-text py-1.5 flex items-center gap-1.5">
               <PackageCheck size={14} /> Track Order
             </Link>
 

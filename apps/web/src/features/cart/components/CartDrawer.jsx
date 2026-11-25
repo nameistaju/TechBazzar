@@ -92,13 +92,13 @@ export default function CartDrawer() {
           <div className="p-5 border-b border-[#EAEAEA]">
             <div className="flex items-center justify-between mb-3">
               <div className="flex items-center gap-2">
-                <ShoppingBag size={18} className="text-[#FF4D00]" />
+                <ShoppingBag size={18} className="text-accent-text" />
                 <h2 className="text-sm font-semibold uppercase tracking-widest text-[#0A0A0A] flex items-center gap-1.5">
                   {isWholesale ? 'Wholesale Procurement Bag' : 'Shopping Bag'}
                   <span className="text-xs text-[#8A8A8A] font-normal">({cartCount})</span>
                 </h2>
                 {isWholesale && (
-                  <span className="text-[9px] font-black uppercase px-1.5 py-0.5 rounded bg-[#0A0A0A] text-[#FF4D00] border border-[#FF4D00]/40">
+                  <span className="text-[9px] font-black uppercase px-1.5 py-0.5 rounded bg-[#0A0A0A] text-accent-text border border-accent/40">
                     B2B
                   </span>
                 )}
@@ -120,19 +120,19 @@ export default function CartDrawer() {
                 <div className={`p-2 rounded-[4px] border text-xs ${
                   meetsMinOrderValue 
                     ? 'bg-emerald-50 border-emerald-200 text-emerald-800'
-                    : 'bg-[#FFF9F6] border-[#FF4D00]/30 text-[#0A0A0A]'
+                    : 'bg-[#FFF9F6] border-accent/30 text-[#0A0A0A]'
                 }`}>
                   <div className="flex items-center justify-between font-medium">
                     <span className="flex items-center gap-1.5 text-[11px]">
                       {meetsMinOrderValue ? (
                         <CheckCircle2 size={13} className="text-emerald-600 shrink-0" />
                       ) : (
-                        <AlertTriangle size={13} className="text-[#FF4D00] shrink-0" />
+                        <AlertTriangle size={13} className="text-accent-text shrink-0" />
                       )}
                       {meetsMinOrderValue ? (
                         <span>Wholesale Min Order Met ({formatMoney(minOrderValue ?? 250000)}+)</span>
                       ) : (
-                        <span>Add <strong className="text-[#FF4D00] tabular-nums font-bold">{formatMoney(amountToMinOrder || 0)}</strong> to meet Min Order Value</span>
+                        <span>Add <strong className="text-accent-text tabular-nums font-bold">{formatMoney(amountToMinOrder || 0)}</strong> to meet Min Order Value</span>
                       )}
                     </span>
                   </div>
@@ -142,7 +142,7 @@ export default function CartDrawer() {
                 <div className="bg-[#F7F7F7] p-2 rounded-[4px] border border-[#EAEAEA]">
                   <div className="flex items-center justify-between text-xs font-medium mb-1">
                     <span className="flex items-center gap-1.5 text-[#0A0A0A] text-[11px]">
-                      <Truck size={13} className="text-[#FF4D00] shrink-0" />
+                      <Truck size={13} className="text-accent-text shrink-0" />
                       {isFreeShippingMet ? (
                         <span className="text-emerald-700 font-semibold">FREE Bulk Freight Unlocked!</span>
                       ) : (
@@ -164,7 +164,7 @@ export default function CartDrawer() {
               <div className="bg-[#F7F7F7] p-2 rounded-[4px] border border-[#EAEAEA]">
                 <div className="flex items-center justify-between text-xs font-medium mb-1">
                   <span className="flex items-center gap-1.5 text-[#0A0A0A] text-[11px]">
-                    <Truck size={13} className="text-[#FF4D00] shrink-0" />
+                    <Truck size={13} className="text-accent-text shrink-0" />
                     {isFreeShippingMet ? (
                       <span className="text-emerald-700 font-semibold">FREE Standard Delivery Unlocked!</span>
                     ) : (
@@ -189,7 +189,7 @@ export default function CartDrawer() {
                 <button
                   type="button"
                   onClick={() => switchMode('wholesale')}
-                  className="text-[#FF4D00] hover:underline font-semibold inline-flex items-center gap-1 cursor-pointer"
+                  className="text-accent-text hover:underline font-semibold inline-flex items-center gap-1 cursor-pointer"
                 >
                   Switch to Wholesale <ArrowRight size={10} />
                 </button>
@@ -221,7 +221,7 @@ export default function CartDrawer() {
                     setIsCartOpen(false);
                     navigate('/shop');
                   }}
-                  className="bg-[#0A0A0A] text-white text-xs font-semibold uppercase tracking-widest px-6 py-3 rounded-[4px] hover:bg-[#FF4D00] transition-colors cursor-pointer"
+                  className="bg-[#0A0A0A] text-accent-contrast text-xs font-semibold uppercase tracking-widest px-6 py-3 rounded-[4px] hover:bg-accent transition-colors cursor-pointer"
                 >
                   {isWholesale ? 'Explore Wholesale Catalog' : 'Start Shopping'}
                 </button>
@@ -261,7 +261,7 @@ export default function CartDrawer() {
                         <Link
                           to={`/product/${item.id}`}
                           onClick={() => setIsCartOpen(false)}
-                          className="text-xs font-medium text-[#0A0A0A] hover:text-[#FF4D00] line-clamp-1 transition-colors mt-0.5"
+                          className="text-xs font-medium text-[#0A0A0A] hover:text-accent-text line-clamp-1 transition-colors mt-0.5"
                         >
                           {item.name}
                         </Link>

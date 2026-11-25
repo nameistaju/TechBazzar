@@ -33,7 +33,7 @@ export default function TrustStrip() {
             const IconComponent = pillar.icon;
             return (
               <div key={idx} className="flex items-start gap-4">
-                <div className="w-10 h-10 rounded-[4px] bg-[#F7F7F7] border border-[#EAEAEA] flex items-center justify-center text-[#FF4D00] shrink-0">
+                <div className="w-10 h-10 rounded-[4px] bg-[#F7F7F7] border border-[#EAEAEA] flex items-center justify-center text-accent-text shrink-0">
                   <IconComponent size={20} strokeWidth={1.75} />
                 </div>
                 <div>

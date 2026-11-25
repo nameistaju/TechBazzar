@@ -10,7 +10,7 @@ export default function ProductDetailTabs({ product, activeTab, setActiveTab }) 
           onClick={() => setActiveTab('specs')}
           className={`pb-3 text-xs font-semibold uppercase tracking-wider transition-all cursor-pointer ${
             activeTab === 'specs'
-              ? 'border-b-2 border-[#FF4D00] text-[#0A0A0A]'
+              ? 'border-b-2 border-accent text-[#0A0A0A]'
               : 'text-[#8A8A8A] hover:text-[#0A0A0A]'
           }`}
         >
@@ -21,7 +21,7 @@ export default function ProductDetailTabs({ product, activeTab, setActiveTab }) 
           onClick={() => setActiveTab('description')}
           className={`pb-3 text-xs font-semibold uppercase tracking-wider transition-all cursor-pointer ${
             activeTab === 'description'
-              ? 'border-b-2 border-[#FF4D00] text-[#0A0A0A]'
+              ? 'border-b-2 border-accent text-[#0A0A0A]'
               : 'text-[#8A8A8A] hover:text-[#0A0A0A]'
           }`}
         >
@@ -32,7 +32,7 @@ export default function ProductDetailTabs({ product, activeTab, setActiveTab }) 
           onClick={() => setActiveTab('reviews')}
           className={`pb-3 text-xs font-semibold uppercase tracking-wider transition-all cursor-pointer ${
             activeTab === 'reviews'
-              ? 'border-b-2 border-[#FF4D00] text-[#0A0A0A]'
+              ? 'border-b-2 border-accent text-[#0A0A0A]'
               : 'text-[#8A8A8A] hover:text-[#0A0A0A]'
           }`}
         >

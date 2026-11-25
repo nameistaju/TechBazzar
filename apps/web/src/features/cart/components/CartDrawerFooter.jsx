@@ -30,7 +30,7 @@ export default function CartDrawerFooter({
             className="hover:text-[#0A0A0A] flex items-center gap-1 transition-colors cursor-pointer"
             title="Save current cart list"
           >
-            <Bookmark size={12} className="text-[#FF4D00]" /> Save List
+            <Bookmark size={12} className="text-accent-text" /> Save List
           </button>
           <button
             type="button"
@@ -46,7 +46,7 @@ export default function CartDrawerFooter({
               setIsCartOpen(false);
               navigate('/quote');
             }}
-            className="hover:text-[#FF4D00] flex items-center gap-1 transition-colors font-medium cursor-pointer"
+            className="hover:text-accent-text flex items-center gap-1 transition-colors font-medium cursor-pointer"
           >
             <FileText size={12} /> Request Quote
           </button>
@@ -70,7 +70,7 @@ export default function CartDrawerFooter({
         )}
 
         {isWholesale && groupDiscountTotal > 0 && (
-          <div className="flex justify-between text-[#FF4D00]">
+          <div className="flex justify-between text-accent-text">
             <span>Group Extra Discount</span>
             <span className="tabular-nums">-{formatMoney(groupDiscountTotal || 0)}</span>
           </div>
@@ -95,7 +95,7 @@ export default function CartDrawerFooter({
         </div>
 
         {isWholesale && cartSavingsVsRetail > 0 && (
-          <div className="text-[10.5px] text-[#FF4D00] font-semibold text-center mt-1">
+          <div className="text-[10.5px] text-accent-text font-semibold text-center mt-1">
             You save {formatMoney(cartSavingsVsRetail || 0)} vs Retail Customer Price
           </div>
         )}
@@ -113,7 +113,7 @@ export default function CartDrawerFooter({
             }}
             className={`w-full text-xs font-semibold uppercase tracking-widest py-3.5 rounded-[4px] transition-all flex items-center justify-center gap-2 group shadow-sm ${
               meetsMinOrderValue && !hasMoqViolations
-                ? 'bg-[#0A0A0A] text-white hover:bg-[#FF4D00] cursor-pointer'
+                ? 'bg-[#0A0A0A] text-accent-contrast hover:bg-accent cursor-pointer'
                 : 'bg-neutral-300 text-neutral-500 cursor-not-allowed'
             }`}
           >
@@ -134,7 +134,7 @@ export default function CartDrawerFooter({
               setIsCartOpen(false);
               navigate('/checkout');
             }}
-            className="w-full text-xs font-semibold uppercase tracking-widest py-3.5 rounded-[4px] bg-[#0A0A0A] text-white hover:bg-[#FF4D00] transition-colors flex items-center justify-center gap-2 cursor-pointer shadow-sm group"
+            className="w-full text-xs font-semibold uppercase tracking-widest py-3.5 rounded-[4px] bg-[#0A0A0A] text-accent-contrast hover:bg-accent transition-colors flex items-center justify-center gap-2 cursor-pointer shadow-sm group"
           >
             <span>Proceed to Checkout</span>
             <ArrowRight size={14} className="group-hover:translate-x-1 transition-transform" />

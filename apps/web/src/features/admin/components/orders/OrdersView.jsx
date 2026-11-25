@@ -209,7 +209,7 @@ export default function OrdersView({ initialOrderId, onClearInitialOrder, onNavi
         <div className="flex items-center gap-2">
           <button
             onClick={() => setIsManualModalOpen(true)}
-            className="px-3 py-1.5 bg-[#0A0A0A] text-white text-xs font-mono uppercase tracking-wider hover:bg-[#FF4D00] flex items-center gap-1.5 transition-colors font-semibold"
+            className="px-3 py-1.5 bg-[#0A0A0A] text-accent-contrast text-xs font-mono uppercase tracking-wider hover:bg-accent flex items-center gap-1.5 transition-colors font-semibold"
           >
             <Plus className="w-4 h-4" />
             Manual / Walk-In Order
@@ -320,7 +320,7 @@ export default function OrdersView({ initialOrderId, onClearInitialOrder, onNavi
 
                 <td className="p-3 font-mono text-[10px]">
                   {ord.channel === 'wholesale' ? (
-                    <span className="px-1.5 py-0.5 rounded font-bold uppercase bg-[#FFF0EB] text-[#FF4D00] border border-[#FFD9CC]">
+                    <span className="px-1.5 py-0.5 rounded font-bold uppercase bg-accent-tint text-accent-text border border-accent-border">
                       Wholesale
                     </span>
                   ) : (
@@ -381,7 +381,7 @@ export default function OrdersView({ initialOrderId, onClearInitialOrder, onNavi
                 <td className="p-3 text-right">
                   <button
                     onClick={() => openOrderDetail(ord.id)}
-                    className="px-2.5 py-1 text-xs font-mono uppercase bg-[#0A0A0A] text-white hover:bg-[#FF4D00] transition-colors"
+                    className="px-2.5 py-1 text-xs font-mono uppercase bg-[#0A0A0A] text-accent-contrast hover:bg-accent transition-colors"
                   >
                     Manage
                   </button>
@@ -435,7 +435,7 @@ export default function OrdersView({ initialOrderId, onClearInitialOrder, onNavi
                 ) : (
                   <button
                     onClick={handleCreateInvoice}
-                    className="px-2.5 py-1.5 bg-[#0A0A0A] text-white text-xs font-mono uppercase hover:bg-[#FF4D00] flex items-center gap-1 transition-colors"
+                    className="px-2.5 py-1.5 bg-[#0A0A0A] text-accent-contrast text-xs font-mono uppercase hover:bg-accent flex items-center gap-1 transition-colors"
                   >
                     <FileText className="w-3.5 h-3.5" />
                     1-Click Invoice
@@ -510,14 +510,14 @@ export default function OrdersView({ initialOrderId, onClearInitialOrder, onNavi
               <div className="p-4 bg-white border border-[#EAEAEA] space-y-3">
                 <div className="flex items-center justify-between">
                   <div className="text-xs font-mono uppercase tracking-wider font-bold text-[#0A0A0A] flex items-center gap-1.5">
-                    <Truck className="w-4 h-4 text-[#FF4D00]" />
+                    <Truck className="w-4 h-4 text-accent-text" />
                     Courier Dispatch & Tracking
                   </div>
                   <button
                     type="button"
                     onClick={handleSaveOrderMeta}
                     disabled={savingDetails}
-                    className="px-3 py-1 bg-[#0A0A0A] text-white text-xs font-mono uppercase hover:bg-[#FF4D00] transition-colors"
+                    className="px-3 py-1 bg-[#0A0A0A] text-accent-contrast text-xs font-mono uppercase hover:bg-accent transition-colors"
                   >
                     Save Details
                   </button>
@@ -585,7 +585,7 @@ export default function OrdersView({ initialOrderId, onClearInitialOrder, onNavi
                     <span>{formatINR(selectedOrder.subtotal)}</span>
                   </div>
                   {selectedOrder.discount_amount > 0 && (
-                    <div className="flex justify-between text-[#FF4D00]">
+                    <div className="flex justify-between text-accent-text">
                       <span>Discount ({selectedOrder.discount_code || 'PROMO'}):</span>
                       <span>-{formatINR(selectedOrder.discount_amount)}</span>
                     </div>
@@ -696,7 +696,7 @@ export default function OrdersView({ initialOrderId, onClearInitialOrder, onNavi
                   <button
                     type="button"
                     onClick={() => setManualItems([...manualItems, { productId: '', quantity: 1 }])}
-                    className="text-[10px] font-mono uppercase text-[#FF4D00] hover:underline"
+                    className="text-[10px] font-mono uppercase text-accent-text hover:underline"
                   >
                     + Add Item
                   </button>
@@ -778,7 +778,7 @@ export default function OrdersView({ initialOrderId, onClearInitialOrder, onNavi
                 <button
                   type="submit"
                   disabled={submittingManual}
-                  className="flex-1 py-2 bg-[#0A0A0A] text-white text-xs font-mono uppercase hover:bg-[#FF4D00] transition-colors font-semibold"
+                  className="flex-1 py-2 bg-[#0A0A0A] text-accent-contrast text-xs font-mono uppercase hover:bg-accent transition-colors font-semibold"
                 >
                   {submittingManual ? 'Creating...' : 'Create & Complete Sale'}
                 </button>

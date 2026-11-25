@@ -155,7 +155,7 @@ export default function ActivityLogView() {
                       : l.action === 'delete' || l.action === 'void'
                       ? 'bg-red-100 text-red-700'
                       : l.action === 'stock_change' || l.action === 'price_change'
-                      ? 'bg-orange-100 text-[#FF4D00]'
+                      ? 'bg-accent-tint text-accent-text'
                       : l.action === 'undo'
                       ? 'bg-purple-100 text-purple-800'
                       : 'bg-gray-100 text-[#0A0A0A]'
@@ -192,7 +192,7 @@ export default function ActivityLogView() {
                       <button
                         onClick={() => handleUndo(l)}
                         disabled={undoingId === l.id}
-                        className="px-2.5 py-1 text-[11px] bg-[#0A0A0A] text-white hover:bg-[#FF4D00] flex items-center gap-1 transition-colors font-bold uppercase"
+                        className="px-2.5 py-1 text-[11px] bg-[#0A0A0A] text-accent-contrast hover:bg-accent flex items-center gap-1 transition-colors font-bold uppercase"
                       >
                         <RotateCcw className="w-3 h-3" />
                         {undoingId === l.id ? 'Undoing...' : 'Undo'}

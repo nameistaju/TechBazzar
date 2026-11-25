@@ -73,7 +73,7 @@ export default function StoreLayout() {
           <div className="flex items-center gap-3 shrink-0 ml-4">
             <Link
               to="/admin"
-              className="text-pop hover:underline flex items-center gap-1 font-bold text-[11px] uppercase tracking-wider"
+              className="text-accent-text hover:underline flex items-center gap-1 font-bold text-[11px] uppercase tracking-wider"
             >
               <span>Back to Admin</span>
               <ArrowRight size={12} />

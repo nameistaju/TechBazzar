@@ -74,7 +74,7 @@ export default function TrackOrderPage() {
 
         {/* Heading */}
         <div className="text-center max-w-xl mx-auto my-8">
-          <span className="text-[10px] uppercase tracking-[0.25em] text-[#FF4D00] font-bold block mb-1">
+          <span className="text-[10px] uppercase tracking-[0.25em] text-accent-text font-bold block mb-1">
             Real-Time Logistics
           </span>
           <h1 className="text-2xl sm:text-3xl font-light uppercase tracking-wider text-[#0A0A0A] mb-2">
@@ -126,7 +126,7 @@ export default function TrackOrderPage() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full h-12 bg-[#0A0A0A] hover:bg-[#FF4D00] text-white text-xs font-semibold uppercase tracking-widest rounded-[4px] transition-colors flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
+              className="w-full h-12 bg-[#0A0A0A] hover:bg-accent text-accent-contrast text-xs font-semibold uppercase tracking-widest rounded-[4px] transition-colors flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
             >
               {loading ? (
                 <>
@@ -154,7 +154,7 @@ export default function TrackOrderPage() {
                 </span>
                 <div className="flex items-center gap-2 mt-1">
                   <h2 className="text-xl font-semibold text-[#0A0A0A]">
-                    Status: <span className="text-[#FF4D00]">{order.status}</span>
+                    Status: <span className="text-accent-text">{order.status}</span>
                   </h2>
                 </div>
               </div>
@@ -178,7 +178,7 @@ export default function TrackOrderPage() {
               <div className="relative flex justify-between">
                 <div className="absolute top-1/2 left-0 right-0 -translate-y-1/2 h-[2px] bg-[#EAEAEA] z-0" />
                 <div 
-                  className="absolute top-1/2 left-0 -translate-y-1/2 h-[2px] bg-[#FF4D00] z-0 transition-all duration-300"
+                  className="absolute top-1/2 left-0 -translate-y-1/2 h-[2px] bg-accent z-0 transition-all duration-300"
                   style={{
                     width: `${Math.max(0, (currentStatusIndex / (steps.length - 1)) * 100)}%`
                   }}
@@ -193,14 +193,14 @@ export default function TrackOrderPage() {
                       <div
                         className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold transition-all ${
                           isDone
-                            ? 'bg-[#FF4D00] text-white ring-4 ring-[#FFF0EB]'
+                            ? 'bg-accent text-accent-contrast ring-4 ring-accent/30'
                             : 'bg-white border-2 border-[#EAEAEA] text-[#8A8A8A]'
                         }`}
                       >
                         {isDone ? <Check size={14} className="stroke-[3]" /> : idx + 1}
                       </div>
                       <span className={`text-[10px] uppercase tracking-wider font-semibold mt-2 ${
-                        isCurrent ? 'text-[#FF4D00]' : isDone ? 'text-[#0A0A0A]' : 'text-[#8A8A8A]'
+                        isCurrent ? 'text-accent-text' : isDone ? 'text-[#0A0A0A]' : 'text-[#8A8A8A]'
                       }`}>
                         {st}
                       </span>
@@ -218,7 +218,7 @@ export default function TrackOrderPage() {
               <div className="space-y-4">
                 {(order.statusHistory || []).map((h, i) => (
                   <div key={i} className="flex items-start gap-3 text-xs">
-                    <div className="w-2 h-2 rounded-full bg-[#FF4D00] mt-1.5 shrink-0" />
+                    <div className="w-2 h-2 rounded-full bg-accent mt-1.5 shrink-0" />
                     <div className="flex-1">
                       <span className="font-semibold text-[#0A0A0A] mr-2">{h.status}</span>
                       <span className="text-[#6B6B6B]">{h.note}</span>

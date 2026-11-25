@@ -54,7 +54,7 @@ export default function ProductImagePickerModal({
                     }
                   }}
                   className={`p-2 border cursor-pointer hover:border-[#0A0A0A] transition-all relative ${
-                    isAssigned ? 'border-[#FF4D00] bg-orange-50/50' : 'border-[#EAEAEA] bg-white'
+                    isAssigned ? 'border-accent bg-accent-tint' : 'border-[#EAEAEA] bg-white'
                   }`}
                 >
                   <img
@@ -70,7 +70,7 @@ export default function ProductImagePickerModal({
                     {img.filename}
                   </div>
                   {isAssigned && (
-                    <div className="absolute top-1 right-1 w-4 h-4 bg-[#FF4D00] text-black rounded-full flex items-center justify-center text-[10px] font-bold">
+                    <div className="absolute top-1 right-1 w-4 h-4 bg-accent text-black rounded-full flex items-center justify-center text-[10px] font-bold">
                       ✓
                     </div>
                   )}

@@ -68,7 +68,7 @@ export default function DashboardView({ onNavigate, onQuickRestock }) {
             title="Refresh Metrics"
             className="p-1.5 border border-[#EAEAEA] bg-white text-[#6B6B6B] hover:text-[#0A0A0A] transition-colors"
           >
-            <RefreshCw className={`w-3.5 h-3.5 ${loading ? 'animate-spin text-[#FF4D00]' : ''}`} />
+            <RefreshCw className={`w-3.5 h-3.5 ${loading ? 'animate-spin text-accent-text' : ''}`} />
           </button>
         </div>
       </div>
@@ -102,26 +102,26 @@ export default function DashboardView({ onNavigate, onQuickRestock }) {
         {/* Pending Orders */}
         <div 
           onClick={() => onNavigate('orders')}
-          className="p-4 bg-white border border-[#EAEAEA] hover:border-[#FF4D00] transition-colors cursor-pointer group"
+          className="p-4 bg-white border border-[#EAEAEA] hover:border-accent transition-colors cursor-pointer group"
         >
-          <div className="text-[11px] font-mono uppercase tracking-wider text-[#6B6B6B] group-hover:text-[#FF4D00] flex justify-between items-center">
+          <div className="text-[11px] font-mono uppercase tracking-wider text-[#6B6B6B] group-hover:text-accent-text flex justify-between items-center">
             Pending Orders
             <ArrowRight className="w-3 h-3 opacity-0 group-hover:opacity-100 transition-opacity" />
           </div>
           <div className="text-xl font-bold font-mono text-[#0A0A0A] mt-1.5">{s.pendingOrders || 0}</div>
-          <div className="text-[10px] text-[#FF4D00] font-mono mt-1 font-medium">To Fulfill</div>
+          <div className="text-[10px] text-accent-text font-mono mt-1 font-medium">To Fulfill</div>
         </div>
 
         {/* Low Stock Count */}
         <div 
           onClick={() => onNavigate('inventory')}
-          className="p-4 bg-white border border-[#EAEAEA] hover:border-[#FF4D00] transition-colors cursor-pointer group"
+          className="p-4 bg-white border border-[#EAEAEA] hover:border-accent transition-colors cursor-pointer group"
         >
-          <div className="text-[11px] font-mono uppercase tracking-wider text-[#6B6B6B] group-hover:text-[#FF4D00] flex justify-between items-center">
+          <div className="text-[11px] font-mono uppercase tracking-wider text-[#6B6B6B] group-hover:text-accent-text flex justify-between items-center">
             Low Stock Alerts
             <ArrowRight className="w-3 h-3 opacity-0 group-hover:opacity-100 transition-opacity" />
           </div>
-          <div className="text-xl font-bold font-mono text-[#FF4D00] mt-1.5">{s.lowStockCount || 0}</div>
+          <div className="text-xl font-bold font-mono text-accent-text mt-1.5">{s.lowStockCount || 0}</div>
           <div className="text-[10px] text-[#6B6B6B] font-mono mt-1">Needs Restock</div>
         </div>
 
@@ -173,7 +173,7 @@ export default function DashboardView({ onNavigate, onQuickRestock }) {
 
         <div className="p-4 bg-white border border-[#EAEAEA] rounded-[4px] flex items-center justify-between">
           <div>
-            <span className="text-[10px] font-mono uppercase tracking-wider text-[#FF4D00] block font-bold">
+            <span className="text-[10px] font-mono uppercase tracking-wider text-accent-text block font-bold">
               Wholesale Channel
             </span>
             <span className="text-lg font-bold font-mono text-[#0A0A0A]">
@@ -183,27 +183,27 @@ export default function DashboardView({ onNavigate, onQuickRestock }) {
               {s.wholesaleStats?.orders || 0} commercial orders
             </span>
           </div>
-          <span className="px-2 py-1 rounded bg-[#FFF0EB] text-[#FF4D00] text-xs font-mono font-bold border border-[#FFD9CC]">
+          <span className="px-2 py-1 rounded bg-accent-tint text-accent-text text-xs font-mono font-bold border border-accent-border">
             B2B
           </span>
         </div>
 
         <div 
           onClick={() => onNavigate('customers')}
-          className="p-4 bg-white border border-[#EAEAEA] hover:border-[#FF4D00] rounded-[4px] flex items-center justify-between cursor-pointer group"
+          className="p-4 bg-white border border-[#EAEAEA] hover:border-accent rounded-[4px] flex items-center justify-between cursor-pointer group"
         >
           <div>
             <span className="text-[10px] font-mono uppercase tracking-wider text-[#6B6B6B] block">
               Pending B2B Applications
             </span>
-            <span className="text-lg font-bold font-mono text-[#FF4D00]">
+            <span className="text-lg font-bold font-mono text-accent-text">
               {s.pendingApplications || 0}
             </span>
             <span className="text-[10px] text-[#8A8A8A] block">
               Awaiting verification
             </span>
           </div>
-          <div className="flex items-center gap-1 text-xs text-[#6B6B6B] group-hover:text-[#FF4D00]">
+          <div className="flex items-center gap-1 text-xs text-[#6B6B6B] group-hover:text-accent-text">
             <span>Review</span>
             <ArrowRight size={13} />
           </div>
@@ -223,7 +223,7 @@ export default function DashboardView({ onNavigate, onQuickRestock }) {
             </div>
             <div className="flex items-center gap-3 text-xs font-mono">
               <span className="flex items-center gap-1.5">
-                <span className="w-3 h-3 bg-[#FF4D00]"></span> Revenue (₹)
+                <span className="w-3 h-3 bg-accent"></span> Revenue (₹)
               </span>
               <span className="flex items-center gap-1.5">
                 <span className="w-3 h-3 bg-[#0A0A0A]"></span> Orders
@@ -248,7 +248,7 @@ export default function DashboardView({ onNavigate, onQuickRestock }) {
                       {/* Bar */}
                       <div 
                         style={{ height: `${revHeight}px` }} 
-                        className={`w-full transition-all ${point.revenue > 0 ? 'bg-[#FF4D00] hover:bg-[#0A0A0A]' : 'bg-[#F0F0F0]'}`}
+                        className={`w-full transition-all ${point.revenue > 0 ? 'bg-accent hover:bg-[#0A0A0A]' : 'bg-[#F0F0F0]'}`}
                       />
                       
                       {/* X label */}
@@ -293,7 +293,7 @@ export default function DashboardView({ onNavigate, onQuickRestock }) {
                     <div className="w-full h-1.5 bg-[#F0F0F0] overflow-hidden">
                       <div 
                         style={{ width: `${Math.max(8, pct)}%` }} 
-                        className={`h-full ${i === 0 ? 'bg-[#FF4D00]' : 'bg-[#0A0A0A]'}`}
+                        className={`h-full ${i === 0 ? 'bg-accent' : 'bg-[#0A0A0A]'}`}
                       />
                     </div>
                   </div>
@@ -326,7 +326,7 @@ export default function DashboardView({ onNavigate, onQuickRestock }) {
         <div className="p-5 bg-white border border-[#EAEAEA]">
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center gap-2">
-              <AlertTriangle className="w-4 h-4 text-[#FF4D00]" />
+              <AlertTriangle className="w-4 h-4 text-accent-text" />
               <h3 className="font-mono text-xs uppercase tracking-wider font-bold text-[#0A0A0A]">
                 Critical Stock Alerts ({s.lowStockAlerts?.length || 0})
               </h3>
@@ -359,12 +359,12 @@ export default function DashboardView({ onNavigate, onQuickRestock }) {
                 </div>
 
                 <div className="flex items-center gap-3">
-                  <span className={`text-xs font-mono font-bold px-2 py-0.5 ${p.stock === 0 ? 'bg-red-100 text-red-600' : 'bg-orange-100 text-[#FF4D00]'}`}>
+                  <span className={`text-xs font-mono font-bold px-2 py-0.5 ${p.stock === 0 ? 'bg-red-100 text-red-600' : 'bg-accent-tint text-accent-text'}`}>
                     {p.stock === 0 ? 'Out of Stock' : `${p.stock} left`}
                   </span>
                   <button
                     onClick={() => onQuickRestock && onQuickRestock(p)}
-                    className="px-2.5 py-1 text-[11px] font-mono uppercase bg-[#0A0A0A] text-white hover:bg-[#FF4D00] transition-colors"
+                    className="px-2.5 py-1 text-[11px] font-mono uppercase bg-[#0A0A0A] text-accent-contrast hover:bg-accent transition-colors"
                   >
                     Restock
                   </button>

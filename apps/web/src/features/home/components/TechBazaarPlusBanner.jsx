@@ -9,10 +9,10 @@ export default function TechBazaarPlusBanner() {
         <div className="relative bg-[#0A0A0A] text-white rounded-[6px] p-8 sm:p-12 lg:p-16 overflow-hidden border border-[#222222]">
           
           {/* Subtle Ambient Radial Glow */}
-          <div className="absolute -right-20 -bottom-20 w-96 h-96 bg-[#FF4D00]/15 rounded-full filter blur-3xl pointer-events-none" />
+          <div className="absolute -right-20 -bottom-20 w-96 h-96 bg-accent/15 rounded-full filter blur-3xl pointer-events-none" />
 
           <div className="relative z-10 max-w-2xl space-y-6">
-            <div className="inline-flex items-center gap-2 px-3 py-1 bg-[#1A1A1A] border border-[#333333] rounded-[2px] text-[10px] uppercase tracking-[0.2em] font-semibold text-[#FF4D00]">
+            <div className="inline-flex items-center gap-2 px-3 py-1 bg-[#1A1A1A] border border-[#333333] rounded-[2px] text-[10px] uppercase tracking-[0.2em] font-semibold text-accent-text">
               <Crown size={12} /> TechBazaar Plus
             </div>
 
@@ -28,15 +28,15 @@ export default function TechBazaarPlusBanner() {
             {/* Perks Strip */}
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-2">
               <div className="flex items-center gap-2.5 text-xs text-[#EAEAEA]">
-                <Zap size={14} className="text-[#FF4D00] shrink-0" />
+                <Zap size={14} className="text-accent-text shrink-0" />
                 <span>Zero Min Order Free Shipping</span>
               </div>
               <div className="flex items-center gap-2.5 text-xs text-[#EAEAEA]">
-                <Shield size={14} className="text-[#FF4D00] shrink-0" />
+                <Shield size={14} className="text-accent-text shrink-0" />
                 <span>+1 Year Extended Warranty</span>
               </div>
               <div className="flex items-center gap-2.5 text-xs text-[#EAEAEA]">
-                <Gift size={14} className="text-[#FF4D00] shrink-0" />
+                <Gift size={14} className="text-accent-text shrink-0" />
                 <span>Priority Member Drops</span>
               </div>
             </div>
@@ -44,7 +44,7 @@ export default function TechBazaarPlusBanner() {
             <div className="pt-4 flex flex-wrap items-center gap-4">
               <Link
                 to="/shop?plus=true"
-                className="bg-[#FF4D00] text-white text-xs font-semibold uppercase tracking-widest px-8 py-4 rounded-[4px] hover:bg-[#E04400] transition-colors flex items-center gap-2 shadow-lg group"
+                className="bg-accent text-accent-contrast text-xs font-semibold uppercase tracking-widest px-8 py-4 rounded-[4px] hover:bg-accent-hover transition-colors flex items-center gap-2 shadow-lg group"
               >
                 Join Plus for ₹499/yr <ArrowRight size={14} className="group-hover:translate-x-1 transition-transform" />
               </Link>

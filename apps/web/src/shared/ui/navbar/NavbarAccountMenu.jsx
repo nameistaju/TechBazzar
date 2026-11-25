@@ -26,7 +26,7 @@ export default function NavbarAccountMenu({
           <button
             type="button"
             onClick={() => setIsAccountDropdownOpen(prev => !prev)}
-            className="flex items-center gap-1.5 p-1 text-[#0A0A0A] hover:text-pop transition-colors text-xs font-semibold uppercase tracking-wider"
+            className="flex items-center gap-1.5 p-1 text-[#0A0A0A] hover:text-accent-text transition-colors text-xs font-semibold uppercase tracking-wider"
             aria-label="User Account Menu"
           >
             <div className="w-7 h-7 rounded-full bg-[#0A0A0A] text-white flex items-center justify-center text-[11px] font-bold uppercase shrink-0">
@@ -99,7 +99,7 @@ export default function NavbarAccountMenu({
         <button
           type="button"
           onClick={() => openAuthModal('login')}
-          className="p-1.5 text-[#0A0A0A] hover:text-pop transition-colors flex items-center gap-1.5"
+          className="p-1.5 text-[#0A0A0A] hover:text-accent-text transition-colors flex items-center gap-1.5"
           aria-label="Sign in"
         >
           <User size={19} strokeWidth={1.75} />

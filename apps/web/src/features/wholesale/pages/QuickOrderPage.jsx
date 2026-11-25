@@ -334,11 +334,11 @@ export default function QuickOrderPage() {
         <div className="py-6 border-b border-[#EAEAEA] mb-8 flex flex-col sm:flex-row sm:items-end justify-between gap-4">
           <div>
             <div className="flex items-center gap-2 mb-1">
-              <span className="text-[10px] uppercase tracking-[0.25em] text-[#FF4D00] font-bold">
+              <span className="text-[10px] uppercase tracking-[0.25em] text-accent-text font-bold">
                 {isWholesale ? 'B2B Fast Procurement' : 'Direct Catalog Purchase'}
               </span>
               <span className={`px-2 py-0.5 rounded text-[9px] font-mono font-bold uppercase tracking-wider ${
-                isWholesale ? 'bg-[#0A0A0A] text-[#FF4D00]' : 'bg-gray-100 text-[#0A0A0A]'
+                isWholesale ? 'bg-[#0A0A0A] text-accent-text' : 'bg-gray-100 text-[#0A0A0A]'
               }`}>
                 {isWholesale ? 'Wholesale Mode' : 'Retail Mode'}
               </span>
@@ -368,7 +368,7 @@ export default function QuickOrderPage() {
             onClick={() => setActiveTab('grid')}
             className={`pb-3 text-xs font-semibold uppercase tracking-wider transition-colors relative ${
               activeTab === 'grid'
-                ? 'text-[#0A0A0A] after:absolute after:bottom-0 after:left-0 after:right-0 after:h-0.5 after:bg-[#FF4D00]'
+                ? 'text-[#0A0A0A] after:absolute after:bottom-0 after:left-0 after:right-0 after:h-0.5 after:bg-accent'
                 : 'text-[#8A8A8A] hover:text-[#0A0A0A]'
             }`}
           >
@@ -379,7 +379,7 @@ export default function QuickOrderPage() {
             onClick={() => setActiveTab('paste')}
             className={`pb-3 text-xs font-semibold uppercase tracking-wider transition-colors relative ${
               activeTab === 'paste'
-                ? 'text-[#0A0A0A] after:absolute after:bottom-0 after:left-0 after:right-0 after:h-0.5 after:bg-[#FF4D00]'
+                ? 'text-[#0A0A0A] after:absolute after:bottom-0 after:left-0 after:right-0 after:h-0.5 after:bg-accent'
                 : 'text-[#8A8A8A] hover:text-[#0A0A0A]'
             }`}
           >
@@ -527,7 +527,7 @@ export default function QuickOrderPage() {
                               </span>
                             ) : (
                               <span className="text-[11px] text-[#8A8A8A] flex items-center gap-1 font-mono">
-                                <Search size={12} className="text-[#FF4D00]" />
+                                <Search size={12} className="text-accent-text" />
                                 <span>Select from dropdown</span>
                               </span>
                             )
@@ -557,7 +557,7 @@ export default function QuickOrderPage() {
                                 {formatINR(unitPrice)}
                               </div>
                               {tier ? (
-                                <div className="text-[9px] text-[#FF4D00] font-mono">
+                                <div className="text-[9px] text-accent-text font-mono">
                                   Tier {tier.activeTier}
                                 </div>
                               ) : (
@@ -604,7 +604,7 @@ export default function QuickOrderPage() {
               <button
                 type="button"
                 onClick={handleAddAllFromGrid}
-                className="bg-[#0A0A0A] hover:bg-[#FF4D00] text-white text-xs font-semibold uppercase tracking-widest px-8 py-3.5 rounded transition-colors flex items-center gap-2 shadow-sm font-mono"
+                className="bg-[#0A0A0A] hover:bg-accent text-accent-contrast text-xs font-semibold uppercase tracking-widest px-8 py-3.5 rounded transition-colors flex items-center gap-2 shadow-sm font-mono"
               >
                 <ShoppingBag size={14} /> Add All Items to Cart
               </button>
@@ -636,7 +636,7 @@ export default function QuickOrderPage() {
                     type="button"
                     onClick={handleParsePaste}
                     disabled={isParsing}
-                    className="bg-[#0A0A0A] hover:bg-[#FF4D00] text-white text-xs font-semibold uppercase tracking-wider px-6 py-2.5 rounded transition-colors flex items-center gap-1.5"
+                    className="bg-[#0A0A0A] hover:bg-accent text-accent-contrast text-xs font-semibold uppercase tracking-wider px-6 py-2.5 rounded transition-colors flex items-center gap-1.5"
                   >
                     {isParsing ? <RefreshCw className="w-3.5 h-3.5 animate-spin" /> : null}
                     Validate & Preview Lines
@@ -645,7 +645,7 @@ export default function QuickOrderPage() {
                   <button
                     type="button"
                     onClick={handleLoadSample}
-                    className="px-4 py-2.5 rounded border border-[#EAEAEA] hover:border-[#FF4D00] hover:text-[#FF4D00] text-xs font-medium text-[#0A0A0A] bg-white transition-colors"
+                    className="px-4 py-2.5 rounded border border-[#EAEAEA] hover:border-accent hover:text-accent-text text-xs font-medium text-[#0A0A0A] bg-white transition-colors"
                   >
                     Load Sample Data
                   </button>
@@ -660,7 +660,7 @@ export default function QuickOrderPage() {
               {/* Right: Format Guide */}
               <div className="bg-[#FAFAFA] border border-[#EAEAEA] rounded-[4px] p-5 text-xs space-y-3">
                 <h3 className="font-semibold uppercase tracking-wider text-[#0A0A0A] flex items-center gap-1.5">
-                  <FileText size={14} className="text-[#FF4D00]" /> Spreadsheet Import Guide
+                  <FileText size={14} className="text-accent-text" /> Spreadsheet Import Guide
                 </h3>
                 <p className="text-[#6B6B6B] leading-relaxed">
                   Export from your internal ERP or Excel as CSV with two columns: column 1 for the SKU, column 2 for the requested units.
@@ -687,7 +687,7 @@ export default function QuickOrderPage() {
                   <button
                     type="button"
                     onClick={handleAddAllFromPaste}
-                    className="bg-[#FF4D00] hover:bg-[#E04400] text-white text-xs font-semibold uppercase tracking-widest px-6 py-2.5 rounded transition-colors flex items-center gap-1.5"
+                    className="bg-accent hover:bg-accent-hover text-accent-contrast text-xs font-semibold uppercase tracking-widest px-6 py-2.5 rounded transition-colors flex items-center gap-1.5"
                   >
                     <ShoppingBag size={13} /> Add All Valid Items to Cart
                   </button>
@@ -723,14 +723,14 @@ export default function QuickOrderPage() {
                                   {item.suggestions && item.suggestions.length > 0 && (
                                     <div className="flex items-center flex-wrap gap-1.5 text-[11px] pt-0.5">
                                       <span className="text-[#6B6B6B] font-mono text-[10px] flex items-center gap-1">
-                                        <Wand2 size={10} className="text-[#FF4D00]" /> Did you mean:
+                                        <Wand2 size={10} className="text-accent-text" /> Did you mean:
                                       </span>
                                       {item.suggestions.map((s) => (
                                         <button
                                           key={s.id}
                                           type="button"
                                           onClick={() => handleFixParsedItem(idx, s)}
-                                          className="px-1.5 py-0.5 bg-white border border-[#FF4D00]/40 text-[#FF4D00] hover:bg-[#FF4D00] hover:text-white rounded text-[10px] font-mono transition-colors"
+                                          className="px-1.5 py-0.5 bg-white border border-accent/40 text-accent-text hover:bg-accent hover:text-accent-contrast rounded text-[10px] font-mono transition-colors"
                                           title={`Replace with ${s.name} (${s.sku})`}
                                         >
                                           {s.name.slice(0, 24)}... ({s.sku})

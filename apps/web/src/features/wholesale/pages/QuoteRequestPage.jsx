@@ -160,7 +160,7 @@ export default function QuoteRequestPage() {
         {/* Header */}
         <div className="py-6 border-b border-[#EAEAEA] mb-8 flex flex-col sm:flex-row sm:items-end justify-between gap-4">
           <div>
-            <span className="text-[10px] uppercase tracking-[0.25em] text-[#FF4D00] font-bold block mb-1">
+            <span className="text-[10px] uppercase tracking-[0.25em] text-accent-text font-bold block mb-1">
               Custom B2B Quotations
             </span>
             <h1 className="text-2xl sm:text-3xl font-light uppercase tracking-wider text-[#0A0A0A]">
@@ -208,7 +208,7 @@ export default function QuoteRequestPage() {
                   <CheckCircle2 size={32} />
                 </div>
                 <div>
-                  <span className="text-xs font-semibold uppercase tracking-widest text-[#FF4D00]">
+                  <span className="text-xs font-semibold uppercase tracking-widest text-accent-text">
                     Quote Request Received
                   </span>
                   <h2 className="text-2xl font-light text-[#0A0A0A] uppercase tracking-wide mt-1">
@@ -246,7 +246,7 @@ export default function QuoteRequestPage() {
                   </button>
                   <Link
                     to="/shop"
-                    className="px-6 py-2.5 rounded bg-[#FF4D00] text-white hover:bg-[#E04400] text-xs font-semibold uppercase tracking-wider transition-colors"
+                    className="px-6 py-2.5 rounded bg-accent text-accent-contrast hover:bg-accent-hover text-xs font-semibold uppercase tracking-wider transition-colors"
                   >
                     Return to Catalogue
                   </Link>
@@ -450,7 +450,7 @@ export default function QuoteRequestPage() {
                   <button
                     type="submit"
                     disabled={submitting}
-                    className="bg-[#0A0A0A] hover:bg-[#FF4D00] text-white text-xs font-semibold uppercase tracking-widest px-8 py-4 rounded transition-colors flex items-center gap-2 shadow-sm"
+                    className="bg-[#0A0A0A] hover:bg-accent text-accent-contrast text-xs font-semibold uppercase tracking-widest px-8 py-4 rounded transition-colors flex items-center gap-2 shadow-sm"
                   >
                     <Send size={13} /> {submitting ? 'Submitting...' : 'Submit Request for Quote'}
                   </button>
@@ -487,7 +487,7 @@ export default function QuoteRequestPage() {
                 <button
                   type="submit"
                   disabled={trackingLoading}
-                  className="bg-[#0A0A0A] text-white hover:bg-[#FF4D00] text-xs font-semibold uppercase tracking-wider px-6 py-2.5 rounded transition-colors"
+                  className="bg-[#0A0A0A] text-accent-contrast hover:bg-accent text-xs font-semibold uppercase tracking-wider px-6 py-2.5 rounded transition-colors"
                 >
                   {trackingLoading ? 'Searching...' : 'Track'}
                 </button>
@@ -529,7 +529,7 @@ export default function QuoteRequestPage() {
                     {(trackedQuote.items || []).map((it, idx) => (
                       <div key={idx} className="p-2.5 text-xs flex justify-between items-center">
                         <span className="font-medium text-[#0A0A0A]">{it.name}</span>
-                        <span className="tabular-nums font-semibold text-[#FF4D00]">{it.quantity} units</span>
+                        <span className="tabular-nums font-semibold text-accent-text">{it.quantity} units</span>
                       </div>
                     ))}
                   </div>

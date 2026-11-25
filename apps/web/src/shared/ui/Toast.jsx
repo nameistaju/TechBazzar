@@ -37,7 +37,7 @@ export default function Toast() {
           ) : t.type === 'success' ? (
             <CheckCircle2 size={16} className="text-emerald-400 shrink-0" />
           ) : (
-            <Info size={16} className="text-[#FF4D00] shrink-0" />
+            <Info size={16} className="text-accent-text shrink-0" />
           )}
 
           <span className="flex-1 text-[#EAEAEA] font-medium leading-tight">
@@ -52,7 +52,7 @@ export default function Toast() {
                 if (t.id === 'legacy') hideLegacyToast();
                 else removeToast(t.id);
               }}
-              className="text-[#FF4D00] hover:underline font-semibold uppercase tracking-wider text-[11px] shrink-0"
+              className="text-accent-text hover:underline font-semibold uppercase tracking-wider text-[11px] shrink-0"
             >
               {t.action.label}
             </button>

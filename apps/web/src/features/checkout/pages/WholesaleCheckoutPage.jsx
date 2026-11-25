@@ -119,7 +119,7 @@ export default function WholesaleCheckoutPage() {
   if (!isAuthenticated || user?.wholesaleStatus !== 'approved') {
     return (
       <div className="max-w-2xl mx-auto px-4 py-20 text-center">
-        <div className="w-16 h-16 mx-auto mb-6 bg-[#FAFAFA] border border-[#EAEAEA] rounded-full flex items-center justify-center text-[#FF4D00]">
+        <div className="w-16 h-16 mx-auto mb-6 bg-[#FAFAFA] border border-[#EAEAEA] rounded-full flex items-center justify-center text-accent-text">
           <Building2 size={32} />
         </div>
         <h1 className="text-2xl font-bold uppercase tracking-wider text-[#0A0A0A] mb-3">
@@ -132,7 +132,7 @@ export default function WholesaleCheckoutPage() {
           <button
             type="button"
             onClick={() => openWholesaleSheet('login')}
-            className="w-full sm:w-auto px-6 py-3 bg-[#0A0A0A] text-white text-xs font-semibold uppercase tracking-widest rounded-[4px] hover:bg-[#FF4D00] transition-colors"
+            className="w-full sm:w-auto px-6 py-3 bg-[#0A0A0A] text-accent-contrast text-xs font-semibold uppercase tracking-widest rounded-[4px] hover:bg-accent transition-colors"
           >
             Sign In to Wholesale
           </button>
@@ -161,7 +161,7 @@ export default function WholesaleCheckoutPage() {
         </p>
         <Link
           to="/shop"
-          className="inline-flex items-center gap-2 px-6 py-3 bg-[#0A0A0A] text-white text-xs font-semibold uppercase tracking-widest rounded-[4px] hover:bg-[#FF4D00] transition-colors"
+          className="inline-flex items-center gap-2 px-6 py-3 bg-[#0A0A0A] text-accent-contrast text-xs font-semibold uppercase tracking-widest rounded-[4px] hover:bg-accent transition-colors"
         >
           Browse Wholesale Catalog <ArrowRight size={14} />
         </Link>
@@ -281,14 +281,14 @@ export default function WholesaleCheckoutPage() {
         {/* Page Header */}
         <div className="mt-4 mb-8 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 border-b border-[#EAEAEA] pb-6">
           <div>
-            <div className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider bg-[#FF4D00] text-white mb-2">
+            <div className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider bg-accent text-accent-contrast mb-2">
               <Sparkles size={11} /> B2B Commercial Order
             </div>
             <h1 className="text-2xl font-bold uppercase tracking-wider text-[#0A0A0A]">
               Wholesale Purchase Order
             </h1>
             <p className="text-xs text-[#6B6B6B] mt-1">
-              Buyer Account: <strong className="text-[#0A0A0A]">{user?.businessName || user?.name}</strong> · Tier: <strong className="text-[#FF4D00]">{user?.groupName || 'Bronze'} Buyer</strong>
+              Buyer Account: <strong className="text-[#0A0A0A]">{user?.businessName || user?.name}</strong> · Tier: <strong className="text-accent-text">{user?.groupName || 'Bronze'} Buyer</strong>
             </p>
           </div>
 
@@ -337,7 +337,7 @@ export default function WholesaleCheckoutPage() {
               {/* Card 1: Verified Business Profile */}
               <div className="bg-white border border-[#EAEAEA] rounded-[4px] p-6 shadow-xs">
                 <div className="flex items-center gap-2 mb-4 pb-3 border-b border-[#F0F0F0]">
-                  <Building2 size={16} className="text-[#FF4D00]" />
+                  <Building2 size={16} className="text-accent-text" />
                   <h2 className="text-xs font-bold uppercase tracking-wider text-[#0A0A0A]">
                     1. Registered Commercial Entity
                   </h2>
@@ -415,7 +415,7 @@ export default function WholesaleCheckoutPage() {
               <div className="bg-white border border-[#EAEAEA] rounded-[4px] p-6 shadow-xs">
                 <div className="flex items-center justify-between mb-4 pb-3 border-b border-[#F0F0F0]">
                   <div className="flex items-center gap-2">
-                    <Truck size={16} className="text-[#FF4D00]" />
+                    <Truck size={16} className="text-accent-text" />
                     <h2 className="text-xs font-bold uppercase tracking-wider text-[#0A0A0A]">
                       2. Delivery / Warehouse Destination
                     </h2>
@@ -577,7 +577,7 @@ export default function WholesaleCheckoutPage() {
               {/* Card 3: Purchase Order Details (PO & Notes) */}
               <div className="bg-white border border-[#EAEAEA] rounded-[4px] p-6 shadow-xs">
                 <div className="flex items-center gap-2 mb-4 pb-3 border-b border-[#F0F0F0]">
-                  <FileText size={16} className="text-[#FF4D00]" />
+                  <FileText size={16} className="text-accent-text" />
                   <h2 className="text-xs font-bold uppercase tracking-wider text-[#0A0A0A]">
                     3. Purchase Order (PO) & Logistics Instructions
                   </h2>
@@ -615,7 +615,7 @@ export default function WholesaleCheckoutPage() {
               {/* Card 4: Wholesale Payment Methods & Terms */}
               <div className="bg-white border border-[#EAEAEA] rounded-[4px] p-6 shadow-xs">
                 <div className="flex items-center gap-2 mb-4 pb-3 border-b border-[#F0F0F0]">
-                  <CreditCard size={16} className="text-[#FF4D00]" />
+                  <CreditCard size={16} className="text-accent-text" />
                   <h2 className="text-xs font-bold uppercase tracking-wider text-[#0A0A0A]">
                     4. Commercial Payment Terms
                   </h2>
@@ -688,7 +688,7 @@ export default function WholesaleCheckoutPage() {
                             <span className="text-xs font-bold text-[#0A0A0A]">
                               Commercial Credit Line ({creditData?.paymentTerms?.toUpperCase() || 'NET 30'})
                             </span>
-                            <span className="text-[10px] font-bold text-[#FF4D00] bg-[#FFF0EB] px-2 py-0.5 rounded">
+                            <span className="text-[10px] font-bold text-accent-text bg-accent-tint px-2 py-0.5 rounded">
                               Approved Facility
                             </span>
                           </div>
@@ -743,7 +743,7 @@ export default function WholesaleCheckoutPage() {
                   <h3 className="text-xs font-bold uppercase tracking-wider text-[#0A0A0A]">
                     Wholesale Order Summary ({cartItems.length} {cartItems.length === 1 ? 'Line' : 'Lines'})
                   </h3>
-                  <Link to="/cart" className="text-[11px] text-[#FF4D00] hover:underline">
+                  <Link to="/cart" className="text-[11px] text-accent-text hover:underline">
                     Edit Bag
                   </Link>
                 </div>
@@ -798,7 +798,7 @@ export default function WholesaleCheckoutPage() {
                   )}
 
                   {groupDiscountTotal > 0 && (
-                    <div className="flex justify-between text-[#FF4D00]">
+                    <div className="flex justify-between text-accent-text">
                       <span>Group Discount ({user?.groupName || 'Buyer'})</span>
                       <span className="tabular-nums font-semibold">
                         -{formatMoney(groupDiscountTotal)}
@@ -807,7 +807,7 @@ export default function WholesaleCheckoutPage() {
                   )}
 
                   {volumeDiscountAmount > 0 && (
-                    <div className="flex justify-between text-[#FF4D00]">
+                    <div className="flex justify-between text-accent-text">
                       <span>Large Volume Order Incentive ({volumeDiscountPercent}%)</span>
                       <span className="tabular-nums font-semibold">
                         -{formatMoney(volumeDiscountAmount)}
@@ -853,7 +853,7 @@ export default function WholesaleCheckoutPage() {
                   </div>
 
                   {cartSavingsVsRetail > 0 && (
-                    <div className="mt-2 p-2 bg-[#FFF0EB] border border-[#FFD9CC] rounded text-[11px] text-[#FF4D00] font-semibold text-center">
+                    <div className="mt-2 p-2 bg-accent-tint border border-accent-border rounded text-[11px] text-accent-text font-semibold text-center">
                       You save {formatMoney(cartSavingsVsRetail)} vs Retail Customer Price
                     </div>
                   )}
@@ -863,7 +863,7 @@ export default function WholesaleCheckoutPage() {
                 <button
                   type="submit"
                   disabled={isSubmitting || !meetsMinOrderValue || hasMoqViolations}
-                  className="w-full mt-6 py-3.5 bg-[#0A0A0A] text-white text-xs font-bold uppercase tracking-widest rounded-[4px] hover:bg-[#FF4D00] transition-colors flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed shadow-md"
+                  className="w-full mt-6 py-3.5 bg-[#0A0A0A] text-accent-contrast text-xs font-bold uppercase tracking-widest rounded-[4px] hover:bg-accent transition-colors flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed shadow-md"
                 >
                   {isSubmitting ? (
                     <>
@@ -880,11 +880,11 @@ export default function WholesaleCheckoutPage() {
 
                 <div className="mt-4 pt-3 border-t border-[#F0F0F0] text-[10.5px] text-[#8A8A8A] space-y-1">
                   <div className="flex items-center gap-1.5">
-                    <ReceiptText size={12} className="text-[#FF4D00]" />
+                    <ReceiptText size={12} className="text-accent-text" />
                     <span>Instant GST E-Way Bill & B2B Tax Invoice</span>
                   </div>
                   <div className="flex items-center gap-1.5">
-                    <ShieldCheck size={12} className="text-[#FF4D00]" />
+                    <ShieldCheck size={12} className="text-accent-text" />
                     <span>Brand Warranty with Commercial RMA Support</span>
                   </div>
                 </div>

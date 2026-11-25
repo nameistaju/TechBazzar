@@ -123,7 +123,7 @@ export default function SettingsView() {
         <button
           onClick={handleSaveSettings}
           disabled={saving}
-          className="px-4 py-2 bg-[#0A0A0A] text-white text-xs font-mono uppercase tracking-wider hover:bg-[#FF4D00] flex items-center gap-1.5 transition-colors font-semibold"
+          className="px-4 py-2 bg-[#0A0A0A] text-accent-contrast text-xs font-mono uppercase tracking-wider hover:bg-accent flex items-center gap-1.5 transition-colors font-semibold"
         >
           <Save className="w-4 h-4" />
           {saving ? 'Saving...' : 'Save All Settings'}
@@ -317,14 +317,14 @@ export default function SettingsView() {
             </h3>
             <div className="grid grid-cols-2 gap-4 font-mono text-xs">
               <label className={`p-4 border cursor-pointer ${
-                settings.template === 'standard' ? 'border-[#FF4D00] bg-orange-50/20' : 'border-[#EAEAEA]'
+                settings.template === 'standard' ? 'border-accent bg-accent-tint' : 'border-[#EAEAEA]'
               }`}>
                 <input
                   type="radio"
                   name="tmplChoice"
                   checked={settings.template === 'standard'}
                   onChange={() => handleChange('template', 'standard')}
-                  className="accent-[#FF4D00] mr-2"
+                  className="accent-accent mr-2"
                 />
                 <span className="font-bold">Standard Layout</span>
                 <p className="text-[11px] text-[#6B6B6B] font-sans mt-1">
@@ -333,14 +333,14 @@ export default function SettingsView() {
               </label>
 
               <label className={`p-4 border cursor-pointer ${
-                settings.template === 'compact' ? 'border-[#FF4D00] bg-orange-50/20' : 'border-[#EAEAEA]'
+                settings.template === 'compact' ? 'border-accent bg-accent-tint' : 'border-[#EAEAEA]'
               }`}>
                 <input
                   type="radio"
                   name="tmplChoice"
                   checked={settings.template === 'compact'}
                   onChange={() => handleChange('template', 'compact')}
-                  className="accent-[#FF4D00] mr-2"
+                  className="accent-accent mr-2"
                 />
                 <span className="font-bold">Compact Layout</span>
                 <p className="text-[11px] text-[#6B6B6B] font-sans mt-1">
@@ -392,7 +392,7 @@ export default function SettingsView() {
             <a
               href={adminApi.getBackupUrl()}
               download
-              className="inline-flex items-center gap-2 px-4 py-2 bg-[#0A0A0A] text-white text-xs font-mono uppercase hover:bg-[#FF4D00] transition-colors font-bold"
+              className="inline-flex items-center gap-2 px-4 py-2 bg-[#0A0A0A] text-accent-contrast text-xs font-mono uppercase hover:bg-accent transition-colors font-bold"
             >
               <Download className="w-4 h-4" />
               Download techbazaar.db Backup
@@ -446,7 +446,7 @@ export default function SettingsView() {
             <button
               type="submit"
               disabled={savingAccount}
-              className="px-4 py-2 bg-[#0A0A0A] text-white text-xs font-mono uppercase hover:bg-[#FF4D00] font-bold"
+              className="px-4 py-2 bg-[#0A0A0A] text-accent-contrast text-xs font-mono uppercase hover:bg-accent font-bold"
             >
               Update Owner Profile
             </button>
@@ -479,7 +479,7 @@ export default function SettingsView() {
             <button
               type="submit"
               disabled={savingAccount}
-              className="px-4 py-2 bg-[#0A0A0A] text-white text-xs font-mono uppercase hover:bg-pop font-bold"
+              className="px-4 py-2 bg-[#0A0A0A] text-accent-contrast text-xs font-mono uppercase hover:bg-accent font-bold"
             >
               Update Password
             </button>

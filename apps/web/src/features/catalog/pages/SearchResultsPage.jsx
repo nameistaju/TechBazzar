@@ -39,7 +39,7 @@ export default function SearchResultsPage() {
 
         <div className="py-6 border-b border-[#EAEAEA] mb-8 flex flex-col sm:flex-row sm:items-end justify-between gap-4">
           <div>
-            <span className="text-[10px] uppercase tracking-[0.2em] text-[#FF4D00] font-bold block mb-1">
+            <span className="text-[10px] uppercase tracking-[0.2em] text-accent-text font-bold block mb-1">
               Search Results
             </span>
             <h1 className="text-2xl sm:text-3xl font-light uppercase tracking-widest text-[#0A0A0A]">
@@ -78,7 +78,7 @@ export default function SearchResultsPage() {
             </p>
             <Link
               to="/shop"
-              className="inline-flex items-center gap-2 bg-[#0A0A0A] text-white text-xs font-semibold uppercase tracking-widest px-6 py-3 rounded-[4px] hover:bg-[#FF4D00] transition-colors"
+              className="inline-flex items-center gap-2 bg-[#0A0A0A] text-accent-contrast text-xs font-semibold uppercase tracking-widest px-6 py-3 rounded-[4px] hover:bg-accent transition-colors"
             >
               Browse All Products <ArrowRight size={14} />
             </Link>

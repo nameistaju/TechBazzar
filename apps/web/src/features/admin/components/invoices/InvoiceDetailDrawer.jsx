@@ -50,7 +50,7 @@ export default function InvoiceDetailDrawer({
                   setPaymentAmount(selectedInvoice.balance_due);
                   setIsPaymentModalOpen(true);
                 }}
-                className="px-3 py-1.5 bg-[#FF4D00] text-black text-xs font-mono uppercase font-bold hover:bg-[#0A0A0A] hover:text-white transition-colors"
+                className="px-3 py-1.5 bg-accent text-black text-xs font-mono uppercase font-bold hover:bg-[#0A0A0A] hover:text-accent-contrast transition-colors"
               >
                 + Record Payment
               </button>
@@ -88,7 +88,7 @@ export default function InvoiceDetailDrawer({
               <div className="text-[10px] text-[#6B6B6B] uppercase">Tax Information</div>
               <div className="mt-1">Place of Supply: <strong className="text-[#0A0A0A]">{selectedInvoice.place_of_supply}</strong></div>
               <div>Payment Terms: <strong className="text-[#0A0A0A]">{selectedInvoice.payment_terms}</strong></div>
-              <div>Template Style: <span className="uppercase text-[#FF4D00] font-bold">{selectedInvoice.template || 'standard'}</span></div>
+              <div>Template Style: <span className="uppercase text-accent-text font-bold">{selectedInvoice.template || 'standard'}</span></div>
             </div>
           </div>
 
@@ -124,7 +124,7 @@ export default function InvoiceDetailDrawer({
                 <span>{formatINR(selectedInvoice.subtotal)}</span>
               </div>
               {selectedInvoice.discount_amount > 0 && (
-                <div className="flex justify-between text-[#FF4D00]">
+                <div className="flex justify-between text-accent-text">
                   <span>Discount:</span>
                   <span>-{formatINR(selectedInvoice.discount_amount)}</span>
                 </div>
@@ -153,7 +153,7 @@ export default function InvoiceDetailDrawer({
                 <span>Amount Paid:</span>
                 <span>{formatINR(selectedInvoice.amount_paid || 0)}</span>
               </div>
-              <div className="flex justify-between text-sm font-bold text-[#FF4D00]">
+              <div className="flex justify-between text-sm font-bold text-accent-text">
                 <span>Balance Due:</span>
                 <span>{formatINR(selectedInvoice.balance_due || 0)}</span>
               </div>

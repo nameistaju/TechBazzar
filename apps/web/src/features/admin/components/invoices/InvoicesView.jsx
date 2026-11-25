@@ -223,7 +223,7 @@ export default function InvoicesView() {
         <div className="flex items-center gap-2">
           <button
             onClick={() => setIsCreatorOpen(true)}
-            className="px-3 py-1.5 bg-[#0A0A0A] text-white text-xs font-mono uppercase tracking-wider hover:bg-[#FF4D00] flex items-center gap-1.5 transition-colors font-semibold"
+            className="px-3 py-1.5 bg-[#0A0A0A] text-accent-contrast text-xs font-mono uppercase tracking-wider hover:bg-accent flex items-center gap-1.5 transition-colors font-semibold"
           >
             <Plus className="w-4 h-4" />
             New Tax Invoice
@@ -313,7 +313,7 @@ export default function InvoicesView() {
 
                 <td className="p-3 font-mono text-[10px]">
                   {inv.channel === 'wholesale' || inv.invoice_type === 'gst' ? (
-                    <span className="px-1.5 py-0.5 rounded font-bold uppercase bg-[#FFF0EB] text-[#FF4D00] border border-[#FFD9CC]">
+                    <span className="px-1.5 py-0.5 rounded font-bold uppercase bg-accent-tint text-accent-text border border-accent-border">
                       B2B GST
                     </span>
                   ) : (
@@ -341,7 +341,7 @@ export default function InvoicesView() {
                 </td>
 
                 <td className="p-3 text-right font-mono font-bold">
-                  <span className={inv.balance_due > 0 ? 'text-[#FF4D00]' : 'text-emerald-700'}>
+                  <span className={inv.balance_due > 0 ? 'text-accent-text' : 'text-emerald-700'}>
                     {formatINR(inv.balance_due)}
                   </span>
                 </td>
@@ -374,7 +374,7 @@ export default function InvoicesView() {
 
                     <button
                       onClick={() => openInvoiceDetail(inv.id)}
-                      className="px-2.5 py-1 text-xs font-mono uppercase bg-[#0A0A0A] text-white hover:bg-[#FF4D00] transition-colors"
+                      className="px-2.5 py-1 text-xs font-mono uppercase bg-[#0A0A0A] text-accent-contrast hover:bg-accent transition-colors"
                     >
                       View
                     </button>

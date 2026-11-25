@@ -103,7 +103,7 @@ export default function CustomerModals({
                 <button
                   type="submit"
                   disabled={converting}
-                  className="flex-1 py-2 bg-[#0A0A0A] text-white uppercase hover:bg-[#FF4D00] transition-colors font-bold cursor-pointer"
+                  className="flex-1 py-2 bg-[#0A0A0A] text-accent-contrast uppercase hover:bg-accent transition-colors font-bold cursor-pointer"
                 >
                   {converting ? 'Converting...' : 'Confirm Upgrade'}
                 </button>
@@ -216,7 +216,7 @@ export default function CustomerModals({
                 <button
                   type="submit"
                   disabled={submittingMerge}
-                  className="flex-1 py-2 bg-[#0A0A0A] text-white uppercase hover:bg-[#FF4D00] transition-colors font-bold cursor-pointer"
+                  className="flex-1 py-2 bg-[#0A0A0A] text-accent-contrast uppercase hover:bg-accent transition-colors font-bold cursor-pointer"
                 >
                   {submittingMerge ? 'Merging...' : 'Confirm Merge'}
                 </button>
@@ -295,7 +295,7 @@ export default function CustomerModals({
                 <button
                   type="submit"
                   disabled={submittingAdd}
-                  className="flex-1 py-2 bg-[#0A0A0A] text-white text-xs font-mono uppercase hover:bg-[#FF4D00] transition-colors font-bold cursor-pointer"
+                  className="flex-1 py-2 bg-[#0A0A0A] text-accent-contrast text-xs font-mono uppercase hover:bg-accent transition-colors font-bold cursor-pointer"
                 >
                   {submittingAdd ? 'Saving...' : 'Create Client'}
                 </button>

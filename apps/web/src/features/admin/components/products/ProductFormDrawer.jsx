@@ -61,7 +61,7 @@ export default function ProductFormDrawer({
               onClick={() => setDrawerTab(tab.id)}
               className={`py-3 px-4 border-b-2 font-semibold transition-colors whitespace-nowrap ${
                 drawerTab === tab.id
-                  ? 'border-[#FF4D00] text-[#0A0A0A] bg-white'
+                  ? 'border-accent text-[#0A0A0A] bg-white'
                   : 'border-transparent text-[#6B6B6B] hover:text-[#0A0A0A]'
               }`}
             >
@@ -89,16 +89,16 @@ export default function ProductFormDrawer({
                     className="w-full px-3 py-2 border border-[#EAEAEA] text-sm focus:border-[#0A0A0A] outline-none"
                   />
                   {duplicateWarning && (
-                    <div className="mt-2 p-2.5 bg-[#FFF5F0] border border-[#FF4D00]/30 text-xs text-[#0A0A0A] flex items-start gap-2">
-                      <AlertTriangle className="w-4 h-4 text-[#FF4D00] shrink-0 mt-0.5" />
+                    <div className="mt-2 p-2.5 bg-accent-tint border border-accent/30 text-xs text-[#0A0A0A] flex items-start gap-2">
+                      <AlertTriangle className="w-4 h-4 text-accent-text shrink-0 mt-0.5" />
                       <div className="flex-1">
-                        <span className="font-semibold text-[#FF4D00]">A similar product already exists: </span>
+                        <span className="font-semibold text-accent-text">A similar product already exists: </span>
                         <span className="font-medium">{duplicateWarning.name}</span>
                         <span className="font-mono text-[#6B6B6B] ml-1">({duplicateWarning.sku})</span>
                         <button
                           type="button"
                           onClick={() => openEditDrawer(duplicateWarning.id)}
-                          className="ml-2 text-[#FF4D00] underline font-semibold hover:text-[#0A0A0A]"
+                          className="ml-2 text-accent-text underline font-semibold hover:text-[#0A0A0A]"
                         >
                           View Product →
                         </button>
@@ -206,7 +206,7 @@ export default function ProductFormDrawer({
                   <button
                     type="button"
                     onClick={() => setShowImagePicker(true)}
-                    className="px-3 py-1.5 bg-[#0A0A0A] text-white text-xs font-mono uppercase tracking-wider hover:bg-[#FF4D00] flex items-center gap-1.5"
+                    className="px-3 py-1.5 bg-[#0A0A0A] text-accent-contrast text-xs font-mono uppercase tracking-wider hover:bg-accent flex items-center gap-1.5"
                   >
                     <ImageIcon className="w-3.5 h-3.5" />
                     Open Local Media Library
@@ -229,7 +229,7 @@ export default function ProductFormDrawer({
                         {img.split('/').pop()}
                       </div>
                       {idx === 0 && (
-                        <span className="absolute top-2 left-2 bg-[#FF4D00] text-black text-[9px] font-mono font-bold px-1.5 py-0.5 uppercase">
+                        <span className="absolute top-2 left-2 bg-accent text-black text-[9px] font-mono font-bold px-1.5 py-0.5 uppercase">
                           Primary
                         </span>
                       )}
@@ -325,7 +325,7 @@ export default function ProductFormDrawer({
               <div className="p-4 bg-[#F7F7F7] border border-[#EAEAEA] grid grid-cols-3 gap-4 font-mono text-center">
                 <div>
                   <div className="text-[10px] text-[#6B6B6B] uppercase">Estimated Discount</div>
-                  <div className="text-sm font-bold text-[#FF4D00] mt-0.5">
+                  <div className="text-sm font-bold text-accent-text mt-0.5">
                     {form.mrp && form.price ? Math.max(0, Math.round(((form.mrp - form.price) / form.mrp) * 100)) : 0}% OFF
                   </div>
                 </div>
@@ -374,7 +374,7 @@ export default function ProductFormDrawer({
                         type="checkbox"
                         checked={form.isTaxInclusive}
                         onChange={(e) => setForm({ ...form, isTaxInclusive: e.target.checked })}
-                        className="accent-[#FF4D00]"
+                        className="accent-accent"
                       />
                       <span>Price is Inclusive of GST</span>
                     </label>
@@ -383,13 +383,13 @@ export default function ProductFormDrawer({
               </div>
 
               {/* Wholesale Bulk Tier Pricing & MOQ Matrix */}
-              <div className="p-4 bg-orange-50/40 border border-orange-200/70 space-y-4">
+              <div className="p-4 bg-accent-tint border border-accent-border space-y-4">
                 <div className="flex items-center justify-between">
                   <div className="text-xs font-mono uppercase tracking-wider font-bold text-[#0A0A0A] flex items-center gap-1.5">
-                    <span className="w-2 h-2 rounded-full bg-[#FF4D00]"></span>
+                    <span className="w-2 h-2 rounded-full bg-accent"></span>
                     Wholesale Tier Pricing & MOQ Matrix
                   </div>
-                  <span className="text-[10px] font-mono text-[#FF4D00] font-bold">B2B VOLUME DISCOUNTS</span>
+                  <span className="text-[10px] font-mono text-accent-text font-bold">B2B VOLUME DISCOUNTS</span>
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -475,7 +475,7 @@ export default function ProductFormDrawer({
                 </div>
 
                 {/* Channel Availability Toggles */}
-                <div className="pt-3 border-t border-orange-200/60 flex flex-wrap items-center gap-6">
+                <div className="pt-3 border-t border-accent-border flex flex-wrap items-center gap-6">
                   <label className="flex items-center gap-2 cursor-pointer text-xs font-mono">
                     <input
                       type="checkbox"
@@ -491,7 +491,7 @@ export default function ProductFormDrawer({
                       type="checkbox"
                       checked={form.isWholesaleAvailable !== false}
                       onChange={(e) => setForm({ ...form, isWholesaleAvailable: e.target.checked })}
-                      className="accent-[#FF4D00]"
+                      className="accent-accent"
                     />
                     <span>Available in Wholesale B2B</span>
                   </label>
@@ -550,7 +550,7 @@ export default function ProductFormDrawer({
                     type="checkbox"
                     checked={form.trackInventory}
                     onChange={(e) => setForm({ ...form, trackInventory: e.target.checked })}
-                    className="accent-[#FF4D00]"
+                    className="accent-accent"
                   />
                   <span>Track Inventory (Auto-decrement stock on checkout orders)</span>
                 </label>
@@ -560,7 +560,7 @@ export default function ProductFormDrawer({
                     type="checkbox"
                     checked={form.allowBackorder}
                     onChange={(e) => setForm({ ...form, allowBackorder: e.target.checked })}
-                    className="accent-[#FF4D00]"
+                    className="accent-accent"
                   />
                   <span>Allow Backorders when stock reaches zero</span>
                 </label>
@@ -725,7 +725,7 @@ export default function ProductFormDrawer({
                     type="checkbox"
                     checked={form.isFlashSale}
                     onChange={(e) => setForm({ ...form, isFlashSale: e.target.checked })}
-                    className="accent-[#FF4D00]"
+                    className="accent-accent"
                   />
                   <span>Mark as Flash Sale Deal</span>
                 </label>
@@ -761,7 +761,7 @@ export default function ProductFormDrawer({
                       type="checkbox"
                       checked={Boolean(form[fl.key])}
                       onChange={(e) => setForm({ ...form, [fl.key]: e.target.checked })}
-                      className="accent-[#FF4D00]"
+                      className="accent-accent"
                     />
                     <span>{fl.label}</span>
                   </label>
@@ -826,7 +826,7 @@ export default function ProductFormDrawer({
             <button
               type="submit"
               disabled={savingProduct}
-              className="px-6 py-2 bg-[#0A0A0A] text-white text-xs font-mono uppercase tracking-wider hover:bg-[#FF4D00] transition-colors font-semibold"
+              className="px-6 py-2 bg-[#0A0A0A] text-accent-contrast text-xs font-mono uppercase tracking-wider hover:bg-accent transition-colors font-semibold"
             >
               {savingProduct ? 'Saving...' : (editingId ? 'Save Product Changes' : 'Create Product')}
             </button>

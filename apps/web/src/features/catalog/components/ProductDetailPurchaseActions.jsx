@@ -92,7 +92,7 @@ export default function ProductDetailPurchaseActions({
               className={`flex-1 py-4 px-6 rounded-[4px] text-xs font-semibold uppercase tracking-widest transition-all duration-200 flex items-center justify-center gap-2 shadow-sm cursor-pointer ${
                 isAdded 
                   ? 'bg-emerald-600 text-white' 
-                  : 'bg-[#0A0A0A] text-white hover:bg-[#FF4D00]'
+                  : 'bg-[#0A0A0A] text-accent-contrast hover:bg-accent'
               }`}
             >
               {isAdded ? (
@@ -110,7 +110,7 @@ export default function ProductDetailPurchaseActions({
             <button
               type="button"
               onClick={handleBuyNow}
-              className="flex-1 py-4 px-6 rounded-[4px] text-xs font-semibold uppercase tracking-widest bg-[#FF4D00] hover:bg-[#E04400] text-white transition-colors flex items-center justify-center gap-2 shadow-sm cursor-pointer"
+              className="flex-1 py-4 px-6 rounded-[4px] text-xs font-semibold uppercase tracking-widest bg-accent hover:bg-accent-hover text-accent-contrast transition-colors flex items-center justify-center gap-2 shadow-sm cursor-pointer"
             >
               <span>{isWholesale ? 'Bulk Checkout' : 'Buy Now'}</span>
               <ArrowRight size={15} />
@@ -120,7 +120,7 @@ export default function ProductDetailPurchaseActions({
               type="button"
               onClick={() => toggleWishlist(product)}
               className={`p-4 rounded-[4px] border border-[#EAEAEA] transition-colors flex items-center justify-center cursor-pointer ${
-                inWishlist ? 'text-[#FF4D00] bg-[#FFF0EB] border-[#FF4D00]' : 'text-[#6B6B6B] hover:text-[#0A0A0A] hover:bg-[#F7F7F7]'
+                inWishlist ? 'text-accent-text bg-accent-tint border-accent' : 'text-[#6B6B6B] hover:text-[#0A0A0A] hover:bg-[#F7F7F7]'
               }`}
               aria-label="Wishlist"
             >
@@ -144,7 +144,7 @@ export default function ProductDetailPurchaseActions({
         <div className="space-y-4 pt-2">
           <div className="p-4 bg-gray-50 border border-[#EAEAEA] rounded-[4px]">
             <div className="flex items-center gap-2 text-xs font-semibold text-[#0A0A0A] mb-1">
-              <AlertCircle size={16} className="text-[#FF4D00]" />
+              <AlertCircle size={16} className="text-accent-text" />
               <span>This product is currently out of stock</span>
             </div>
             <p className="text-xs text-[#6B6B6B] mb-3">
@@ -168,7 +168,7 @@ export default function ProductDetailPurchaseActions({
                 <button
                   type="submit"
                   disabled={notifyLoading}
-                  className="h-10 px-4 bg-[#0A0A0A] hover:bg-[#FF4D00] text-white text-xs font-semibold uppercase tracking-wider rounded-[4px] transition-colors flex items-center gap-1.5 cursor-pointer disabled:opacity-50"
+                  className="h-10 px-4 bg-[#0A0A0A] hover:bg-accent text-accent-contrast text-xs font-semibold uppercase tracking-wider rounded-[4px] transition-colors flex items-center gap-1.5 cursor-pointer disabled:opacity-50"
                 >
                   <Bell size={13} /> {notifyLoading ? 'Saving...' : 'Notify Me'}
                 </button>
@@ -188,7 +188,7 @@ export default function ProductDetailPurchaseActions({
               type="button"
               onClick={() => toggleWishlist(product)}
               className={`p-3 rounded-[4px] border border-[#EAEAEA] transition-colors flex items-center justify-center cursor-pointer ${
-                inWishlist ? 'text-[#FF4D00] bg-[#FFF0EB] border-[#FF4D00]' : 'text-[#6B6B6B] hover:text-[#0A0A0A] hover:bg-[#F7F7F7]'
+                inWishlist ? 'text-accent-text bg-accent-tint border-accent' : 'text-[#6B6B6B] hover:text-[#0A0A0A] hover:bg-[#F7F7F7]'
               }`}
               aria-label="Wishlist"
             >

@@ -21,7 +21,7 @@ export default function WishlistPage() {
 
         {/* Title */}
         <div className="py-6 border-b border-[#EAEAEA] mb-8">
-          <span className="text-[10px] uppercase tracking-[0.2em] text-[#FF4D00] font-bold block mb-1">
+          <span className="text-[10px] uppercase tracking-[0.2em] text-accent-text font-bold block mb-1">
             Curated Shortlist
           </span>
           <h1 className="text-2xl sm:text-3xl font-light uppercase tracking-widest text-[#0A0A0A]">
@@ -42,7 +42,7 @@ export default function WishlistPage() {
             </p>
             <Link
               to="/shop"
-              className="inline-flex items-center gap-2 bg-[#0A0A0A] text-white text-xs font-semibold uppercase tracking-widest px-6 py-3 rounded-[4px] hover:bg-[#FF4D00] transition-colors"
+              className="inline-flex items-center gap-2 bg-[#0A0A0A] text-accent-contrast text-xs font-semibold uppercase tracking-widest px-6 py-3 rounded-[4px] hover:bg-accent transition-colors"
             >
               Explore Products <ArrowRight size={14} />
             </Link>
@@ -80,7 +80,7 @@ export default function WishlistPage() {
                   </span>
                   <Link
                     to={`/product/${product.id}`}
-                    className="text-xs font-medium text-[#0A0A0A] hover:text-[#FF4D00] line-clamp-1 transition-colors block mb-2"
+                    className="text-xs font-medium text-[#0A0A0A] hover:text-accent-text line-clamp-1 transition-colors block mb-2"
                   >
                     {product.name}
                   </Link>
@@ -93,7 +93,7 @@ export default function WishlistPage() {
                 <button
                   type="button"
                   onClick={() => handleMoveToCart(product)}
-                  className="w-full bg-[#0A0A0A] hover:bg-[#FF4D00] text-white text-xs font-semibold uppercase tracking-wider py-2.5 rounded-[4px] transition-colors flex items-center justify-center gap-1.5"
+                  className="w-full bg-[#0A0A0A] hover:bg-accent text-accent-contrast text-xs font-semibold uppercase tracking-wider py-2.5 rounded-[4px] transition-colors flex items-center justify-center gap-1.5"
                 >
                   <ShoppingBag size={14} /> Move to Bag
                 </button>

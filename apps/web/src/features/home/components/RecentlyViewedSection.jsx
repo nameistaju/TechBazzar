@@ -24,7 +24,7 @@ export default function RecentlyViewedSection() {
 
           <Link
             to="/shop"
-            className="text-xs font-semibold uppercase tracking-wider text-[#0A0A0A] hover:text-[#FF4D00] transition-colors flex items-center gap-1"
+            className="text-xs font-semibold uppercase tracking-wider text-[#0A0A0A] hover:text-accent-text transition-colors flex items-center gap-1"
           >
             Explore Catalog <ArrowRight size={13} />
           </Link>

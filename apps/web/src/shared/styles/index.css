@@ -3,20 +3,22 @@
 @tailwind utilities;
 
 :root {
-  /* Dynamic Accent Branding Variables */
-  --accent: #FF4D00;
-  --accent-hover: #E04400;
-  --accent-pressed: #C73C00;
-  --accent-tint: #FFEDE6;
-  --accent-border: #FFD3BF;
-  --accent-contrast: #FFFFFF;
+  /* Dynamic Accent Branding Variables (RGB channels for Tailwind <alpha-value> support) */
+  --accent: 255 77 0;
+  --accent-hover: 224 68 0;
+  --accent-pressed: 199 60 0;
+  --accent-tint: 255 237 230;
+  --accent-border: 255 211 191;
+  --accent-text: 194 58 0;
+  --accent-contrast: 255 255 255;
   --accent-ring: rgba(255, 77, 0, 0.35);
+  --accent-hex: #FF4D00;
   --footer-dark: #0A0A0A;
 
   /* Theme mappings for existing classes */
-  --color-primary: var(--accent);
-  --color-primary-hover: var(--accent-hover);
-  --color-primary-light: var(--accent-tint);
+  --color-primary: rgb(var(--accent));
+  --color-primary-hover: rgb(var(--accent-hover));
+  --color-primary-light: rgb(var(--accent-tint));
   --color-bg: #FFFFFF;
   --color-surface: #F7F7F7;
   --color-surface-hover: #EFEFEF;
@@ -52,7 +54,7 @@
     border-radius: 2px;
   }
   ::-webkit-scrollbar-thumb:hover {
-    background: #FF4D00;
+    background: rgb(var(--accent));
   }
 }
 

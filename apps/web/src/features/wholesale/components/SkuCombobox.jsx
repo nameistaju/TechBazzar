@@ -22,7 +22,7 @@ function HighlightMatch({ text, query }) {
     <>
       {parts.map((part, i) => 
         regex.test(part) ? (
-          <mark key={i} className="bg-orange-100 text-[#FF4D00] font-semibold rounded-[2px] px-0.5">
+          <mark key={i} className="bg-accent-tint text-accent-text font-semibold rounded-[2px] px-0.5">
             {part}
           </mark>
         ) : (
@@ -257,7 +257,7 @@ export default function SkuCombobox({
                 ↑↓ to navigate • Enter to select • Shift+Enter to check
               </span>
               <span className={`px-1.5 py-0.2 rounded text-[9px] uppercase font-bold tracking-wider ${
-                mode === 'wholesale' ? 'bg-[#0A0A0A] text-[#FF4D00]' : 'bg-gray-200 text-[#0A0A0A]'
+                mode === 'wholesale' ? 'bg-[#0A0A0A] text-accent-text' : 'bg-gray-200 text-[#0A0A0A]'
               }`}>
                 {mode === 'wholesale' ? 'Wholesale' : 'Retail'}
               </span>
@@ -286,7 +286,7 @@ export default function SkuCombobox({
                 <button
                   type="button"
                   onClick={() => refetch()}
-                  className="px-3 py-1 bg-[#0A0A0A] text-white text-[10px] font-mono uppercase font-semibold rounded hover:bg-[#FF4D00]"
+                  className="px-3 py-1 bg-[#0A0A0A] text-accent-contrast text-[10px] font-mono uppercase font-semibold rounded hover:bg-accent"
                 >
                   Retry
                 </button>
@@ -306,7 +306,7 @@ export default function SkuCombobox({
                         key={cat}
                         type="button"
                         onClick={() => handleCategoryQuickSearch(cat)}
-                        className="px-2 py-0.5 border border-[#EAEAEA] bg-[#FAFAFA] hover:border-[#FF4D00] hover:text-[#FF4D00] text-xs font-mono rounded transition-colors"
+                        className="px-2 py-0.5 border border-[#EAEAEA] bg-[#FAFAFA] hover:border-accent hover:text-accent-text text-xs font-mono rounded transition-colors"
                       >
                         {cat}
                       </button>
@@ -334,7 +334,7 @@ export default function SkuCombobox({
                     isOutOfStock
                       ? 'opacity-45 bg-gray-50 cursor-not-allowed'
                       : isActive
-                        ? 'bg-orange-50/70 border-l-2 border-[#FF4D00]'
+                        ? 'bg-accent-tint border-l-2 border-accent'
                         : 'hover:bg-[#FAFAFA]'
                   }`}
                 >
@@ -346,7 +346,7 @@ export default function SkuCombobox({
                       checked={isChecked}
                       onChange={(e) => toggleSelectMulti(item.id, e)}
                       onClick={(e) => e.stopPropagation()}
-                      className="w-3.5 h-3.5 rounded border-[#EAEAEA] text-[#FF4D00] focus:ring-0 cursor-pointer shrink-0"
+                      className="w-3.5 h-3.5 rounded border-[#EAEAEA] text-accent-text focus:ring-0 cursor-pointer shrink-0"
                     />
 
                     {/* Image Thumbnail */}
@@ -405,7 +405,7 @@ export default function SkuCombobox({
                         {formatINR(item.mrp)}
                       </div>
                     )}
-                    <div className="text-[9px] font-mono text-[#FF4D00]">
+                    <div className="text-[9px] font-mono text-accent-text">
                       {mode === 'wholesale' ? 'Tier 1' : 'Retail'}
                     </div>
                   </div>
@@ -418,7 +418,7 @@ export default function SkuCombobox({
           {selectedIds.length > 0 && (
             <div className="p-2.5 bg-gray-50 border-t border-[#EAEAEA] flex items-center justify-between gap-2">
               <div className="text-xs font-mono text-[#0A0A0A]">
-                <span className="font-bold text-[#FF4D00]">{selectedIds.length}</span> items selected
+                <span className="font-bold text-accent-text">{selectedIds.length}</span> items selected
               </div>
               <div className="flex items-center gap-2">
                 <button
@@ -431,7 +431,7 @@ export default function SkuCombobox({
                 <button
                   type="button"
                   onClick={handleCommitMultiSelect}
-                  className="px-3 py-1.5 bg-[#0A0A0A] hover:bg-[#FF4D00] text-white text-xs font-mono uppercase font-semibold transition-colors flex items-center gap-1.5 rounded-[3px]"
+                  className="px-3 py-1.5 bg-[#0A0A0A] hover:bg-accent text-accent-contrast text-xs font-mono uppercase font-semibold transition-colors flex items-center gap-1.5 rounded-[3px]"
                 >
                   <Plus size={13} />
                   Add {selectedIds.length} Selected
@@ -452,7 +452,7 @@ export default function SkuCombobox({
                 <span className="text-xs font-mono font-bold uppercase text-[#0A0A0A]">
                   Select Product ({totalMatches})
                 </span>
-                <span className="text-[10px] text-[#FF4D00] font-mono uppercase font-semibold">
+                <span className="text-[10px] text-accent-text font-mono uppercase font-semibold">
                   {mode}
                 </span>
               </div>
@@ -499,7 +499,7 @@ export default function SkuCombobox({
                   <div
                     key={item.id}
                     onClick={() => !isOutOfStock && handleSelectSingle(item)}
-                    className="p-3 flex items-center justify-between gap-3 active:bg-orange-50/50"
+                    className="p-3 flex items-center justify-between gap-3 active:bg-accent-tint"
                   >
                     <div className="flex items-center gap-2.5 min-w-0 flex-1">
                       <input
@@ -508,7 +508,7 @@ export default function SkuCombobox({
                         checked={isChecked}
                         onChange={(e) => toggleSelectMulti(item.id, e)}
                         onClick={(e) => e.stopPropagation()}
-                        className="w-4 h-4 rounded text-[#FF4D00]"
+                        className="w-4 h-4 rounded text-accent-text"
                       />
                       <img
                         src={item.image}
@@ -529,7 +529,7 @@ export default function SkuCombobox({
                       <div className="text-xs font-bold font-mono text-[#0A0A0A]">
                         {formatINR(item.price)}
                       </div>
-                      <div className="text-[9px] font-mono text-[#FF4D00]">
+                      <div className="text-[9px] font-mono text-accent-text">
                         {mode === 'wholesale' ? 'Tier 1' : 'Retail'}
                       </div>
                     </div>
@@ -545,7 +545,7 @@ export default function SkuCombobox({
                 <button
                   type="button"
                   onClick={handleCommitMultiSelect}
-                  className="px-4 py-2 bg-[#FF4D00] text-white text-xs font-mono font-bold uppercase rounded"
+                  className="px-4 py-2 bg-accent text-accent-contrast text-xs font-mono font-bold uppercase rounded"
                 >
                   Add {selectedIds.length} Selected
                 </button>

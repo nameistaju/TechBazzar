@@ -1,5 +1,6 @@
 // src/context/BrandingContext.jsx
 import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
+import { deriveColorTokens, hexToRgbChannels } from '@shared/utils/colorContrast';
 
 const BrandingContext = createContext(null);
 
@@ -14,50 +15,60 @@ const DEFAULT_BRANDING = {
   logo_wordmark: '/logo.png',
   logo_dark: '/logo.png',
   favicon: '/favicon.png',
-  accent_hex: '#FF4D00',
-  accent_hover: '#E04400',
-  accent_pressed: '#C73C00',
-  accent_tint: '#FFEDE6',
-  accent_border: '#FFD3BF',
-  accent_contrast: '#FFFFFF',
-  accent_ring: 'rgba(255, 77, 0, 0.35)',
-  footer_dark_hex: '#0A0A0A'
+  footer_dark_hex: '#0A0A0A',
+  ...deriveColorTokens('#FF4D00')
 };
 
 // Apply CSS variables synchronously to :root
 export function applyCssVariables(tokens) {
   if (typeof document === 'undefined') return;
   const root = document.documentElement;
-  const accent = tokens.accent_hex || DEFAULT_BRANDING.accent_hex;
-  const hover = tokens.accent_hover || DEFAULT_BRANDING.accent_hover;
-  const pressed = tokens.accent_pressed || DEFAULT_BRANDING.accent_pressed;
-  const tint = tokens.accent_tint || DEFAULT_BRANDING.accent_tint;
-  const border = tokens.accent_border || DEFAULT_BRANDING.accent_border;
-  const contrast = tokens.accent_contrast || DEFAULT_BRANDING.accent_contrast;
-  const ring = tokens.accent_ring || DEFAULT_BRANDING.accent_ring;
+  const derived = tokens.accent_hex ? deriveColorTokens(tokens.accent_hex) : DEFAULT_BRANDING;
+  const accent = tokens.accent_hex || derived.accent_hex;
+  const accentRgb = tokens.accent_rgb || derived.accent_rgb || hexToRgbChannels(accent);
+  const hoverRgb = tokens.accent_hover_rgb || derived.accent_hover_rgb;
+  const pressedRgb = tokens.accent_pressed_rgb || derived.accent_pressed_rgb;
+  const tintRgb = tokens.accent_tint_rgb || derived.accent_tint_rgb;
+  const borderRgb = tokens.accent_border_rgb || derived.accent_border_rgb;
+  const textRgb = tokens.accent_text_rgb || derived.accent_text_rgb;
+  const contrastRgb = tokens.accent_contrast_rgb || derived.accent_contrast_rgb;
+  const ring = tokens.accent_ring || derived.accent_ring;
   const footerDark = tokens.footer_dark_hex || DEFAULT_BRANDING.footer_dark_hex;
 
-  // Modern --accent variables
-  root.style.setProperty('--accent', accent);
-  root.style.setProperty('--accent-hover', hover);
-  root.style.setProperty('--accent-pressed', pressed);
-  root.style.setProperty('--accent-tint', tint);
-  root.style.setProperty('--accent-border', border);
-  root.style.setProperty('--accent-contrast', contrast);
+  // RGB channel variables for Tailwind opacity utilities (bg-accent/10, ring-accent/40, etc.)
+  root.style.setProperty('--accent', accentRgb);
+  root.style.setProperty('--accent-hover', hoverRgb);
+  root.style.setProperty('--accent-pressed', pressedRgb);
+  root.style.setProperty('--accent-tint', tintRgb);
+  root.style.setProperty('--accent-border', borderRgb);
+  root.style.setProperty('--accent-text', textRgb);
+  root.style.setProperty('--accent-contrast', contrastRgb);
   root.style.setProperty('--accent-ring', ring);
+  root.style.setProperty('--accent-hex', accent);
   root.style.setProperty('--footer-dark', footerDark);
 
   // Backward-compatible --color-primary mapping for existing styles
-  root.style.setProperty('--color-primary', accent);
-  root.style.setProperty('--color-primary-hover', hover);
-  root.style.setProperty('--color-primary-light', tint);
+  root.style.setProperty('--color-primary', `rgb(${accentRgb})`);
+  root.style.setProperty('--color-primary-hover', `rgb(${hoverRgb})`);
+  root.style.setProperty('--color-primary-light', `rgb(${tintRgb})`);
+
+  // Update theme-color meta tag
+  const themeMeta = document.querySelector("meta[name='theme-color']");
+  if (themeMeta) {
+    themeMeta.setAttribute('content', accent);
+  }
 
   // Update dynamic favicon link if available
   if (tokens.favicon) {
-    let link = document.querySelector("link[rel*='icon']");
+    const link = document.querySelector("link[rel*='icon']");
     if (link) {
       link.href = tokens.favicon;
     }
+  }
+
+  // Update document title if brand_name is provided
+  if (tokens.brand_name) {
+    document.title = tokens.brand_name + (tokens.tagline ? ` — ${tokens.tagline}` : '');
   }
 }
 

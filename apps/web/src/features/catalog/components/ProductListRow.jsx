@@ -41,7 +41,7 @@ export default function ProductListRow({ product }) {
           className="w-full h-full object-contain group-hover:scale-105 transition-transform duration-300"
         />
         {discountPercent && (
-          <span className="absolute top-2 left-2 bg-[#FF4D00] text-white text-[9px] font-bold px-1.5 py-0.5 rounded-[2px]">
+          <span className="absolute top-2 left-2 bg-accent text-accent-contrast text-[9px] font-bold px-1.5 py-0.5 rounded-[2px]">
             -{discountPercent}%
           </span>
         )}
@@ -54,7 +54,7 @@ export default function ProductListRow({ product }) {
         </div>
         <Link 
           to={`/product/${product.id}`}
-          className="text-sm font-semibold text-[#0A0A0A] hover:text-[#FF4D00] transition-colors line-clamp-1"
+          className="text-sm font-semibold text-[#0A0A0A] hover:text-accent-text transition-colors line-clamp-1"
         >
           {product.name}
         </Link>
@@ -95,7 +95,7 @@ export default function ProductListRow({ product }) {
             type="button"
             onClick={handleWishlist}
             className={`p-2 rounded-[4px] border border-[#EAEAEA] transition-colors ${
-              inWishlist ? 'text-[#FF4D00] bg-[#FFF0EB]' : 'text-[#6B6B6B] hover:text-[#0A0A0A] hover:bg-[#F7F7F7]'
+              inWishlist ? 'text-accent-text bg-accent-tint' : 'text-[#6B6B6B] hover:text-[#0A0A0A] hover:bg-[#F7F7F7]'
             }`}
             aria-label="Wishlist"
           >
@@ -108,7 +108,7 @@ export default function ProductListRow({ product }) {
             className={`px-4 py-2 rounded-[4px] text-xs font-semibold uppercase tracking-wider transition-all flex items-center gap-1.5 ${
               isAdded 
                 ? 'bg-emerald-600 text-white' 
-                : 'bg-[#0A0A0A] text-white hover:bg-[#FF4D00]'
+                : 'bg-[#0A0A0A] text-accent-contrast hover:bg-accent'
             }`}
           >
             {isAdded ? (

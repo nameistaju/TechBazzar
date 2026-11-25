@@ -195,7 +195,7 @@ export default function BannerSlot({ slot, className = '' }) {
         {currentBanner.label && (
           <div className="absolute top-3 left-3 z-10">
             <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded text-[10px] font-semibold tracking-wider uppercase bg-black/80 backdrop-blur-sm text-white shadow-sm border border-white/10">
-              <Tag size={10} className="text-[#FF4D00]" />
+              <Tag size={10} className="text-accent-text" />
               {currentBanner.label}
             </span>
           </div>
@@ -253,7 +253,7 @@ export default function BannerSlot({ slot, className = '' }) {
                 aria-label={`Go to banner ${idx + 1}`}
                 className={`transition-all duration-300 rounded-full ${
                   idx === currentIndex
-                    ? 'w-4 h-1.5 bg-[#FF4D00]'
+                    ? 'w-4 h-1.5 bg-accent'
                     : 'w-1.5 h-1.5 bg-white/70 hover:bg-white'
                 }`}
               />

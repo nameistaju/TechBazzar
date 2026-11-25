@@ -19,7 +19,7 @@ export default function WholesaleGroupsTab({ groups }) {
             <div className="space-y-2 text-xs">
               <div className="flex justify-between">
                 <span className="text-[#6B6B6B]">Extra Margin:</span>
-                <strong className="text-[#FF4D00] font-bold">+{grp.extra_discount_percent}%</strong>
+                <strong className="text-accent-text font-bold">+{grp.extra_discount_percent}%</strong>
               </div>
               <div className="flex justify-between">
                 <span className="text-[#6B6B6B]">Credit Facility:</span>

@@ -297,7 +297,7 @@ export default function BannerDrawerModal({
                 id="new_tab"
                 checked={formData.new_tab}
                 onChange={(e) => setFormData({ ...formData, new_tab: e.target.checked })}
-                className="accent-[#FF4D00]"
+                className="accent-accent"
               />
               <label htmlFor="new_tab" className="text-xs text-[#0A0A0A] cursor-pointer">
                 Open destination in new browser tab
@@ -355,7 +355,7 @@ export default function BannerDrawerModal({
               id="is_active"
               checked={formData.is_active === 1}
               onChange={(e) => setFormData({ ...formData, is_active: e.target.checked ? 1 : 0 })}
-              className="accent-[#FF4D00] w-4 h-4"
+              className="accent-accent w-4 h-4"
             />
             <label htmlFor="is_active" className="text-xs font-bold text-[#0A0A0A] cursor-pointer">
               Campaign Active (Visible in Storefront Slot)
@@ -373,7 +373,7 @@ export default function BannerDrawerModal({
             <button
               type="submit"
               disabled={saving}
-              className="px-6 py-2.5 bg-[#FF4D00] hover:bg-[#E04400] text-white text-xs uppercase font-bold tracking-wider rounded transition-colors shadow-sm disabled:opacity-50"
+              className="px-6 py-2.5 bg-accent hover:bg-accent-hover text-accent-contrast text-xs uppercase font-bold tracking-wider rounded transition-colors shadow-sm disabled:opacity-50"
             >
               {saving ? 'Saving...' : editingBanner ? 'Update Banner' : 'Publish Banner'}
             </button>

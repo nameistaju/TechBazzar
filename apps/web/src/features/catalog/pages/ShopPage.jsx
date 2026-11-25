@@ -190,7 +190,7 @@ export default function ShopPage() {
 
         {/* Page Title & Intro */}
         <div className="py-6 border-b border-[#EAEAEA] mb-8">
-          <span className="text-[10px] uppercase tracking-[0.2em] text-[#FF4D00] font-bold block mb-1">
+          <span className="text-[10px] uppercase tracking-[0.2em] text-accent-text font-bold block mb-1">
             Official Catalog
           </span>
           <h1 className="text-2xl sm:text-3xl lg:text-4xl font-light uppercase tracking-wide sm:tracking-widest text-[#0A0A0A]">
@@ -252,7 +252,7 @@ export default function ShopPage() {
                 <button
                   type="button"
                   onClick={handleResetFilters}
-                  className="bg-[#0A0A0A] text-white text-xs font-semibold uppercase tracking-wider px-6 py-3 rounded-[4px] hover:bg-[#FF4D00] transition-colors inline-flex items-center gap-2"
+                  className="bg-[#0A0A0A] text-accent-contrast text-xs font-semibold uppercase tracking-wider px-6 py-3 rounded-[4px] hover:bg-accent transition-colors inline-flex items-center gap-2"
                 >
                   <RotateCcw size={13} /> Reset All Filters
                 </button>

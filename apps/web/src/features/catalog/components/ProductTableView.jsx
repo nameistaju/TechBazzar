@@ -95,7 +95,7 @@ export default function ProductTableView({ products = [] }) {
                   type="checkbox"
                   checked={selectedIds.length > 0 && selectedIds.length === products.length}
                   onChange={handleToggleSelectAll}
-                  className="rounded border-[#BDBDBD] text-[#FF4D00] focus:ring-[#FF4D00] cursor-pointer"
+                  className="rounded border-[#BDBDBD] text-accent-text focus:ring-accent cursor-pointer"
                   title="Select All"
                 />
               </th>
@@ -131,7 +131,7 @@ export default function ProductTableView({ products = [] }) {
                       type="checkbox"
                       checked={isSelected}
                       onChange={() => handleToggleRow(product.id)}
-                      className="rounded border-[#BDBDBD] text-[#FF4D00] focus:ring-[#FF4D00] cursor-pointer"
+                      className="rounded border-[#BDBDBD] text-accent-text focus:ring-accent cursor-pointer"
                     />
                   </td>
 
@@ -154,7 +154,7 @@ export default function ProductTableView({ products = [] }) {
                     </div>
                     <Link 
                       to={`/product/${product.id}`}
-                      className="font-medium text-[#0A0A0A] hover:text-[#FF4D00] line-clamp-1 transition-colors"
+                      className="font-medium text-[#0A0A0A] hover:text-accent-text line-clamp-1 transition-colors"
                       title={product.name}
                     >
                       {product.name}
@@ -175,17 +175,17 @@ export default function ProductTableView({ products = [] }) {
                   </td>
 
                   {/* Tier 1 Price */}
-                  <td className={`py-3 px-3 tabular-nums ${tierInfo.activeTier === 1 ? 'font-bold text-[#FF4D00]' : 'text-[#6B6B6B]'}`}>
+                  <td className={`py-3 px-3 tabular-nums ${tierInfo.activeTier === 1 ? 'font-bold text-accent-text' : 'text-[#6B6B6B]'}`}>
                     ₹{(product.tier1Price || product.price).toLocaleString('en-IN')}
                   </td>
 
                   {/* Tier 2 Price */}
-                  <td className={`py-3 px-3 tabular-nums ${tierInfo.activeTier === 2 ? 'font-bold text-[#FF4D00]' : 'text-[#6B6B6B]'}`}>
+                  <td className={`py-3 px-3 tabular-nums ${tierInfo.activeTier === 2 ? 'font-bold text-accent-text' : 'text-[#6B6B6B]'}`}>
                     ₹{(product.tier2Price || Math.round(product.price * 0.9)).toLocaleString('en-IN')}
                   </td>
 
                   {/* Tier 3 Price */}
-                  <td className={`py-3 px-3 tabular-nums ${tierInfo.activeTier === 3 ? 'font-bold text-[#FF4D00]' : 'text-[#6B6B6B]'}`}>
+                  <td className={`py-3 px-3 tabular-nums ${tierInfo.activeTier === 3 ? 'font-bold text-accent-text' : 'text-[#6B6B6B]'}`}>
                     ₹{(product.tier3Price || Math.round(product.price * 0.8)).toLocaleString('en-IN')}
                   </td>
 
@@ -238,7 +238,7 @@ export default function ProductTableView({ products = [] }) {
                       className={`h-7 px-3 rounded text-[10px] font-semibold tracking-wider uppercase transition-colors inline-flex items-center gap-1 ${
                         isAdded
                           ? 'bg-emerald-600 text-white'
-                          : 'bg-[#0A0A0A] text-white hover:bg-[#FF4D00]'
+                          : 'bg-[#0A0A0A] text-accent-contrast hover:bg-accent'
                       }`}
                     >
                       {isAdded ? <Check size={12} /> : <ShoppingBag size={11} />}
@@ -256,7 +256,7 @@ export default function ProductTableView({ products = [] }) {
       {selectedIds.length > 0 && (
         <div className="sticky bottom-4 left-0 right-0 z-30 mt-4 p-3.5 bg-[#0A0A0A] text-white rounded-[4px] shadow-2xl border border-white/10 flex flex-wrap items-center justify-between gap-4 animate-fade-in">
           <div className="flex items-center gap-3">
-            <span className="bg-[#FF4D00] text-white text-[11px] font-bold px-2 py-0.5 rounded uppercase">
+            <span className="bg-accent text-accent-contrast text-[11px] font-bold px-2 py-0.5 rounded uppercase">
               {selectedSummary.count} Items
             </span>
             <span className="text-xs text-neutral-300">
@@ -278,7 +278,7 @@ export default function ProductTableView({ products = [] }) {
             <button
               type="button"
               onClick={handleBulkAdd}
-              className="bg-[#FF4D00] text-white text-xs font-semibold uppercase tracking-wider px-5 py-2 rounded hover:bg-[#E04400] transition-colors flex items-center gap-1.5 shadow-md"
+              className="bg-accent text-accent-contrast text-xs font-semibold uppercase tracking-wider px-5 py-2 rounded hover:bg-accent-hover transition-colors flex items-center gap-1.5 shadow-md"
             >
               <ShoppingBag size={13} />
               Add All Selected to Cart

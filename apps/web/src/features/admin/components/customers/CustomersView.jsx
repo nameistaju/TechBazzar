@@ -291,7 +291,7 @@ export default function CustomersView({ initialCustomerId, onClearInitialCustome
 
           <button
             onClick={() => setIsAddModalOpen(true)}
-            className="px-3 py-1.5 bg-[#0A0A0A] text-white text-xs font-mono uppercase tracking-wider hover:bg-[#FF4D00] flex items-center gap-1.5 transition-colors font-semibold cursor-pointer"
+            className="px-3 py-1.5 bg-[#0A0A0A] text-accent-contrast text-xs font-mono uppercase tracking-wider hover:bg-accent flex items-center gap-1.5 transition-colors font-semibold cursor-pointer"
           >
             <Plus className="w-4 h-4" />
             Add Customer
@@ -305,7 +305,7 @@ export default function CustomersView({ initialCustomerId, onClearInitialCustome
           onClick={() => setActiveTab('customers')}
           className={`px-4 py-2 text-xs font-mono uppercase tracking-wider border-b-2 transition-all cursor-pointer flex items-center gap-2 ${
             activeTab === 'customers'
-              ? 'border-[#FF4D00] text-[#0A0A0A] font-bold bg-white'
+              ? 'border-accent text-[#0A0A0A] font-bold bg-white'
               : 'border-transparent text-[#6B6B6B] hover:text-[#0A0A0A]'
           }`}
         >
@@ -317,14 +317,14 @@ export default function CustomersView({ initialCustomerId, onClearInitialCustome
           onClick={() => setActiveTab('applications')}
           className={`px-4 py-2 text-xs font-mono uppercase tracking-wider border-b-2 transition-all cursor-pointer flex items-center gap-2 ${
             activeTab === 'applications'
-              ? 'border-[#FF4D00] text-[#0A0A0A] font-bold bg-white'
+              ? 'border-accent text-[#0A0A0A] font-bold bg-white'
               : 'border-transparent text-[#6B6B6B] hover:text-[#0A0A0A]'
           }`}
         >
           <Building2 size={14} />
           <span>Wholesale Applications</span>
           {pendingCount > 0 && (
-            <span className="px-1.5 py-0.2 bg-[#FF4D00] text-white text-[10px] font-bold rounded-full">
+            <span className="px-1.5 py-0.2 bg-accent text-accent-contrast text-[10px] font-bold rounded-full">
               {pendingCount}
             </span>
           )}
@@ -334,7 +334,7 @@ export default function CustomersView({ initialCustomerId, onClearInitialCustome
           onClick={() => setActiveTab('groups')}
           className={`px-4 py-2 text-xs font-mono uppercase tracking-wider border-b-2 transition-all cursor-pointer flex items-center gap-2 ${
             activeTab === 'groups'
-              ? 'border-[#FF4D00] text-[#0A0A0A] font-bold bg-white'
+              ? 'border-accent text-[#0A0A0A] font-bold bg-white'
               : 'border-transparent text-[#6B6B6B] hover:text-[#0A0A0A]'
           }`}
         >
@@ -409,7 +409,7 @@ export default function CustomersView({ initialCustomerId, onClearInitialCustome
                       </td>
                       <td className="p-3">
                         {isWholesale ? (
-                          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider bg-[#FFF0EB] text-[#FF4D00] border border-[#FFD9CC]">
+                          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider bg-accent-tint text-accent-text border border-accent-border">
                             Wholesale · {c.group_name || 'Gold'}
                           </span>
                         ) : (
@@ -448,7 +448,7 @@ export default function CustomersView({ initialCustomerId, onClearInitialCustome
                           {!isWholesale && (
                             <button
                               onClick={() => setConvertModalUser(c)}
-                              className="px-2 py-1 text-[10px] font-mono uppercase bg-neutral-100 hover:bg-[#FF4D00] hover:text-white rounded transition-colors cursor-pointer"
+                              className="px-2 py-1 text-[10px] font-mono uppercase bg-neutral-100 hover:bg-accent hover:text-accent-contrast rounded transition-colors cursor-pointer"
                               title="Upgrade this client to approved wholesale account"
                             >
                               + Wholesale

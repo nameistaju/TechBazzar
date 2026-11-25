@@ -22,7 +22,7 @@ export default function CheckoutOrderSummary({
           <span className="text-xs uppercase tracking-wider font-semibold text-[#0A0A0A]">
             {isWholesale ? 'Wholesale Summary' : 'Order Summary'} ({cart.reduce((s, i) => s + i.quantity, 0)} {cart.reduce((s, i) => s + i.quantity, 0) === 1 ? 'item' : 'items'})
           </span>
-          <Link to="/cart" className="text-[11px] text-[#FF4D00] hover:underline font-medium">
+          <Link to="/cart" className="text-[11px] text-accent-text hover:underline font-medium">
             Modify Bag
           </Link>
         </div>
@@ -64,7 +64,7 @@ export default function CheckoutOrderSummary({
           {/* 50% Advance Breakdown */}
           {isWholesale && isAdvancePayment && (
             <div className="mt-3 pt-3 border-t border-dashed border-[#EAEAEA] space-y-1.5 bg-[#FAFAFA] p-2.5 rounded-[4px]">
-              <div className="flex justify-between text-xs font-bold text-[#FF4D00]">
+              <div className="flex justify-between text-xs font-bold text-accent-text">
                 <span>50% Advance Due Today</span>
                 <span className="tabular-nums">{formatMoney(advanceAmount)}</span>
               </div>

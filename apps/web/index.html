@@ -5,6 +5,7 @@
     <link rel="icon" type="image/png" href="/favicon.png" />
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#FF4D00" />
     <title>TechBazaar — Curated Electronics & Modern Gadgets</title>
     <meta name="description" content="Minimal, editorial electronics and gadgets store. Premium audio, smartwatches, accessories and gaming essentials." />
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -12,27 +13,45 @@
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
     <script>
       (function() {
+        function toChannels(hex, fallback) {
+          if (!hex || typeof hex !== 'string') return fallback;
+          var c = hex.replace('#', '').trim();
+          if (c.length === 3) c = c[0]+c[0]+c[1]+c[1]+c[2]+c[2];
+          if (!/^[0-9a-fA-F]{6}$/.test(c)) return fallback;
+          var n = parseInt(c, 16);
+          return ((n >> 16) & 255) + ' ' + ((n >> 8) & 255) + ' ' + (n & 255);
+        }
         try {
           var b = JSON.parse(localStorage.getItem('techbazaar_branding') || '{}');
           if (b.accent_hex) {
             var r = document.documentElement;
-            r.style.setProperty('--accent', b.accent_hex);
-            r.style.setProperty('--accent-hover', b.accent_hover || b.accent_hex);
-            r.style.setProperty('--accent-tint', b.accent_tint || '#FFEDE6');
-            r.style.setProperty('--accent-contrast', b.accent_contrast || '#FFFFFF');
+            r.style.setProperty('--accent', b.accent_rgb || toChannels(b.accent_hex, '255 77 0'));
+            r.style.setProperty('--accent-hover', b.accent_hover_rgb || toChannels(b.accent_hover, '224 68 0'));
+            r.style.setProperty('--accent-pressed', b.accent_pressed_rgb || toChannels(b.accent_pressed, '199 60 0'));
+            r.style.setProperty('--accent-tint', b.accent_tint_rgb || toChannels(b.accent_tint, '255 237 230'));
+            r.style.setProperty('--accent-border', b.accent_border_rgb || toChannels(b.accent_border, '255 211 191'));
+            r.style.setProperty('--accent-text', b.accent_text_rgb || toChannels(b.accent_text, '194 58 0'));
+            r.style.setProperty('--accent-contrast', b.accent_contrast_rgb || toChannels(b.accent_contrast, '255 255 255'));
             r.style.setProperty('--accent-ring', b.accent_ring || 'rgba(255, 77, 0, 0.35)');
-            r.style.setProperty('--color-primary', b.accent_hex);
-            r.style.setProperty('--color-primary-hover', b.accent_hover || b.accent_hex);
-            r.style.setProperty('--color-primary-light', b.accent_tint || '#FFEDE6');
+            r.style.setProperty('--accent-hex', b.accent_hex);
+            r.style.setProperty('--color-primary', 'rgb(' + (b.accent_rgb || toChannels(b.accent_hex, '255 77 0')) + ')');
+            r.style.setProperty('--color-primary-hover', 'rgb(' + (b.accent_hover_rgb || toChannels(b.accent_hover, '224 68 0')) + ')');
+            r.style.setProperty('--color-primary-light', 'rgb(' + (b.accent_tint_rgb || toChannels(b.accent_tint, '255 237 230')) + ')');
+            var tm = document.querySelector("meta[name='theme-color']");
+            if (tm) tm.setAttribute('content', b.accent_hex);
           }
           if (b.brand_name) {
             document.title = b.brand_name + (b.tagline ? ' — ' + b.tagline : '');
+          }
+          if (b.favicon) {
+            var lk = document.querySelector("link[rel*='icon']");
+            if (lk) lk.href = b.favicon;
           }
         } catch(e) {}
       })();
     </script>
   </head>
-  <body class="bg-white text-[#0A0A0A] font-sans antialiased selection:bg-accent selection:text-white">
+  <body class="bg-white text-[#0A0A0A] font-sans antialiased selection:bg-accent selection:text-accent-contrast">
     <div id="root"></div>
     <script type="module" src="/src/main.jsx"></script>
   </body>

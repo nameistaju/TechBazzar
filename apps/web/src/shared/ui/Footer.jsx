@@ -45,7 +45,7 @@ export default function Footer() {
       <div className="border-b border-[#222222] py-12 px-4 sm:px-6 lg:px-8">
         <div className="max-w-site mx-auto grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
           <div>
-            <span className="text-[10px] uppercase tracking-[0.2em] text-pop font-semibold block mb-2">
+            <span className="text-[10px] uppercase tracking-[0.2em] text-accent-text font-semibold block mb-2">
               Stay Connected
             </span>
             <h3 className="text-xl md:text-2xl font-light uppercase tracking-wide text-white">
@@ -68,7 +68,7 @@ export default function Footer() {
               />
               <button
                 type="submit"
-                className="bg-pop hover:opacity-90 text-white text-xs font-semibold uppercase tracking-wider px-6 py-3 rounded-[4px] transition-colors flex items-center gap-1.5 shrink-0"
+                className="bg-accent hover:opacity-90 text-accent-contrast text-xs font-semibold uppercase tracking-wider px-6 py-3 rounded-[4px] transition-colors flex items-center gap-1.5 shrink-0"
               >
                 {subscribed ? (
                   <>
@@ -105,15 +105,15 @@ export default function Footer() {
               />
               <div className="flex items-center gap-1">
                 {branding.use_split_name ? (
-                  <span className="font-light tracking-[0.2em] text-xl uppercase text-white group-hover:text-pop transition-colors">
+                  <span className="font-light tracking-[0.2em] text-xl uppercase text-white group-hover:text-accent-text transition-colors">
                     {brandPart1}<strong className="font-semibold">{brandPart2}</strong>
                   </span>
                 ) : (
-                  <span className="font-semibold tracking-[0.15em] text-xl uppercase text-white group-hover:text-pop transition-colors">
+                  <span className="font-semibold tracking-[0.15em] text-xl uppercase text-white group-hover:text-accent-text transition-colors">
                     {brandName}
                   </span>
                 )}
-                <span className="inline-block w-1.5 h-1.5 rounded-full bg-pop -mt-1" />
+                <span className="inline-block w-1.5 h-1.5 rounded-full bg-accent -mt-1" />
               </div>
             </Link>
             <p className="text-xs text-[#8A8A8A] leading-relaxed max-w-sm mb-6">
@@ -136,7 +136,7 @@ export default function Footer() {
             <ul className="space-y-2.5 text-xs text-[#8A8A8A]">
               {categories.slice(0, 6).map((cat) => (
                 <li key={cat.id}>
-                  <Link to={`/shop?category=${cat.id}`} className="hover:text-pop transition-colors">
+                  <Link to={`/shop?category=${cat.id}`} className="hover:text-accent-text transition-colors">
                     {cat.name}
                   </Link>
                 </li>
@@ -150,11 +150,11 @@ export default function Footer() {
               Wholesale Hub
             </h4>
             <ul className="space-y-2.5 text-xs text-[#8A8A8A]">
-              <li><Link to="/quick-order" className="hover:text-pop transition-colors">Quick Order Matrix</Link></li>
-              <li><Link to="/quote" className="hover:text-pop transition-colors">Request Custom Quote</Link></li>
-              <li><Link to="/track" className="hover:text-pop transition-colors">Track Pallet Consignment</Link></li>
-              <li><Link to="/contact" className="hover:text-pop transition-colors">Logistics & Warehouse</Link></li>
-              <li><Link to="/shop?flag=flashSale" className="hover:text-pop transition-colors">Bulk Clearance Lots</Link></li>
+              <li><Link to="/quick-order" className="hover:text-accent-text transition-colors">Quick Order Matrix</Link></li>
+              <li><Link to="/quote" className="hover:text-accent-text transition-colors">Request Custom Quote</Link></li>
+              <li><Link to="/track" className="hover:text-accent-text transition-colors">Track Pallet Consignment</Link></li>
+              <li><Link to="/contact" className="hover:text-accent-text transition-colors">Logistics & Warehouse</Link></li>
+              <li><Link to="/shop?flag=flashSale" className="hover:text-accent-text transition-colors">Bulk Clearance Lots</Link></li>
             </ul>
           </div>
 
@@ -164,10 +164,10 @@ export default function Footer() {
               {brandName} B2B
             </h4>
             <ul className="space-y-2.5 text-xs text-[#8A8A8A]">
-              <li><Link to="/contact" className="hover:text-pop transition-colors">Contact Wholesale Desk</Link></li>
-              <li><Link to="/shop" className="hover:text-pop transition-colors">Authorized OEM Brands</Link></li>
-              <li><Link to="/admin" className="hover:text-pop transition-colors">Back-Office Portal</Link></li>
-              <li><Link to="/quote" className="hover:text-pop transition-colors">GST Input Tax Credit Guide</Link></li>
+              <li><Link to="/contact" className="hover:text-accent-text transition-colors">Contact Wholesale Desk</Link></li>
+              <li><Link to="/shop" className="hover:text-accent-text transition-colors">Authorized OEM Brands</Link></li>
+              <li><Link to="/admin" className="hover:text-accent-text transition-colors">Back-Office Portal</Link></li>
+              <li><Link to="/quote" className="hover:text-accent-text transition-colors">GST Input Tax Credit Guide</Link></li>
             </ul>
           </div>
         </div>

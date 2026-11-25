@@ -18,19 +18,19 @@ export default function CartThresholdBanners({
         <div className={`p-4 rounded-[4px] border ${
           meetsMinOrderValue 
             ? 'bg-emerald-50 border-emerald-200 text-emerald-900' 
-            : 'bg-[#FFF9F6] border-[#FF4D00]/40 text-[#0A0A0A]'
+            : 'bg-[#FFF9F6] border-accent/40 text-[#0A0A0A]'
         }`}>
           <div className="flex items-center justify-between text-xs mb-2 font-medium">
             <span className="flex items-center gap-2">
               {meetsMinOrderValue ? (
                 <CheckCircle2 size={16} className="text-emerald-600" />
               ) : (
-                <AlertTriangle size={16} className="text-[#FF4D00]" />
+                <AlertTriangle size={16} className="text-accent-text" />
               )}
               {meetsMinOrderValue ? (
                 <strong className="text-emerald-700">Wholesale Min Order Value Met ({formatMoney(minOrderValue ?? 250000)}+)</strong>
               ) : (
-                <span>Add <strong className="text-[#FF4D00] tabular-nums font-bold">{formatMoney(amountToMinOrder || 0)}</strong> to meet Wholesale Min Order Value ({formatMoney(minOrderValue ?? 250000)})</span>
+                <span>Add <strong className="text-accent-text tabular-nums font-bold">{formatMoney(amountToMinOrder || 0)}</strong> to meet Wholesale Min Order Value ({formatMoney(minOrderValue ?? 250000)})</span>
               )}
             </span>
           </div>
@@ -40,7 +40,7 @@ export default function CartThresholdBanners({
         <div className="bg-[#F7F7F7] border border-[#EAEAEA] p-4 rounded-[4px]">
           <div className="flex items-center justify-between text-xs mb-2 font-medium">
             <span className="flex items-center gap-2 text-[#0A0A0A]">
-              <Truck size={16} className="text-[#FF4D00]" />
+              <Truck size={16} className="text-accent-text" />
               {isFreeShippingMet ? (
                 <strong className="text-emerald-700 font-semibold">FREE Commercial Pallet Freight Unlocked!</strong>
               ) : (
@@ -65,7 +65,7 @@ export default function CartThresholdBanners({
     <div className="bg-[#F7F7F7] border border-[#EAEAEA] p-4 rounded-[4px] mb-8">
       <div className="flex items-center justify-between text-xs mb-2 font-medium">
         <span className="flex items-center gap-2 text-[#0A0A0A]">
-          <Truck size={16} className="text-[#FF4D00]" />
+          <Truck size={16} className="text-accent-text" />
           {isFreeShippingMet ? (
             <strong className="text-emerald-700 font-semibold">FREE Express Shipping Unlocked!</strong>
           ) : (

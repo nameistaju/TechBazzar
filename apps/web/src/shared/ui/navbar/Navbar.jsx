@@ -137,7 +137,7 @@ export default function Navbar() {
             <button
               type="button"
               onClick={() => setIsMobileMenuOpen(true)}
-              className="lg:hidden p-1.5 -ml-1 text-[#0A0A0A] hover:text-pop transition-colors"
+              className="lg:hidden p-1.5 -ml-1 text-[#0A0A0A] hover:text-accent-text transition-colors"
               aria-label="Open mobile navigation menu"
             >
               <Menu size={22} strokeWidth={1.75} />
@@ -152,7 +152,7 @@ export default function Navbar() {
                     alt="Logo" 
                     className="h-8 md:h-9 w-auto object-contain" 
                   />
-                  <span className="font-mono text-sm md:text-base tracking-wider uppercase text-[#0A0A0A] group-hover:text-pop transition-colors">
+                  <span className="font-mono text-sm md:text-base tracking-wider uppercase text-[#0A0A0A] group-hover:text-accent-text transition-colors">
                     {branding.use_split_name ? (
                       <>
                         <span className="font-light">{branding.brand_name_part1 || 'TECH'}</span>
@@ -185,7 +185,7 @@ export default function Navbar() {
               >
                 <span>Retail</span>
                 {mode === 'retail' && (
-                  <span className="absolute bottom-0 left-2 right-2 h-[2px] bg-pop rounded-full" />
+                  <span className="absolute bottom-0 left-2 right-2 h-[2px] bg-accent rounded-full" />
                 )}
               </button>
               <button
@@ -199,7 +199,7 @@ export default function Navbar() {
               >
                 <span>Wholesale</span>
                 {mode === 'wholesale' && (
-                  <span className="absolute bottom-0 left-2 right-2 h-[2px] bg-pop rounded-full" />
+                  <span className="absolute bottom-0 left-2 right-2 h-[2px] bg-accent rounded-full" />
                 )}
               </button>
             </div>
@@ -219,7 +219,7 @@ export default function Navbar() {
               <button 
                 type="button"
                 onClick={() => setIsMegaMenuOpen(!isMegaMenuOpen)}
-                className="flex items-center gap-1 hover:text-pop transition-colors py-2"
+                className="flex items-center gap-1 hover:text-accent-text transition-colors py-2"
               >
                 <span>Categories</span>
                 <ChevronDown size={13} className={`transition-transform duration-200 ${isMegaMenuOpen ? 'rotate-180' : ''}`} />
@@ -240,7 +240,7 @@ export default function Navbar() {
                           <img src={cat.image} alt={cat.name} className="w-full h-full object-contain group-hover:scale-110 transition-transform" />
                         </div>
                         <div className="min-w-0">
-                          <div className="text-xs font-medium normal-case text-[#0A0A0A] group-hover:text-pop transition-colors truncate">
+                          <div className="text-xs font-medium normal-case text-[#0A0A0A] group-hover:text-accent-text transition-colors truncate">
                             {cat.name}
                           </div>
                           <div className="text-[10px] normal-case text-[#8A8A8A]">
@@ -254,7 +254,7 @@ export default function Navbar() {
                   {/* Mega Menu Featured Capsule */}
                   <div className="col-span-1 bg-[#F7F7F7] p-4 rounded-[4px] border border-[#EAEAEA] flex flex-col justify-between">
                     <div>
-                      <div className="flex items-center gap-1 text-[10px] uppercase tracking-widest text-pop font-semibold mb-1.5">
+                      <div className="flex items-center gap-1 text-[10px] uppercase tracking-widest text-accent-text font-semibold mb-1.5">
                         <Sparkles size={11} /> Curated Capsule
                       </div>
                       <h4 className="text-xs font-semibold normal-case text-[#0A0A0A] mb-1">
@@ -267,7 +267,7 @@ export default function Navbar() {
                     <Link 
                       to="/shop?category=phone-cases"
                       onClick={() => setIsMegaMenuOpen(false)}
-                      className="inline-flex items-center gap-1 text-xs font-semibold text-[#0A0A0A] hover:text-pop transition-colors group"
+                      className="inline-flex items-center gap-1 text-xs font-semibold text-[#0A0A0A] hover:text-accent-text transition-colors group"
                     >
                       Explore Cases <ArrowRight size={12} className="group-hover:translate-x-1 transition-transform" />
                     </Link>
@@ -283,8 +283,8 @@ export default function Navbar() {
                 <Link
                   key={link.id}
                   to={link.to}
-                  className={`hover:text-pop transition-colors py-2 flex items-center gap-1 ${
-                    link.isFlash ? 'text-pop font-bold' : ''
+                  className={`hover:text-accent-text transition-colors py-2 flex items-center gap-1 ${
+                    link.isFlash ? 'text-accent-text font-bold' : ''
                   }`}
                 >
                   {Icon && <Icon size={13} />}
@@ -321,7 +321,7 @@ export default function Navbar() {
                           to={link.to}
                           onClick={() => setIsMoreMenuOpen(false)}
                           className={`flex items-center gap-2 px-3 py-2 text-xs font-semibold uppercase hover:bg-[#F7F7F7] transition-colors ${
-                            link.isFlash ? 'text-pop' : 'text-[#0A0A0A]'
+                            link.isFlash ? 'text-accent-text' : 'text-[#0A0A0A]'
                           }`}
                         >
                           {Icon && <Icon size={13} />}
@@ -354,7 +354,7 @@ export default function Navbar() {
             <button
               type="button"
               onClick={() => setIsMobileSearchOpen(true)}
-              className="md:hidden p-2 text-[#0A0A0A] hover:text-pop transition-colors"
+              className="md:hidden p-2 text-[#0A0A0A] hover:text-accent-text transition-colors"
               aria-label="Search Catalog"
             >
               <Search size={20} strokeWidth={1.75} />
@@ -363,7 +363,7 @@ export default function Navbar() {
             {/* Wishlist Link */}
             <Link
               to="/wishlist"
-              className="p-2 text-[#0A0A0A] hover:text-pop transition-colors relative"
+              className="p-2 text-[#0A0A0A] hover:text-accent-text transition-colors relative"
               aria-label="Wishlist"
               title="My Wishlist"
             >
@@ -391,7 +391,7 @@ export default function Navbar() {
               <button
                 type="button"
                 onClick={() => setIsCartOpen(true)}
-                className={`px-2 py-1.5 text-[#0A0A0A] hover:text-pop transition-all relative flex items-center gap-1.5 ${
+                className={`px-2 py-1.5 text-[#0A0A0A] hover:text-accent-text transition-all relative flex items-center gap-1.5 ${
                   cartBump ? 'animate-cart-bump' : ''
                 }`}
                 aria-label={`Open ${mode === 'wholesale' ? 'Wholesale' : 'Retail'} Shopping Bag`}
@@ -400,7 +400,7 @@ export default function Navbar() {
                 {/* Wholesale Mode "W" Marker (Separate tiny pill left of icon) */}
                 {mode === 'wholesale' && (
                   <span 
-                    className="text-[9px] font-mono font-bold bg-[#0A0A0A] text-pop px-1 py-0.2 rounded-[2px] border border-pop/40 shrink-0"
+                    className="text-[9px] font-mono font-bold bg-[#0A0A0A] text-accent-text px-1 py-0.2 rounded-[2px] border border-pop/40 shrink-0"
                     title="Wholesale Procurement Cart Active"
                   >
                     W
@@ -412,7 +412,7 @@ export default function Navbar() {
                   <ShoppingBag size={20} strokeWidth={1.75} />
                   {cartCount > 0 && (
                     <span 
-                      className="absolute -top-1.5 -right-2 bg-pop text-white text-[10px] font-bold min-w-[18px] h-[18px] px-1 rounded-full flex items-center justify-center tabular-nums shadow-sm select-none"
+                      className="absolute -top-1.5 -right-2 bg-accent text-accent-contrast text-[10px] font-bold min-w-[18px] h-[18px] px-1 rounded-full flex items-center justify-center tabular-nums shadow-sm select-none"
                     >
                       {cartCount > 99 ? '99+' : cartCount}
                     </span>

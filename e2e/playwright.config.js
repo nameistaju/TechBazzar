@@ -4,7 +4,7 @@ export default defineConfig({
   testDir: './tests',
   timeout: 30000,
   use: {
-    baseURL: 'http://localhost:5000',
+    baseURL: process.env.E2E_BASE_URL || 'http://localhost:5000',
     channel: 'chrome',
     headless: true,
     screenshot: 'only-on-failure'

@@ -17,7 +17,7 @@ export default function ProductDetailGallery({
         onMouseMove={handleMouseMove}
       >
         {discountPercent && (
-          <span className="absolute top-4 left-4 bg-[#FF4D00] text-white text-[10px] font-bold tracking-wider px-2.5 py-1 rounded-[2px] uppercase z-10">
+          <span className="absolute top-4 left-4 bg-accent text-accent-contrast text-[10px] font-bold tracking-wider px-2.5 py-1 rounded-[2px] uppercase z-10">
             Save {discountPercent}%
           </span>
         )}

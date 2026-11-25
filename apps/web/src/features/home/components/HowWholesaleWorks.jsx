@@ -35,7 +35,7 @@ export default function HowWholesaleWorks() {
       <div className="max-w-site mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex flex-col sm:flex-row sm:items-end justify-between mb-12 gap-4">
           <div>
-            <span className="text-[10px] uppercase tracking-[0.25em] text-[#FF4D00] font-bold block mb-1">
+            <span className="text-[10px] uppercase tracking-[0.25em] text-accent-text font-bold block mb-1">
               B2B Distribution Engine
             </span>
             <h2 className="text-2xl sm:text-3xl font-light uppercase tracking-wider text-[#0A0A0A]">
@@ -44,7 +44,7 @@ export default function HowWholesaleWorks() {
           </div>
           <Link
             to="/quick-order"
-            className="inline-flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider text-[#0A0A0A] hover:text-[#FF4D00] transition-colors"
+            className="inline-flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider text-[#0A0A0A] hover:text-accent-text transition-colors"
           >
             Quick Order by SKU →
           </Link>
@@ -60,10 +60,10 @@ export default function HowWholesaleWorks() {
               >
                 <div>
                   <div className="flex items-center justify-between mb-4">
-                    <span className="text-2xl font-light text-[#BDBDBD] group-hover:text-[#FF4D00] transition-colors font-mono">
+                    <span className="text-2xl font-light text-[#BDBDBD] group-hover:text-accent-text transition-colors font-mono">
                       {step.number}
                     </span>
-                    <div className="w-9 h-9 rounded-full bg-[#F7F7F7] flex items-center justify-center text-[#0A0A0A] group-hover:bg-[#FFF0EB] group-hover:text-[#FF4D00] transition-colors">
+                    <div className="w-9 h-9 rounded-full bg-[#F7F7F7] flex items-center justify-center text-[#0A0A0A] group-hover:bg-accent-tint group-hover:text-accent-text transition-colors">
                       <Icon size={16} strokeWidth={1.75} />
                     </div>
                   </div>

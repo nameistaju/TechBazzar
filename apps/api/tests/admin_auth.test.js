@@ -1,14 +1,19 @@
 import { describe, it, expect, afterAll } from 'vitest';
 import request from 'supertest';
+import bcrypt from 'bcryptjs';
 import { setupTempDb } from './testDb.js';
 
 const { cleanup } = setupTempDb('tb-admin-auth-');
 const { default: app } = await import('../src/app.js');
+const { default: db } = await import('../db/index.js');
 
 describe('Part 1: Admin Default Credentials & Session Enforcement', () => {
   afterAll(cleanup);
 
   it('forces password change on admin@techbazaar.com / admin123 and blocks /api/admin/stats until changed', async () => {
+    const defaultHash = bcrypt.hashSync('admin123', 10);
+    db.prepare('UPDATE users SET password_hash = ?, must_change_password = 1 WHERE email = ?').run(defaultHash, 'admin@techbazaar.com');
+
     const loginRes = await request(app)
       .post('/api/auth/login')
       .send({ email: 'admin@techbazaar.com', password: 'admin123' });

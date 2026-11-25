@@ -15,7 +15,7 @@ export default function TrendingSection() {
         {/* Header */}
         <div className="flex items-end justify-between mb-10">
           <div>
-            <div className="flex items-center gap-1.5 text-[10px] uppercase tracking-[0.2em] text-[#FF4D00] font-bold mb-1">
+            <div className="flex items-center gap-1.5 text-[10px] uppercase tracking-[0.2em] text-accent-text font-bold mb-1">
               <Flame size={14} className="fill-current" /> Community Favorites
             </div>
             <h2 className="text-2xl sm:text-3xl font-light uppercase tracking-widest text-[#0A0A0A]">
@@ -24,7 +24,7 @@ export default function TrendingSection() {
           </div>
           <Link
             to="/shop?filter=trending"
-            className="text-xs font-semibold uppercase tracking-wider text-[#0A0A0A] hover:text-[#FF4D00] transition-colors flex items-center gap-1 group"
+            className="text-xs font-semibold uppercase tracking-wider text-[#0A0A0A] hover:text-accent-text transition-colors flex items-center gap-1 group"
           >
             See all trending <ArrowRight size={13} className="group-hover:translate-x-1 transition-transform" />
           </Link>

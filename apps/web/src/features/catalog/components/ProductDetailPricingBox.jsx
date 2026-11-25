@@ -32,7 +32,7 @@ export default function ProductDetailPricingBox({
             <div className="text-[10px] uppercase tracking-wider text-[#6B6B6B] font-semibold">
               Line Total ({quantity} units)
             </div>
-            <div className="text-xl font-bold text-[#FF4D00] tabular-nums">
+            <div className="text-xl font-bold text-accent-text tabular-nums">
               ₹{tierInfo.lineTotal.toLocaleString('en-IN')}
             </div>
           </div>
@@ -46,14 +46,14 @@ export default function ProductDetailPricingBox({
               onClick={() => setQuantity(t.minQty)}
               className={`p-2 rounded-[3px] border cursor-pointer text-center transition-all ${
                 t.active
-                  ? 'bg-[#FFF0EB] border-[#FF4D00] shadow-xs'
+                  ? 'bg-accent-tint border-accent shadow-xs'
                   : 'bg-white border-[#EAEAEA] hover:border-[#BDBDBD]'
               }`}
             >
-              <div className={`text-[10px] font-semibold uppercase tracking-wider ${t.active ? 'text-[#FF4D00]' : 'text-[#6B6B6B]'}`}>
+              <div className={`text-[10px] font-semibold uppercase tracking-wider ${t.active ? 'text-accent-text' : 'text-[#6B6B6B]'}`}>
                 {t.label}
               </div>
-              <div className={`text-sm font-bold tabular-nums mt-0.5 ${t.active ? 'text-[#FF4D00]' : 'text-[#0A0A0A]'}`}>
+              <div className={`text-sm font-bold tabular-nums mt-0.5 ${t.active ? 'text-accent-text' : 'text-[#0A0A0A]'}`}>
                 ₹{t.price.toLocaleString('en-IN')}
               </div>
               <div className="text-[9px] text-[#8A8A8A] mt-0.5">
@@ -69,20 +69,20 @@ export default function ProductDetailPricingBox({
             You save ₹{tierInfo.savingsVsMrp.toLocaleString('en-IN')} vs MRP ({tierInfo.savingsPercent}%)
           </span>
           <span className="text-[#0A0A0A] font-medium bg-neutral-100 px-2 py-0.5 rounded border border-neutral-200">
-            Est. Resale Margin: <strong className="text-[#FF4D00] font-bold">{tierInfo.resaleMarginPercent}%</strong>
+            Est. Resale Margin: <strong className="text-accent-text font-bold">{tierInfo.resaleMarginPercent}%</strong>
           </span>
         </div>
 
         {/* Next Tier Upsell Nudge */}
         {tierInfo.nextTier && (
-          <div className="p-2 bg-white border border-dashed border-[#FF4D00]/60 rounded text-[11px] text-[#0A0A0A] flex items-center justify-between">
+          <div className="p-2 bg-white border border-dashed border-accent/60 rounded text-[11px] text-[#0A0A0A] flex items-center justify-between">
             <span>
-              Add <strong className="text-[#FF4D00]">{tierInfo.nextTier.unitsNeeded} more</strong> to unlock <strong>Tier {tierInfo.nextTier.targetTier} (₹{tierInfo.nextTier.targetUnitPrice}/unit)</strong>
+              Add <strong className="text-accent-text">{tierInfo.nextTier.unitsNeeded} more</strong> to unlock <strong>Tier {tierInfo.nextTier.targetTier} (₹{tierInfo.nextTier.targetUnitPrice}/unit)</strong>
             </span>
             <button
               type="button"
               onClick={() => setQuantity(tierInfo.nextTier.targetQty)}
-              className="text-[10px] font-bold text-[#FF4D00] hover:underline uppercase tracking-wider ml-2 cursor-pointer"
+              className="text-[10px] font-bold text-accent-text hover:underline uppercase tracking-wider ml-2 cursor-pointer"
             >
               Upgrade
             </button>
@@ -140,7 +140,7 @@ export default function ProductDetailPricingBox({
         <button
           type="button"
           onClick={() => switchMode('wholesale')}
-          className="text-[#FF4D00] font-semibold hover:underline inline-flex items-center gap-1 cursor-pointer"
+          className="text-accent-text font-semibold hover:underline inline-flex items-center gap-1 cursor-pointer"
         >
           Switch to Wholesale <ArrowRight size={11} />
         </button>

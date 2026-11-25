@@ -39,7 +39,7 @@ export default function EditorialBlock() {
 
           {/* Right Editorial Story Column */}
           <div className="lg:col-span-5 space-y-6">
-            <div className="inline-flex items-center gap-2 text-[10px] uppercase tracking-[0.2em] text-[#FF4D00] font-bold">
+            <div className="inline-flex items-center gap-2 text-[10px] uppercase tracking-[0.2em] text-accent-text font-bold">
               <Sparkles size={12} />
               Editorial Spotlight
             </div>
@@ -56,15 +56,15 @@ export default function EditorialBlock() {
 
             <div className="space-y-3 pt-2 text-xs text-[#2A2A2A]">
               <div className="flex items-center gap-3">
-                <span className="w-1.5 h-1.5 bg-[#FF4D00] rounded-full" />
+                <span className="w-1.5 h-1.5 bg-accent rounded-full" />
                 <span>Aerospace grade titanium and solid stainless link bracelets</span>
               </div>
               <div className="flex items-center gap-3">
-                <span className="w-1.5 h-1.5 bg-[#FF4D00] rounded-full" />
+                <span className="w-1.5 h-1.5 bg-accent rounded-full" />
                 <span>Continuous 24/7 SpO2, HRV, and sleep architecture telemetry</span>
               </div>
               <div className="flex items-center gap-3">
-                <span className="w-1.5 h-1.5 bg-[#FF4D00] rounded-full" />
+                <span className="w-1.5 h-1.5 bg-accent rounded-full" />
                 <span>Up to 10-day battery stamina with rapid wireless induction</span>
               </div>
             </div>
@@ -72,7 +72,7 @@ export default function EditorialBlock() {
             <div className="pt-4">
               <Link
                 to="/shop?category=smartwatches"
-                className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-widest text-[#0A0A0A] hover:text-[#FF4D00] transition-colors group"
+                className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-widest text-[#0A0A0A] hover:text-accent-text transition-colors group"
               >
                 See more watches <ArrowRight size={14} className="group-hover:translate-x-1.5 transition-transform" />
               </Link>

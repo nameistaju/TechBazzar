@@ -41,7 +41,7 @@ export default function FilterSidebar({
         <button
           type="button"
           onClick={onResetFilters}
-          className="text-[11px] text-[#6B6B6B] hover:text-[#FF4D00] flex items-center gap-1 transition-colors uppercase tracking-wider"
+          className="text-[11px] text-[#6B6B6B] hover:text-accent-text flex items-center gap-1 transition-colors uppercase tracking-wider"
         >
           <RotateCcw size={11} /> Reset
         </button>
@@ -143,7 +143,7 @@ export default function FilterSidebar({
             step={50000}
             value={priceRange[1]}
             onChange={(e) => onChangePriceRange([priceRange[0], Number(e.target.value)])}
-            className="w-full accent-[#FF4D00] cursor-pointer"
+            className="w-full accent-accent cursor-pointer"
           />
           <div className="flex items-center justify-between text-[11px] text-[#6B6B6B] mt-2 font-mono tabular-nums">
             <span>{formatMoney(priceRange[0])}</span>
@@ -193,7 +193,7 @@ export default function FilterSidebar({
             type="checkbox"
             checked={inStockOnly}
             onChange={onToggleInStock}
-            className="w-4 h-4 accent-[#FF4D00] rounded cursor-pointer"
+            className="w-4 h-4 accent-accent rounded cursor-pointer"
           />
         </label>
       </div>

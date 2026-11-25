@@ -389,7 +389,7 @@ export default function BannersView() {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-[#EAEAEA] pb-5">
         <div>
           <div className="flex items-center gap-2">
-            <Layers className="w-5 h-5 text-[#FF4D00]" />
+            <Layers className="w-5 h-5 text-accent-text" />
             <h1 className="text-lg font-bold font-mono uppercase tracking-wider text-[#0A0A0A]">
               Banners & Ad Campaigns
             </h1>
@@ -410,7 +410,7 @@ export default function BannersView() {
           </a>
           <button
             onClick={() => handleOpenAdd()}
-            className="px-4 py-2 bg-[#0A0A0A] hover:bg-[#FF4D00] text-white text-xs font-mono font-bold flex items-center gap-1.5 transition-colors cursor-pointer"
+            className="px-4 py-2 bg-[#0A0A0A] hover:bg-accent text-accent-contrast text-xs font-mono font-bold flex items-center gap-1.5 transition-colors cursor-pointer"
           >
             <Plus size={14} /> Add New Banner
           </button>
@@ -476,7 +476,7 @@ export default function BannersView() {
                       e.stopPropagation();
                       handleOpenAdd(slot.id);
                     }}
-                    className="text-[11px] font-mono font-bold text-[#FF4D00] hover:underline flex items-center gap-1"
+                    className="text-[11px] font-mono font-bold text-accent-text hover:underline flex items-center gap-1"
                   >
                     <Plus size={11} /> Add
                   </button>
@@ -583,7 +583,7 @@ export default function BannersView() {
                                 {banner.title}
                               </div>
                               {label && (
-                                <span className="inline-block bg-[#FF4D00] text-white text-[9px] font-bold px-1.5 py-0.2 rounded mt-0.5">
+                                <span className="inline-block bg-accent text-accent-contrast text-[9px] font-bold px-1.5 py-0.2 rounded mt-0.5">
                                   {label}
                                 </span>
                               )}
@@ -612,7 +612,7 @@ export default function BannersView() {
                               <button
                                 type="button"
                                 onClick={() => handleMoveOrder(banner, 'up')}
-                                className="hover:text-[#FF4D00] p-0.5"
+                                className="hover:text-accent-text p-0.5"
                                 title="Move Up"
                               >
                                 <ArrowUp size={10} />
@@ -620,7 +620,7 @@ export default function BannersView() {
                               <button
                                 type="button"
                                 onClick={() => handleMoveOrder(banner, 'down')}
-                                className="hover:text-[#FF4D00] p-0.5"
+                                className="hover:text-accent-text p-0.5"
                                 title="Move Down"
                               >
                                 <ArrowDown size={10} />

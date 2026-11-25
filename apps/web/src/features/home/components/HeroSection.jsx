@@ -60,7 +60,7 @@ export default function HeroSection() {
           <div className="lg:col-span-7 space-y-6">
             {slide.tagline && (
               <div className="inline-flex items-center gap-2 px-3 py-1 bg-white border border-[#EAEAEA] rounded-[2px] text-[10px] font-semibold tracking-[0.2em] uppercase text-[#6B6B6B]">
-                <Sparkles size={11} className="text-[#FF4D00]" />
+                <Sparkles size={11} className="text-accent-text" />
                 {slide.tagline}
               </div>
             )}
@@ -85,7 +85,7 @@ export default function HeroSection() {
               <span className="text-sm text-[#8A8A8A] line-through tabular-nums">
                 {slide.originalPrice}
               </span>
-              <span className="text-xs font-semibold text-[#FF4D00] uppercase tracking-wider">
+              <span className="text-xs font-semibold text-accent-text uppercase tracking-wider">
                 Limited Time Offer
               </span>
             </div>
@@ -94,7 +94,7 @@ export default function HeroSection() {
             <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 sm:gap-4 pt-4">
               <Link
                 to={slide.link}
-                className="bg-[#0A0A0A] text-white text-xs font-semibold uppercase tracking-widest px-8 py-4 rounded-[4px] hover:bg-[#FF4D00] transition-all flex items-center justify-center gap-2 group shadow-sm text-center"
+                className="bg-[#0A0A0A] text-accent-contrast text-xs font-semibold uppercase tracking-widest px-8 py-4 rounded-[4px] hover:bg-accent transition-all flex items-center justify-center gap-2 group shadow-sm text-center"
               >
                 Explore Product <ArrowRight size={14} className="group-hover:translate-x-1 transition-transform" />
               </Link>
@@ -114,7 +114,7 @@ export default function HeroSection() {
                   onClick={() => setActiveSlide(idx)}
                   className={`h-1.5 transition-all duration-300 rounded-full ${
                     activeSlide === idx 
-                      ? 'w-8 bg-[#FF4D00]' 
+                      ? 'w-8 bg-accent' 
                       : 'w-2 bg-[#D4D4D4] hover:bg-[#8A8A8A]'
                   }`}
                   aria-label={`Go to slide ${idx + 1}`}
@@ -143,7 +143,7 @@ export default function HeroSection() {
 
               {/* Floating Specification Tag (positioned cleanly below image to avoid overlap) */}
               <div className="absolute -bottom-3 left-2 sm:left-4 z-20 bg-white/95 backdrop-blur-md border border-[#EAEAEA] p-2.5 sm:p-3 rounded-[4px] shadow-lg text-left hidden md:block animate-in slide-in-from-bottom-2 duration-500">
-                <span className="text-[9px] uppercase tracking-widest text-[#FF4D00] font-bold block">
+                <span className="text-[9px] uppercase tracking-widest text-accent-text font-bold block">
                   Official Verification
                 </span>
                 <span className="text-xs font-semibold text-[#0A0A0A] block mt-0.5">

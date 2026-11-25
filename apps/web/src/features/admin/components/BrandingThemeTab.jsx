@@ -12,11 +12,15 @@ import {
   Image as ImageIcon,
   Sparkles,
   ShoppingBag,
-  LayoutDashboard,
-  CheckCircle2
+  LayoutDashboard
 } from 'lucide-react';
 import useToastStore from '@shared/store/toastStore';
 import { useBranding } from '@app/providers/BrandingContext';
+import {
+  deriveColorTokens,
+  findNearestAccessibleShade,
+  parseHex
+} from '@shared/utils/colorContrast';
 
 // 12 Curated Presets
 const PRESET_COLORS = [
@@ -45,11 +49,15 @@ export default function BrandingThemeTab() {
   const [isSaving, setIsSaving] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
   const [previewMode, setPreviewMode] = useState('light'); // 'light' | 'dark'
+  const [hexInput, setHexInput] = useState(branding.accent_hex || '#FF4D00');
+  const [hexError, setHexError] = useState('');
 
   // Sync when context branding updates
   useEffect(() => {
     setFormData({ ...branding });
     setInitialData({ ...branding });
+    setHexInput(branding.accent_hex || '#FF4D00');
+    setHexError('');
   }, [branding]);
 
   // Track unsaved changes
@@ -58,60 +66,37 @@ export default function BrandingThemeTab() {
     setHasUnsavedChanges(isDirty);
   }, [formData, initialData]);
 
-  // Color calculations
-  const hexToRgb = (hex) => {
-    let c = hex.replace('#', '').trim();
-    if (c.length === 3) c = c.split('').map(x => x + x).join('');
-    const num = parseInt(c, 16);
-    return { r: (num >> 16) & 255, g: (num >> 8) & 255, b: num & 255 };
-  };
+  const currentAccent = parseHex(formData.accent_hex || '#FF4D00').hex || '#FF4D00';
+  const derivedTokens = deriveColorTokens(currentAccent);
 
-  const getLuminance = (r, g, b) => {
-    const a = [r, g, b].map(v => {
-      v /= 255;
-      return v <= 0.03928 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4);
-    });
-    return a[0] * 0.2126 + a[1] * 0.7152 + a[2] * 0.0722;
-  };
-
-  const getContrast = (hex1, hex2) => {
-    try {
-      const rgb1 = hexToRgb(hex1);
-      const rgb2 = hexToRgb(hex2);
-      const l1 = getLuminance(rgb1.r, rgb1.g, rgb1.b);
-      const l2 = getLuminance(rgb2.r, rgb2.g, rgb2.b);
-      const lighter = Math.max(l1, l2);
-      const darker = Math.min(l1, l2);
-      return Number(((lighter + 0.05) / (darker + 0.05)).toFixed(2));
-    } catch {
-      return 1;
+  // Handle color change (from preset, native picker, or valid hex) and broadcast live tokens to CSS
+  const handleColorChange = (rawHex) => {
+    setHexInput(rawHex);
+    const parsed = parseHex(rawHex);
+    if (!parsed.valid) {
+      setHexError(parsed.error);
+      return;
     }
-  };
-
-  const currentAccent = formData.accent_hex || '#FF4D00';
-  const contrastOnWhite = getContrast(currentAccent, '#FFFFFF');
-  const contrastOnBlack = getContrast(currentAccent, '#0A0A0A');
-  const isContrastPass = contrastOnWhite >= 3.0 || contrastOnBlack >= 3.0;
-
-  // Handle color change and broadcast live tokens to CSS
-  const handleColorChange = (hex) => {
-    const cleanHex = hex.startsWith('#') ? hex : `#${hex}`;
-    const updated = { ...formData, accent_hex: cleanHex };
+    setHexError('');
+    setHexInput(parsed.hex);
+    const tokens = deriveColorTokens(parsed.hex);
+    const updated = { ...formData, ...tokens };
     setFormData(updated);
     setLiveBranding(updated);
   };
 
-  // One-click accessible shade adjuster
+  // One-click nearest accessible shade (>= 4.5:1 on white)
   const handleFixContrast = () => {
-    // If too light on white, darken it to achieve >= 4.5:1
-    const rgb = hexToRgb(currentAccent);
-    let factor = 0.75;
-    const darkerR = Math.max(0, Math.round(rgb.r * factor));
-    const darkerG = Math.max(0, Math.round(rgb.g * factor));
-    const darkerB = Math.max(0, Math.round(rgb.b * factor));
-    const fixedHex = '#' + [darkerR, darkerG, darkerB].map(x => x.toString(16).padStart(2, '0')).join('').toUpperCase();
+    const fixedHex = findNearestAccessibleShade(currentAccent, 4.5);
     handleColorChange(fixedHex);
-    addToast({ type: 'info', message: `Adjusted to accessible shade: ${fixedHex}` });
+    addToast({ type: 'info', message: `Adjusted to nearest accessible shade: ${fixedHex}` });
+  };
+
+  const getAuthHeaders = () => {
+    const token = localStorage.getItem('techbazaar_token');
+    return token
+      ? { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` }
+      : { 'Content-Type': 'application/json' };
   };
 
   // Upload logo handler
@@ -119,8 +104,15 @@ export default function BrandingThemeTab() {
     const file = e.target.files?.[0];
     if (!file) return;
 
+    if (file.type === 'image/svg+xml' || file.name.toLowerCase().endsWith('.svg')) {
+      addToast({ type: 'error', message: 'SVG uploads are not allowed for security reasons. Use PNG, JPEG, or WebP.' });
+      e.target.value = '';
+      return;
+    }
+
     if (file.size > 2 * 1024 * 1024) {
       addToast({ type: 'error', message: 'File exceeds 2 MB limit.' });
+      e.target.value = '';
       return;
     }
 
@@ -130,7 +122,8 @@ export default function BrandingThemeTab() {
       try {
         const res = await fetch('/api/admin/branding/logo', {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: getAuthHeaders(),
+          credentials: 'include',
           body: JSON.stringify({
             fileData: reader.result,
             fileName: file.name,
@@ -139,7 +132,7 @@ export default function BrandingThemeTab() {
         });
 
         const json = await res.json();
-        if (json.data?.url) {
+        if (res.ok && json.data?.url) {
           const fieldMap = {
             mark: 'logo_mark',
             wordmark: 'logo_wordmark',
@@ -158,6 +151,7 @@ export default function BrandingThemeTab() {
         addToast({ type: 'error', message: 'Failed to upload image' });
       } finally {
         setIsUploading(false);
+        e.target.value = '';
       }
     };
     reader.readAsDataURL(file);
@@ -165,18 +159,24 @@ export default function BrandingThemeTab() {
 
   // Save branding settings
   const handleSave = async () => {
+    if (hexError) {
+      addToast({ type: 'error', message: 'Fix invalid hex colour before saving.' });
+      return;
+    }
     setIsSaving(true);
     try {
       const res = await fetch('/api/admin/branding', {
         method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
+        headers: getAuthHeaders(),
+        credentials: 'include',
         body: JSON.stringify(formData)
       });
 
       const json = await res.json();
-      if (json.data) {
+      if (res.ok && json.data) {
         setInitialData(json.data);
         setFormData(json.data);
+        setHexInput(json.data.accent_hex || '#FF4D00');
         setLiveBranding(json.data);
         addToast({ type: 'success', message: 'Brand identity & theme saved successfully.' });
       } else {
@@ -189,27 +189,27 @@ export default function BrandingThemeTab() {
     }
   };
 
-  // Reset to default
+  // Reset all branding to system defaults
   const handleResetToDefault = () => {
-    if (window.confirm('Reset brand settings and accent colour to TechBazaar defaults?')) {
-      const defaultState = {
-        brand_name: 'TechBazaar',
-        brand_name_part1: 'TECH',
-        brand_name_part2: 'BAZAAR',
-        use_split_name: true,
-        use_text_wordmark: false,
-        tagline: 'Curated Electronics & Modern Gadgets',
-        logo_mark: '/favicon.png',
-        logo_wordmark: '/logo.png',
-        logo_dark: '/logo.png',
-        favicon: '/favicon.png',
-        accent_hex: '#FF4D00',
-        footer_dark_hex: '#0A0A0A'
-      };
-      setFormData(defaultState);
-      setLiveBranding(defaultState);
-      addToast({ type: 'info', message: 'Reverted to defaults. Click "Save Branding" to commit.' });
-    }
+    const defaultState = {
+      brand_name: 'TechBazaar',
+      brand_name_part1: 'TECH',
+      brand_name_part2: 'BAZAAR',
+      use_split_name: true,
+      use_text_wordmark: false,
+      tagline: 'Curated Electronics & Modern Gadgets',
+      logo_mark: '/favicon.png',
+      logo_wordmark: '/logo.png',
+      logo_dark: '/logo.png',
+      favicon: '/favicon.png',
+      footer_dark_hex: '#0A0A0A',
+      ...deriveColorTokens('#FF4D00')
+    };
+    setFormData(defaultState);
+    setHexInput('#FF4D00');
+    setHexError('');
+    setLiveBranding(defaultState);
+    addToast({ type: 'info', message: 'Reverted all settings to defaults. Click "Save Branding" to persist.' });
   };
 
   return (
@@ -240,7 +240,7 @@ export default function BrandingThemeTab() {
         <div className="p-5 bg-white border border-[#EAEAEA] space-y-4 rounded-[2px]">
           <div className="flex items-center justify-between pb-2 border-b border-[#F0F0F0]">
             <h3 className="font-mono text-xs font-bold uppercase tracking-wider text-[#0A0A0A] flex items-center gap-2">
-              <Sparkles className="w-4 h-4 text-pop" />
+              <Sparkles className="w-4 h-4 text-accent-text" />
               <span>1. Brand Identity & Wordmark</span>
             </h3>
           </div>
@@ -367,11 +367,11 @@ export default function BrandingThemeTab() {
         <div className="p-5 bg-white border border-[#EAEAEA] space-y-4 rounded-[2px]">
           <div className="flex items-center justify-between pb-2 border-b border-[#F0F0F0]">
             <h3 className="font-mono text-xs font-bold uppercase tracking-wider text-[#0A0A0A] flex items-center gap-2">
-              <ImageIcon className="w-4 h-4 text-pop" />
+              <ImageIcon className="w-4 h-4 text-accent-text" />
               <span>2. Brand Logos & Favicon</span>
             </h3>
             {isUploading && (
-              <span className="text-[10px] font-mono text-pop flex items-center gap-1">
+              <span className="text-[10px] font-mono text-accent-text flex items-center gap-1">
                 <RefreshCw className="w-3 h-3 animate-spin" /> Uploading...
               </span>
             )}
@@ -481,62 +481,114 @@ export default function BrandingThemeTab() {
         <div className="p-5 bg-white border border-[#EAEAEA] space-y-4 rounded-[2px]">
           <div className="flex items-center justify-between pb-2 border-b border-[#F0F0F0]">
             <h3 className="font-mono text-xs font-bold uppercase tracking-wider text-[#0A0A0A] flex items-center gap-2">
-              <Palette className="w-4 h-4 text-pop" />
+              <Palette className="w-4 h-4 text-accent-text" />
               <span>3. Dynamic Accent Colour Engine</span>
             </h3>
             <button
               type="button"
               onClick={() => handleColorChange('#FF4D00')}
-              className="text-[10px] font-mono uppercase text-[#6B6B6B] hover:text-[#0A0A0A] underline"
+              className="text-[10px] font-mono uppercase text-[#6B6B6B] hover:text-[#0A0A0A] underline cursor-pointer"
             >
-              Reset to Orange
+              Reset Colour to Orange
             </button>
           </div>
 
           {/* Color Picker + Hex Input */}
-          <div className="flex items-center gap-4 p-3 bg-[#FAFAFA] border border-[#EAEAEA]">
-            <input
-              type="color"
-              value={currentAccent}
-              onChange={(e) => handleColorChange(e.target.value)}
-              className="w-12 h-10 border border-[#DDD] rounded-[2px] cursor-pointer p-0.5 bg-white"
-            />
-            <div className="flex-1">
-              <label className="block text-[10px] font-mono uppercase text-[#6B6B6B] mb-0.5">Hex Code</label>
+          <div className="p-3 bg-[#FAFAFA] border border-[#EAEAEA] space-y-3">
+            <div className="flex flex-wrap items-center gap-4">
               <input
-                type="text"
+                type="color"
+                aria-label="Accent colour picker"
                 value={currentAccent}
                 onChange={(e) => handleColorChange(e.target.value)}
-                className="w-36 px-2.5 py-1 bg-white border border-[#DDD] text-xs font-mono font-bold uppercase"
+                className="w-12 h-10 border border-[#DDD] rounded-[2px] cursor-pointer p-0.5 bg-white shrink-0"
               />
-            </div>
-
-            {/* Accessibility AA Check Badge */}
-            <div className="text-right">
-              <div className="flex items-center gap-1 justify-end">
-                {isContrastPass ? (
-                  <span className="inline-flex items-center gap-1 px-2 py-0.5 bg-emerald-50 text-emerald-700 border border-emerald-200 text-[10px] font-mono font-bold rounded">
-                    <CheckCircle2 size={11} /> WCAG AA PASS
-                  </span>
-                ) : (
-                  <span className="inline-flex items-center gap-1 px-2 py-0.5 bg-amber-50 text-amber-800 border border-amber-200 text-[10px] font-mono font-bold rounded">
-                    <AlertTriangle size={11} /> LOW CONTRAST
-                  </span>
+              <div className="flex-1 min-w-[160px]">
+                <label htmlFor="accent-hex-input" className="block text-[10px] font-mono uppercase text-[#6B6B6B] mb-0.5">
+                  Hex Code (3 or 6 digits)
+                </label>
+                <input
+                  id="accent-hex-input"
+                  type="text"
+                  value={hexInput}
+                  onChange={(e) => handleColorChange(e.target.value)}
+                  placeholder="#2563EB"
+                  className={`w-40 px-2.5 py-1 bg-white border text-xs font-mono font-bold uppercase outline-none ${
+                    hexError ? 'border-red-500 text-red-700' : 'border-[#DDD] focus:border-[#0A0A0A]'
+                  }`}
+                />
+                {hexError && (
+                  <p className="text-[10px] text-red-600 font-mono mt-1" role="alert">
+                    {hexError}
+                  </p>
                 )}
               </div>
-              <div className="text-[10px] font-mono text-[#8A8A8A] mt-0.5">
-                Ratio on white: {contrastOnWhite}:1
-              </div>
-              {!isContrastPass && (
-                <button
-                  type="button"
-                  onClick={handleFixContrast}
-                  className="text-[10px] text-pop underline font-semibold hover:opacity-80 block ml-auto mt-0.5"
-                >
-                  Apply accessible shade
-                </button>
+
+              {/* Derived Text Shade Info */}
+              {!derivedTokens.aa_text_pass && (
+                <div className="text-right">
+                  <div className="text-[10px] font-mono text-[#6B6B6B]">
+                    Auto text shade: <span className="font-bold" style={{ color: derivedTokens.accent_text }}>{derivedTokens.accent_text}</span>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={handleFixContrast}
+                    className="text-[10px] underline font-semibold hover:opacity-80 mt-0.5 cursor-pointer"
+                    style={{ color: derivedTokens.accent_text }}
+                  >
+                    Use nearest accessible shade
+                  </button>
+                </div>
               )}
             </div>
+
+            {/* 3 Separate Truthful WCAG 2.1 Badges */}
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 pt-2 border-t border-[#EAEAEA]">
+              <div className={`p-2 border rounded-[2px] text-[10px] font-mono ${
+                derivedTokens.aa_text_pass ? 'bg-emerald-50 border-emerald-200 text-emerald-800' : 'bg-red-50 border-red-200 text-red-800'
+              }`}>
+                <div className="font-bold flex items-center justify-between">
+                  <span>Accent as text on white</span>
+                  <span>{derivedTokens.aa_text_pass ? 'PASS' : 'FAIL'}</span>
+                </div>
+                <div className="mt-0.5 opacity-85">
+                  {derivedTokens.contrast_ratio_white}:1 (needs 4.5:1)
+                </div>
+              </div>
+
+              <div className={`p-2 border rounded-[2px] text-[10px] font-mono ${
+                derivedTokens.aa_ui_pass ? 'bg-emerald-50 border-emerald-200 text-emerald-800' : 'bg-red-50 border-red-200 text-red-800'
+              }`}>
+                <div className="font-bold flex items-center justify-between">
+                  <span>Accent as UI/graphics on white</span>
+                  <span>{derivedTokens.aa_ui_pass ? 'PASS' : 'FAIL'}</span>
+                </div>
+                <div className="mt-0.5 opacity-85">
+                  {derivedTokens.contrast_ratio_white}:1 (needs 3.0:1)
+                </div>
+              </div>
+
+              <div className={`p-2 border rounded-[2px] text-[10px] font-mono ${
+                derivedTokens.aa_label_pass ? 'bg-emerald-50 border-emerald-200 text-emerald-800' : 'bg-amber-50 border-amber-200 text-amber-800'
+              }`}>
+                <div className="font-bold flex items-center justify-between">
+                  <span>Label on accent buttons</span>
+                  <span>{derivedTokens.aa_label_pass ? 'PASS' : 'LOW'}</span>
+                </div>
+                <div className="mt-0.5 opacity-85">
+                  {derivedTokens.label_contrast_ratio}:1 ({derivedTokens.accent_contrast === '#0A0A0A' ? 'Near-black' : 'White'} label)
+                </div>
+              </div>
+            </div>
+
+            {!derivedTokens.aa_text_pass && (
+              <div className="p-2 bg-amber-50 border border-amber-200 text-amber-900 text-[11px] flex items-center gap-2 rounded-[2px]">
+                <AlertTriangle className="w-3.5 h-3.5 text-amber-700 shrink-0" />
+                <span>
+                  <strong>{currentAccent}</strong> fails 4.5:1 text contrast on white ({derivedTokens.contrast_ratio_white}:1). Text, links & prices will automatically use <strong>{derivedTokens.accent_text}</strong> while backgrounds/borders keep your chosen colour.
+                </span>
+              </div>
+            )}
           </div>
 
           {/* 12 Curated Presets Grid */}
@@ -544,15 +596,16 @@ export default function BrandingThemeTab() {
             <span className="block text-[10px] font-mono uppercase text-[#6B6B6B] mb-2 font-semibold">
               Curated Theme Palettes
             </span>
-            <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-6 gap-2">
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2">
               {PRESET_COLORS.map(c => {
                 const isSelected = currentAccent.toUpperCase() === c.hex.toUpperCase();
                 return (
                   <button
                     key={c.hex}
                     type="button"
+                    title={`${c.name} (${c.hex})`}
                     onClick={() => handleColorChange(c.hex)}
-                    className={`p-2 border rounded-[2px] text-left transition-all flex items-center gap-2 ${
+                    className={`p-2 border rounded-[2px] text-left transition-all flex items-center gap-2 cursor-pointer ${
                       isSelected 
                         ? 'border-[#0A0A0A] bg-white ring-1 ring-[#0A0A0A] shadow-xs' 
                         : 'border-[#EAEAEA] bg-white hover:border-[#999]'
@@ -563,7 +616,7 @@ export default function BrandingThemeTab() {
                       style={{ backgroundColor: c.hex }} 
                     />
                     <div className="min-w-0">
-                      <div className="text-[10px] font-bold text-[#0A0A0A] truncate leading-tight">
+                      <div className="text-[11px] font-bold text-[#0A0A0A] leading-tight break-words">
                         {c.name}
                       </div>
                       <div className="text-[9px] font-mono text-[#8A8A8A]">
@@ -582,17 +635,17 @@ export default function BrandingThemeTab() {
           <button
             type="button"
             onClick={handleResetToDefault}
-            className="px-4 py-2 border border-[#EAEAEA] bg-white hover:bg-[#F7F7F7] text-xs font-mono uppercase font-semibold text-[#0A0A0A] flex items-center gap-1.5 transition-colors"
+            className="px-4 py-2 border border-[#EAEAEA] bg-white hover:bg-[#F7F7F7] text-xs font-mono uppercase font-semibold text-[#0A0A0A] flex items-center gap-1.5 transition-colors cursor-pointer"
           >
             <RotateCcw size={13} />
-            <span>Reset to Defaults</span>
+            <span>Reset All to Defaults</span>
           </button>
 
           <button
             type="button"
             onClick={handleSave}
-            disabled={isSaving}
-            className="px-6 py-2.5 bg-[#0A0A0A] hover:bg-pop text-white text-xs font-mono uppercase tracking-wider font-bold transition-colors flex items-center gap-2 rounded-[2px] shadow-sm cursor-pointer"
+            disabled={isSaving || Boolean(hexError)}
+            className="px-6 py-2.5 bg-[#0A0A0A] hover:bg-accent hover:text-accent-contrast text-white text-xs font-mono uppercase tracking-wider font-bold transition-colors flex items-center gap-2 rounded-[2px] shadow-sm cursor-pointer disabled:opacity-50"
           >
             <Save size={14} />
             <span>{isSaving ? 'Saving...' : 'Save Branding'}</span>
@@ -643,8 +696,8 @@ export default function BrandingThemeTab() {
             
             {/* 1. Mini Announcement Bar */}
             <div 
-              className="py-1 px-2.5 text-[9px] font-mono uppercase tracking-wider text-center font-bold text-white rounded-[2px]"
-              style={{ backgroundColor: currentAccent }}
+              className="py-1 px-2.5 text-[9px] font-mono uppercase tracking-wider text-center font-bold rounded-[2px]"
+              style={{ backgroundColor: currentAccent, color: derivedTokens.accent_contrast }}
             >
               FESTIVE LAUNCH • 20% DISCOUNT ON ALL AUDIO
             </div>
@@ -671,8 +724,8 @@ export default function BrandingThemeTab() {
               <div className="relative">
                 <ShoppingBag size={17} />
                 <span 
-                  className="absolute -top-1.5 -right-2 text-[9px] font-bold text-white min-w-4 h-4 px-1 rounded-full flex items-center justify-center"
-                  style={{ backgroundColor: currentAccent }}
+                  className="absolute -top-1.5 -right-2 text-[9px] font-bold min-w-4 h-4 px-1 rounded-full flex items-center justify-center"
+                  style={{ backgroundColor: currentAccent, color: derivedTokens.accent_contrast }}
                 >
                   3
                 </span>
@@ -685,8 +738,8 @@ export default function BrandingThemeTab() {
             }`}>
               <div className="flex items-center justify-between mb-2">
                 <span 
-                  className="text-[9px] font-bold uppercase px-1.5 py-0.5 rounded text-white"
-                  style={{ backgroundColor: currentAccent }}
+                  className="text-[9px] font-bold uppercase px-1.5 py-0.5 rounded"
+                  style={{ backgroundColor: currentAccent, color: derivedTokens.accent_contrast }}
                 >
                   -25% OFF
                 </span>
@@ -706,20 +759,39 @@ export default function BrandingThemeTab() {
               </div>
 
               <div className="flex items-baseline justify-between pt-1">
-                <span className="text-sm font-bold tabular-nums">
-                  ₹27,990
-                </span>
+                <div className="flex items-center gap-2">
+                  <span className="text-sm font-bold tabular-nums" style={{ color: derivedTokens.accent_text }}>
+                    ₹27,990
+                  </span>
+                  <span
+                    className="text-[10px] font-mono underline cursor-pointer"
+                    style={{ color: derivedTokens.accent_text }}
+                  >
+                    View Specs
+                  </span>
+                </div>
                 <button
                   type="button"
-                  className="px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-white rounded-[2px] transition-opacity hover:opacity-90"
-                  style={{ backgroundColor: currentAccent }}
+                  className="px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider rounded-[2px] transition-opacity hover:opacity-90"
+                  style={{ backgroundColor: currentAccent, color: derivedTokens.accent_contrast }}
                 >
                   Add to Bag
                 </button>
               </div>
             </div>
 
-            {/* 4. Mini Admin Sidebar Highlight */}
+            {/* 4. Highlight Tint + Admin Sidebar Highlight */}
+            <div
+              className="p-2.5 rounded-[2px] border text-[11px] font-mono"
+              style={{
+                backgroundColor: derivedTokens.accent_tint,
+                borderColor: derivedTokens.accent_border,
+                color: derivedTokens.accent_text
+              }}
+            >
+              Bulk Tier Highlight: Save extra 12% on 10+ units
+            </div>
+
             <div className={`p-2.5 rounded-[2px] border space-y-1.5 ${
               previewMode === 'dark' ? 'bg-[#1E1E1E] border-[#333]' : 'bg-white border-[#EAEAEA]'
             }`}>
@@ -727,14 +799,14 @@ export default function BrandingThemeTab() {
                 Back-Office Navigation
               </div>
               <div 
-                className="flex items-center justify-between px-2.5 py-1.5 text-xs font-mono uppercase font-bold text-white rounded-[2px]"
-                style={{ backgroundColor: currentAccent }}
+                className="flex items-center justify-between px-2.5 py-1.5 text-xs font-mono uppercase font-bold rounded-[2px]"
+                style={{ backgroundColor: currentAccent, color: derivedTokens.accent_contrast }}
               >
                 <div className="flex items-center gap-2">
                   <LayoutDashboard size={13} />
                   <span>Dashboard (Active)</span>
                 </div>
-                <span className="w-1.5 h-1.5 rounded-full bg-white animate-pulse" />
+                <span className="w-1.5 h-1.5 rounded-full animate-pulse" style={{ backgroundColor: derivedTokens.accent_contrast }} />
               </div>
             </div>
           </div>

@@ -109,7 +109,7 @@ export default function SortBar({
               <button
                 type="button"
                 onClick={() => onRemoveFilterPill(pill)}
-                className="text-[#8A8A8A] hover:text-[#FF4D00] p-0.5 transition-colors"
+                className="text-[#8A8A8A] hover:text-accent-text p-0.5 transition-colors"
                 aria-label={`Remove filter ${pill.label}`}
               >
                 <X size={11} />

@@ -106,7 +106,7 @@ export default function ProductDetailPage() {
         </p>
         <Link
           to="/shop"
-          className="bg-[#0A0A0A] text-white text-xs font-semibold uppercase tracking-widest px-6 py-3 rounded-[4px] hover:bg-[#FF4D00] transition-colors"
+          className="bg-[#0A0A0A] text-accent-contrast text-xs font-semibold uppercase tracking-widest px-6 py-3 rounded-[4px] hover:bg-accent transition-colors"
         >
           Return to Shop
         </Link>
@@ -260,7 +260,7 @@ export default function ProductDetailPage() {
                     Out of Stock
                   </span>
                 ) : isLowStock ? (
-                  <span className="text-[#FF4D00] font-bold tracking-wider text-[11px] bg-[#FFF0EB] px-2 py-0.5 rounded-[2px] border border-[#FFD4C2]">
+                  <span className="text-accent-text font-bold tracking-wider text-[11px] bg-accent-tint px-2 py-0.5 rounded-[2px] border border-accent-border">
                     Only {stock} left
                   </span>
                 ) : (
@@ -388,7 +388,7 @@ export default function ProductDetailPage() {
           <div className="mt-20">
             <div className="flex items-center justify-between mb-8">
               <div>
-                <span className="text-[10px] uppercase tracking-widest text-[#FF4D00] font-semibold block mb-1">
+                <span className="text-[10px] uppercase tracking-widest text-accent-text font-semibold block mb-1">
                   Complementary Hardware
                 </span>
                 <h3 className="text-xl sm:text-2xl font-light uppercase tracking-wider text-[#0A0A0A]">
@@ -397,7 +397,7 @@ export default function ProductDetailPage() {
               </div>
               <Link
                 to={`/shop?category=${product.category}`}
-                className="text-xs font-semibold uppercase tracking-wider text-[#0A0A0A] hover:text-[#FF4D00] transition-colors"
+                className="text-xs font-semibold uppercase tracking-wider text-[#0A0A0A] hover:text-accent-text transition-colors"
               >
                 View Category →
               </Link>

@@ -63,7 +63,7 @@ export default function ProductCard({ product }) {
           {isWholesale ? (
             <>
               {maxWholesaleSavingsPercent > 0 && (
-                <span className="inline-block bg-[#FF4D00] text-white text-[10px] font-bold tracking-wider px-2 py-0.5 rounded-[2px] uppercase">
+                <span className="inline-block bg-accent text-accent-contrast text-[10px] font-bold tracking-wider px-2 py-0.5 rounded-[2px] uppercase">
                   Save up to {maxWholesaleSavingsPercent}%
                 </span>
               )}
@@ -74,7 +74,7 @@ export default function ProductCard({ product }) {
           ) : (
             <>
               {retailSavingsPercent > 0 && (
-                <span className="inline-block bg-[#FF4D00] text-white text-[10px] font-bold tracking-wider px-2 py-0.5 rounded-[2px] uppercase">
+                <span className="inline-block bg-accent text-accent-contrast text-[10px] font-bold tracking-wider px-2 py-0.5 rounded-[2px] uppercase">
                   {retailSavingsPercent}% OFF
                 </span>
               )}
@@ -92,7 +92,7 @@ export default function ProductCard({ product }) {
           onClick={handleWishlist}
           className={`p-1.5 rounded-full transition-all duration-200 cursor-pointer ${
             inWishlist 
-              ? 'text-[#FF4D00] bg-[#FFF0EB] scale-110' 
+              ? 'text-accent-text bg-accent-tint scale-110' 
               : 'text-[#8A8A8A] hover:text-[#0A0A0A] hover:bg-[#F7F7F7]'
           }`}
           aria-label={inWishlist ? "Remove from wishlist" : "Add to wishlist"}
@@ -136,7 +136,7 @@ export default function ProductCard({ product }) {
           {/* Product Title */}
           <Link 
             to={`/product/${product.id}`}
-            className="block text-xs font-medium text-[#0A0A0A] hover:text-[#FF4D00] line-clamp-2 transition-colors mb-2 leading-relaxed"
+            className="block text-xs font-medium text-[#0A0A0A] hover:text-accent-text line-clamp-2 transition-colors mb-2 leading-relaxed"
             title={product.name}
           >
             {product.name}
@@ -173,7 +173,7 @@ export default function ProductCard({ product }) {
                   </div>
                 </div>
                 <div className="text-right">
-                  <div className="text-xs font-bold text-[#FF4D00] tabular-nums">
+                  <div className="text-xs font-bold text-accent-text tabular-nums">
                     ₹{currentTier.unitPrice.toLocaleString('en-IN')}
                   </div>
                   <div className="text-[9px] text-[#6B6B6B]">
@@ -213,7 +213,7 @@ export default function ProductCard({ product }) {
                   className={`flex-1 h-7 rounded-[3px] text-[10px] font-semibold tracking-wider uppercase transition-all duration-200 flex items-center justify-center gap-1 cursor-pointer ${
                     isAdded 
                       ? 'bg-emerald-600 text-white' 
-                      : 'bg-[#0A0A0A] text-white hover:bg-[#FF4D00] hover:text-white border border-[#0A0A0A] hover:border-[#FF4D00]'
+                      : 'bg-[#0A0A0A] text-white hover:bg-accent hover:text-accent-contrast border border-[#0A0A0A] hover:border-accent'
                   }`}
                   aria-label={`Add ${qty} units to wholesale cart`}
                 >
@@ -261,7 +261,7 @@ export default function ProductCard({ product }) {
                 className={`w-full h-8 rounded-[3px] text-[11px] font-semibold tracking-wider uppercase transition-all duration-200 flex items-center justify-center gap-1.5 cursor-pointer ${
                   isAdded 
                     ? 'bg-emerald-600 text-white' 
-                    : 'bg-[#0A0A0A] text-white hover:bg-[#FF4D00] hover:text-white border border-[#0A0A0A] hover:border-[#FF4D00]'
+                    : 'bg-[#0A0A0A] text-white hover:bg-accent hover:text-accent-contrast border border-[#0A0A0A] hover:border-accent'
                 }`}
                 aria-label={`Add ${product.name} to bag`}
               >

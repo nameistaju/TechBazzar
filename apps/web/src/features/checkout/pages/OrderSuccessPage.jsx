@@ -36,11 +36,12 @@ export default function OrderSuccessPage() {
   useEffect(() => {
     window.scrollTo(0, 0);
     try {
+      const accentHex = getComputedStyle(document.documentElement).getPropertyValue('--accent-hex').trim() || '#FF4D00';
       confetti({
         particleCount: 100,
         spread: 70,
         origin: { y: 0.6 },
-        colors: ['#FF4D00', '#0A0A0A', '#10B981', '#F59E0B']
+        colors: [accentHex, '#0A0A0A', '#10B981', '#F59E0B']
       });
     } catch {}
   }, []);
@@ -104,14 +105,14 @@ export default function OrderSuccessPage() {
         {/* Main Confirmation Card */}
         <div className="bg-white border border-[#EAEAEA] rounded-[4px] p-6 sm:p-10 shadow-sm text-center relative overflow-hidden">
           {/* Top orange accent line */}
-          <div className="absolute top-0 left-0 right-0 h-1 bg-[#FF4D00]" />
+          <div className="absolute top-0 left-0 right-0 h-1 bg-accent" />
 
           {/* Animated Green Checkmark */}
           <div className="w-16 h-16 bg-emerald-50 text-emerald-600 rounded-full flex items-center justify-center mx-auto mb-6">
             <CheckCircle2 size={36} className="animate-scaleIn" />
           </div>
 
-          <span className="text-[10px] uppercase tracking-[0.25em] text-[#FF4D00] font-bold block mb-1">
+          <span className="text-[10px] uppercase tracking-[0.25em] text-accent-text font-bold block mb-1">
             Order Confirmed
           </span>
           <h1 className="text-2xl sm:text-3xl font-light uppercase tracking-wider text-[#0A0A0A] mb-2">
@@ -160,7 +161,7 @@ export default function OrderSuccessPage() {
                   <span className="text-[10px] uppercase text-[#8A8A8A] block">Payment Status</span>
                   {order.balanceDue && order.balanceDue > 0 ? (
                     <div>
-                      <span className="text-[#FF4D00] font-bold">
+                      <span className="text-accent-text font-bold">
                         50% Advance Paid ({formatMoney(order.advancePaid || Math.round((order.total || 0) / 2))})
                       </span>
                       <span className="block text-[11px] text-[#6B6B6B]">
@@ -240,7 +241,7 @@ export default function OrderSuccessPage() {
           <div className="flex flex-col sm:flex-row gap-3 justify-center">
             <Link
               to={`/track?number=${orderNumber}&contact=${encodeURIComponent(customerEmail)}`}
-              className="py-3 px-6 bg-[#0A0A0A] hover:bg-[#FF4D00] text-white text-xs font-semibold uppercase tracking-widest rounded-[4px] transition-colors flex items-center justify-center gap-2"
+              className="py-3 px-6 bg-[#0A0A0A] hover:bg-accent text-accent-contrast text-xs font-semibold uppercase tracking-widest rounded-[4px] transition-colors flex items-center justify-center gap-2"
             >
               Track Order Live <ArrowRight size={13} />
             </Link>
@@ -288,7 +289,7 @@ export default function OrderSuccessPage() {
                       <button
                         type="submit"
                         disabled={claiming}
-                        className="h-11 px-6 bg-[#0A0A0A] hover:bg-[#FF4D00] text-white text-xs font-semibold uppercase tracking-wider rounded-[4px] transition-colors flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
+                        className="h-11 px-6 bg-[#0A0A0A] hover:bg-accent text-accent-contrast text-xs font-semibold uppercase tracking-wider rounded-[4px] transition-colors flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
                       >
                         {claiming ? (
                           <>

@@ -156,7 +156,7 @@ export default function WholesaleAccessSheet({ isOpen, onClose, initialTab = 'ap
           <div className="p-6 border-b border-[#EAEAEA]">
             <div className="flex items-center justify-between mb-3">
               <div className="flex items-center gap-2">
-                <Building2 size={18} className="text-[#FF4D00]" />
+                <Building2 size={18} className="text-accent-text" />
                 <h2 className="text-xs font-mono uppercase font-bold tracking-widest text-[#0A0A0A]">
                   Wholesale Procurement Desk
                 </h2>
@@ -180,7 +180,7 @@ export default function WholesaleAccessSheet({ isOpen, onClose, initialTab = 'ap
                 onClick={() => { setActiveTab('apply'); setLoginError(''); }}
                 className={`py-2 text-xs font-mono uppercase font-semibold transition-all ${
                   activeTab === 'apply'
-                    ? 'bg-white text-[#0A0A0A] shadow-sm border-b-2 border-[#FF4D00]'
+                    ? 'bg-white text-[#0A0A0A] shadow-sm border-b-2 border-accent'
                     : 'text-[#6B6B6B] hover:text-[#0A0A0A]'
                 }`}
               >
@@ -191,7 +191,7 @@ export default function WholesaleAccessSheet({ isOpen, onClose, initialTab = 'ap
                 onClick={() => { setActiveTab('login'); setApplyError(''); }}
                 className={`py-2 text-xs font-mono uppercase font-semibold transition-all ${
                   activeTab === 'login'
-                    ? 'bg-white text-[#0A0A0A] shadow-sm border-b-2 border-[#FF4D00]'
+                    ? 'bg-white text-[#0A0A0A] shadow-sm border-b-2 border-accent'
                     : 'text-[#6B6B6B] hover:text-[#0A0A0A]'
                 }`}
               >
@@ -222,7 +222,7 @@ export default function WholesaleAccessSheet({ isOpen, onClose, initialTab = 'ap
                     <div className="pt-4">
                       <button
                         onClick={onClose}
-                        className="w-full bg-[#0A0A0A] hover:bg-[#FF4D00] text-white text-xs font-mono uppercase font-bold py-3 transition-colors"
+                        className="w-full bg-[#0A0A0A] hover:bg-accent text-accent-contrast text-xs font-mono uppercase font-bold py-3 transition-colors"
                       >
                         Continue Browsing
                       </button>
@@ -378,7 +378,7 @@ export default function WholesaleAccessSheet({ isOpen, onClose, initialTab = 'ap
                     <button
                       type="submit"
                       disabled={applyLoading}
-                      className="w-full bg-[#0A0A0A] hover:bg-[#FF4D00] text-white text-xs font-mono uppercase font-bold py-3 transition-colors flex items-center justify-center gap-2 mt-4"
+                      className="w-full bg-[#0A0A0A] hover:bg-accent text-accent-contrast text-xs font-mono uppercase font-bold py-3 transition-colors flex items-center justify-center gap-2 mt-4"
                     >
                       {applyLoading ? 'Submitting Application...' : 'Submit Wholesale Application'}
                       <ArrowRight size={14} />
@@ -429,7 +429,7 @@ export default function WholesaleAccessSheet({ isOpen, onClose, initialTab = 'ap
                 <button
                   type="submit"
                   disabled={loginLoading}
-                  className="w-full bg-[#0A0A0A] hover:bg-[#FF4D00] text-white text-xs font-mono uppercase font-bold py-3 transition-colors flex items-center justify-center gap-2 mt-2"
+                  className="w-full bg-[#0A0A0A] hover:bg-accent text-accent-contrast text-xs font-mono uppercase font-bold py-3 transition-colors flex items-center justify-center gap-2 mt-2"
                 >
                   {loginLoading ? 'Signing In...' : 'Sign In to Wholesale'}
                   <ArrowRight size={14} />
@@ -439,7 +439,7 @@ export default function WholesaleAccessSheet({ isOpen, onClose, initialTab = 'ap
                   <button
                     type="button"
                     onClick={() => setActiveTab('apply')}
-                    className="text-xs text-[#6B6B6B] hover:text-[#FF4D00] transition-colors"
+                    className="text-xs text-[#6B6B6B] hover:text-accent-text transition-colors"
                   >
                     Don't have a wholesale account? Apply for access →
                   </button>
@@ -454,19 +454,19 @@ export default function WholesaleAccessSheet({ isOpen, onClose, initialTab = 'ap
               </div>
               <div className="grid grid-cols-2 gap-2 text-[11px] text-[#444]">
                 <div className="flex items-center gap-2 p-2 bg-[#F9F9F9] border border-[#EAEAEA]">
-                  <Percent size={13} className="text-[#FF4D00] shrink-0" />
+                  <Percent size={13} className="text-accent-text shrink-0" />
                   <span>Up to 40% Tier Savings</span>
                 </div>
                 <div className="flex items-center gap-2 p-2 bg-[#F9F9F9] border border-[#EAEAEA]">
-                  <CreditCard size={13} className="text-[#FF4D00] shrink-0" />
+                  <CreditCard size={13} className="text-accent-text shrink-0" />
                   <span>Net 15 / 30 Credit Lines</span>
                 </div>
                 <div className="flex items-center gap-2 p-2 bg-[#F9F9F9] border border-[#EAEAEA]">
-                  <ShieldCheck size={13} className="text-[#FF4D00] shrink-0" />
+                  <ShieldCheck size={13} className="text-accent-text shrink-0" />
                   <span>B2B GST Tax Invoices</span>
                 </div>
                 <div className="flex items-center gap-2 p-2 bg-[#F9F9F9] border border-[#EAEAEA]">
-                  <Truck size={13} className="text-[#FF4D00] shrink-0" />
+                  <Truck size={13} className="text-accent-text shrink-0" />
                   <span>Pallet Freight Logistics</span>
                 </div>
               </div>

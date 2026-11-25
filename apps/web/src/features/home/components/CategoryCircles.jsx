@@ -21,7 +21,7 @@ export default function CategoryCircles() {
           </div>
           <Link
             to="/shop"
-            className="text-xs font-semibold text-[#0A0A0A] hover:text-[#FF4D00] transition-colors flex items-center gap-1 group uppercase tracking-wider"
+            className="text-xs font-semibold text-[#0A0A0A] hover:text-accent-text transition-colors flex items-center gap-1 group uppercase tracking-wider"
           >
             All Departments <ArrowRight size={13} className="group-hover:translate-x-1 transition-transform" />
           </Link>
@@ -36,7 +36,7 @@ export default function CategoryCircles() {
               className="flex flex-col items-center shrink-0 group text-center w-24 sm:w-28"
             >
               {/* Image Circle Container */}
-              <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-full bg-[#F7F7F7] border border-[#EAEAEA] p-3 flex items-center justify-center transition-all duration-300 group-hover:scale-105 group-hover:border-[#FF4D00] group-hover:shadow-[0_8px_20px_rgba(255,77,0,0.12)]">
+              <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-full bg-[#F7F7F7] border border-[#EAEAEA] p-3 flex items-center justify-center transition-all duration-300 group-hover:scale-105 group-hover:border-accent group-hover:shadow-[0_8px_20px_var(--accent-ring)]">
                 <img
                   src={cat.image}
                   alt={cat.name}
@@ -47,7 +47,7 @@ export default function CategoryCircles() {
 
               {/* Title & Count */}
               <div className="mt-3">
-                <span className="block text-xs font-medium text-[#0A0A0A] group-hover:text-[#FF4D00] transition-colors line-clamp-1 leading-snug">
+                <span className="block text-xs font-medium text-[#0A0A0A] group-hover:text-accent-text transition-colors line-clamp-1 leading-snug">
                   {cat.name}
                 </span>
                 <span className="text-[10px] text-[#8A8A8A] font-normal tabular-nums">

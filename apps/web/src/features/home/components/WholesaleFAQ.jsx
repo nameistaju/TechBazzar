@@ -32,7 +32,7 @@ export default function WholesaleFAQ() {
       <div className="max-w-site mx-auto px-4 sm:px-6 lg:px-8">
         <div className="max-w-3xl mx-auto">
           <div className="text-center mb-10">
-            <span className="text-[10px] uppercase tracking-[0.25em] text-[#FF4D00] font-bold block mb-1">
+            <span className="text-[10px] uppercase tracking-[0.25em] text-accent-text font-bold block mb-1">
               Clear Wholesale Policies
             </span>
             <h2 className="text-2xl sm:text-3xl font-light uppercase tracking-wider text-[#0A0A0A]">
@@ -60,7 +60,7 @@ export default function WholesaleFAQ() {
                     <ChevronDown
                       size={15}
                       className={`text-[#6B6B6B] shrink-0 transition-transform duration-200 ${
-                        isOpen ? 'rotate-180 text-[#FF4D00]' : ''
+                        isOpen ? 'rotate-180 text-accent-text' : ''
                       }`}
                     />
                   </button>

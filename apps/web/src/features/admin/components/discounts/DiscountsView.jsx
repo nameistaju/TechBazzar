@@ -195,7 +195,7 @@ export default function DiscountsView() {
         <div className="flex items-center gap-2">
           <button
             onClick={openAddBuilder}
-            className="px-3 py-1.5 bg-[#0A0A0A] text-white text-xs font-mono uppercase tracking-wider hover:bg-[#FF4D00] flex items-center gap-1.5 transition-colors font-semibold"
+            className="px-3 py-1.5 bg-[#0A0A0A] text-accent-contrast text-xs font-mono uppercase tracking-wider hover:bg-accent flex items-center gap-1.5 transition-colors font-semibold"
           >
             <Plus className="w-4 h-4" />
             New Discount Rule
@@ -233,10 +233,10 @@ export default function DiscountsView() {
                     <td className="p-3">
                       <div className="flex items-center gap-2">
                         <span className="font-mono font-bold text-sm text-[#0A0A0A]">
-                          {d.code ? d.code : <span className="text-[#FF4D00]">Auto Cart Rule</span>}
+                          {d.code ? d.code : <span className="text-accent-text">Auto Cart Rule</span>}
                         </span>
                         {d.audience === 'wholesale' ? (
-                          <span className="px-1.5 py-0.5 text-[9px] font-mono uppercase font-bold bg-orange-50 text-[#FF4D00] border border-orange-200">
+                          <span className="px-1.5 py-0.5 text-[9px] font-mono uppercase font-bold bg-accent-tint text-accent-text border border-accent-border">
                             Wholesale
                           </span>
                         ) : d.audience === 'retail' ? (
@@ -256,7 +256,7 @@ export default function DiscountsView() {
                       {d.type === 'percentage' && <span className="font-bold text-[#0A0A0A]">{d.value}% Off</span>}
                       {d.type === 'flat' && <span className="font-bold text-[#0A0A0A]">{formatINR(d.value)} Flat</span>}
                       {(d.type === 'rule_higher' || d.type === 'rule_lower') && (
-                        <span className="font-bold text-[#FF4D00]">
+                        <span className="font-bold text-accent-text">
                           {d.rule_percentage}% or {formatINR(d.rule_flat)} ({d.rule_mode === 'higher' ? 'Higher' : 'Lower'})
                         </span>
                       )}
@@ -276,7 +276,7 @@ export default function DiscountsView() {
                       <button
                         onClick={() => handleToggleActive(d)}
                         className={`w-8 h-4 rounded-full transition-colors relative ${
-                          d.active ? 'bg-[#FF4D00]' : 'bg-gray-300'
+                          d.active ? 'bg-accent' : 'bg-gray-300'
                         }`}
                       >
                         <span className={`block w-3 h-3 bg-white rounded-full transition-transform ${
@@ -293,7 +293,7 @@ export default function DiscountsView() {
                             handleSimulate();
                           }}
                           title="Simulate in Test Cart"
-                          className="p-1.5 hover:text-[#FF4D00]"
+                          className="p-1.5 hover:text-accent-text"
                         >
                           <Play className="w-3.5 h-3.5" />
                         </button>
@@ -321,7 +321,7 @@ export default function DiscountsView() {
         {/* Live Simulator Panel (1 col) */}
         <div className="p-5 bg-white border border-[#EAEAEA] space-y-4">
           <div className="flex items-center gap-2">
-            <Calculator className="w-4 h-4 text-[#FF4D00]" />
+            <Calculator className="w-4 h-4 text-accent-text" />
             <h3 className="font-mono text-xs uppercase tracking-wider font-bold text-[#0A0A0A]">
               Live Rule Simulator
             </h3>
@@ -357,7 +357,7 @@ export default function DiscountsView() {
                   type="button"
                   onClick={() => setTestChannel('wholesale')}
                   className={`py-1.5 text-center text-[10px] uppercase font-bold border transition-colors ${
-                    testChannel === 'wholesale' ? 'bg-[#FF4D00] text-white border-[#FF4D00]' : 'bg-white text-neutral-600 border-[#EAEAEA] hover:border-neutral-400'
+                    testChannel === 'wholesale' ? 'bg-accent text-accent-contrast border-accent' : 'bg-white text-neutral-600 border-[#EAEAEA] hover:border-neutral-400'
                   }`}
                 >
                   Wholesale Cart
@@ -371,7 +371,7 @@ export default function DiscountsView() {
                 <span className="text-[10px] uppercase text-[#6B6B6B]">Test Cart Items:</span>
                 <button
                   onClick={() => setTestCartItems([...testCartItems, { id: 'image-3', name: 'Smart Fitness Watch', price: 1800, quantity: 1, category: 'Smartwatches' }])}
-                  className="text-[10px] text-[#FF4D00] hover:underline"
+                  className="text-[10px] text-accent-text hover:underline"
                 >
                   + Add Item
                 </button>
@@ -415,7 +415,7 @@ export default function DiscountsView() {
             <button
               onClick={handleSimulate}
               disabled={simulating}
-              className="w-full py-2 bg-[#0A0A0A] text-white text-xs uppercase hover:bg-[#FF4D00] transition-colors font-bold flex items-center justify-center gap-1.5"
+              className="w-full py-2 bg-[#0A0A0A] text-accent-contrast text-xs uppercase hover:bg-accent transition-colors font-bold flex items-center justify-center gap-1.5"
             >
               <Play className="w-3.5 h-3.5" />
               {simulating ? 'Evaluating...' : 'Run Simulation'}
@@ -561,7 +561,7 @@ export default function DiscountsView() {
               )}
 
               {(type === 'rule_higher' || type === 'rule_lower') && (
-                <div className="p-3 bg-orange-50 border border-orange-200 grid grid-cols-2 gap-3">
+                <div className="p-3 bg-accent-tint border border-accent-border grid grid-cols-2 gap-3">
                   <div>
                     <label className="block text-[10px] uppercase text-[#6B6B6B] mb-1">Percentage Option (%)</label>
                     <input
@@ -622,7 +622,7 @@ export default function DiscountsView() {
                 <button
                   type="submit"
                   disabled={savingDiscount}
-                  className="flex-1 py-2 bg-[#0A0A0A] text-white uppercase hover:bg-[#FF4D00] transition-colors font-bold"
+                  className="flex-1 py-2 bg-[#0A0A0A] text-accent-contrast uppercase hover:bg-accent transition-colors font-bold"
                 >
                   {savingDiscount ? 'Saving...' : 'Save Promotion Rule'}
                 </button>

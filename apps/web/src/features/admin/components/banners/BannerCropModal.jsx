@@ -19,7 +19,7 @@ export default function BannerCropModal({
       <div className="bg-white rounded-[4px] shadow-2xl max-w-2xl w-full p-6 space-y-4 font-mono text-xs">
         <div className="flex items-center justify-between border-b border-[#EAEAEA] pb-3">
           <div className="flex items-center gap-2">
-            <Crop size={16} className="text-[#FF4D00]" />
+            <Crop size={16} className="text-accent-text" />
             <h3 className="font-bold uppercase text-[#0A0A0A]">
               Precision Aspect Ratio Crop ({cropTargetDevice === 'desktop' ? '3:1 Desktop' : '4:3 Mobile'})
             </h3>
@@ -51,7 +51,7 @@ export default function BannerCropModal({
               step="0.05"
               value={cropZoom}
               onChange={(e) => setCropZoom(parseFloat(e.target.value))}
-              className="flex-1 accent-[#FF4D00]"
+              className="flex-1 accent-accent"
             />
             <span className="text-[11px] w-8 text-right font-bold">{cropZoom.toFixed(1)}x</span>
           </div>
@@ -74,7 +74,7 @@ export default function BannerCropModal({
             </div>
           </div>
 
-          <div className="p-2 bg-orange-50 border border-orange-200 text-orange-800 text-[10px] rounded">
+          <div className="p-2 bg-accent-tint border border-accent-border text-accent-text text-[10px] rounded">
             Orange dashed rectangle indicates the 80% Safe Zone. Keep critical text and logos within this boundary.
           </div>
         </div>
@@ -90,7 +90,7 @@ export default function BannerCropModal({
           <button
             type="button"
             onClick={handleApplyCrop}
-            className="px-5 py-2 bg-[#FF4D00] hover:bg-[#E04400] text-white text-xs uppercase font-bold rounded"
+            className="px-5 py-2 bg-accent hover:bg-accent-hover text-accent-contrast text-xs uppercase font-bold rounded"
           >
             Apply & Save WebP
           </button>

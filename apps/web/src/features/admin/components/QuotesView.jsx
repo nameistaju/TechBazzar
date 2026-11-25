@@ -68,7 +68,7 @@ export default function QuotesView({ onNavigate }) {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-[#EAEAEA] pb-5">
         <div>
           <div className="flex items-center gap-2">
-            <MessageSquare className="w-5 h-5 text-[#FF4D00]" />
+            <MessageSquare className="w-5 h-5 text-accent-text" />
             <h1 className="text-lg font-bold uppercase tracking-wider text-[#0A0A0A]">
               Wholesale RFQ Inquiries
             </h1>
@@ -215,7 +215,7 @@ export default function QuotesView({ onNavigate }) {
                               type="button"
                               disabled={convertingId === q.id}
                               onClick={() => handleConvertToEstimate(q)}
-                              className="px-2 py-1 bg-[#0A0A0A] hover:bg-[#FF4D00] text-white text-[10px] uppercase font-bold rounded flex items-center gap-1 transition-colors"
+                              className="px-2 py-1 bg-[#0A0A0A] hover:bg-accent text-accent-contrast text-[10px] uppercase font-bold rounded flex items-center gap-1 transition-colors"
                               title="Convert to Proforma Estimate"
                             >
                               <FileSpreadsheet size={11} /> Convert
@@ -310,7 +310,7 @@ export default function QuotesView({ onNavigate }) {
                 <button
                   type="button"
                   onClick={() => handleConvertToEstimate(selectedQuote)}
-                  className="px-4 py-2 bg-[#FF4D00] hover:bg-[#E04400] text-white text-xs font-bold uppercase rounded flex items-center gap-1.5"
+                  className="px-4 py-2 bg-accent hover:bg-accent-hover text-accent-contrast text-xs font-bold uppercase rounded flex items-center gap-1.5"
                 >
                   <FileSpreadsheet size={13} />
                   <span>Convert to Estimate</span>

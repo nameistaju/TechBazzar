@@ -16,7 +16,7 @@ export default function RecommendedSection() {
         <div className="flex items-end justify-between mb-10">
           <div>
             <div className="flex items-center gap-1.5 text-[10px] uppercase tracking-[0.2em] text-[#6B6B6B] font-bold mb-1">
-              <ThumbsUp size={13} className="text-[#FF4D00]" /> Editorial Selection
+              <ThumbsUp size={13} className="text-accent-text" /> Editorial Selection
             </div>
             <h2 className="text-2xl sm:text-3xl font-light uppercase tracking-widest text-[#0A0A0A]">
               Recommended for You
@@ -24,7 +24,7 @@ export default function RecommendedSection() {
           </div>
           <Link
             to="/shop?filter=recommended"
-            className="text-xs font-semibold uppercase tracking-wider text-[#0A0A0A] hover:text-[#FF4D00] transition-colors flex items-center gap-1 group"
+            className="text-xs font-semibold uppercase tracking-wider text-[#0A0A0A] hover:text-accent-text transition-colors flex items-center gap-1 group"
           >
             Explore All <ArrowRight size={13} className="group-hover:translate-x-1 transition-transform" />
           </Link>

@@ -6,6 +6,7 @@ import {
   Plus, 
   Minus, 
   ArrowLeft,
+  ArrowRight,
   Bookmark,
   Download,
   FileText,
@@ -127,7 +128,7 @@ export default function CartPage() {
               <button
                 type="button"
                 onClick={() => switchMode(isWholesale ? 'retail' : 'wholesale')}
-                className="text-[#FF4D00] font-semibold hover:underline inline-flex items-center gap-0.5"
+                className="text-accent-text font-semibold hover:underline inline-flex items-center gap-0.5"
               >
                 Switch Bag <ArrowRight size={11} />
               </button>
@@ -137,7 +138,7 @@ export default function CartPage() {
           <div>
             <Link
               to="/shop"
-              className="inline-flex items-center gap-2 bg-[#0A0A0A] text-white text-xs font-semibold uppercase tracking-widest px-8 py-4 rounded-[4px] hover:bg-[#FF4D00] transition-colors"
+              className="inline-flex items-center gap-2 bg-[#0A0A0A] text-accent-contrast text-xs font-semibold uppercase tracking-widest px-8 py-4 rounded-[4px] hover:bg-accent transition-colors"
             >
               {isWholesale ? 'Explore Wholesale Catalog' : 'Start Exploring Products'} <ArrowRight size={14} />
             </Link>
@@ -162,11 +163,11 @@ export default function CartPage() {
         <div className="flex flex-col sm:flex-row sm:items-end justify-between py-6 border-b border-[#EAEAEA] mb-8 gap-4">
           <div>
             <div className="flex items-center gap-2 mb-1">
-              <span className="text-[10px] uppercase tracking-[0.2em] text-[#FF4D00] font-bold">
+              <span className="text-[10px] uppercase tracking-[0.2em] text-accent-text font-bold">
                 {isWholesale ? 'B2B Procurement Review' : 'Retail Cart Review'}
               </span>
               {isWholesale && (
-                <span className="bg-[#0A0A0A] text-[#FF4D00] border border-[#FF4D00]/40 text-[9px] font-black uppercase px-1.5 py-0.5 rounded">
+                <span className="bg-[#0A0A0A] text-accent-text border border-accent/40 text-[9px] font-black uppercase px-1.5 py-0.5 rounded">
                   Wholesale Channel
                 </span>
               )}
@@ -182,7 +183,7 @@ export default function CartPage() {
               <button
                 type="button"
                 onClick={() => switchMode('wholesale')}
-                className="text-xs text-[#FF4D00] hover:underline font-semibold flex items-center gap-1 cursor-pointer"
+                className="text-xs text-accent-text hover:underline font-semibold flex items-center gap-1 cursor-pointer"
               >
                 <Building2 size={13} /> Buying for Business? Switch to Wholesale
               </button>
@@ -235,7 +236,7 @@ export default function CartPage() {
                 onClick={() => saveCurrentCart()}
                 className="px-3 py-1.5 rounded border border-[#EAEAEA] hover:border-[#0A0A0A] text-[#0A0A0A] text-xs font-medium flex items-center gap-1.5 transition-colors cursor-pointer"
               >
-                <Bookmark size={13} className="text-[#FF4D00]" /> Save Cart List
+                <Bookmark size={13} className="text-accent-text" /> Save Cart List
               </button>
               <button
                 type="button"
@@ -247,7 +248,7 @@ export default function CartPage() {
               <button
                 type="button"
                 onClick={() => navigate('/quote')}
-                className="px-3 py-1.5 rounded bg-[#0A0A0A] hover:bg-[#FF4D00] text-white text-xs font-medium flex items-center gap-1.5 transition-colors cursor-pointer"
+                className="px-3 py-1.5 rounded bg-[#0A0A0A] hover:bg-accent text-accent-contrast text-xs font-medium flex items-center gap-1.5 transition-colors cursor-pointer"
               >
                 <FileText size={13} /> Request Custom Quote
               </button>
@@ -294,7 +295,7 @@ export default function CartPage() {
                       </div>
                       <Link
                         to={`/product/${item.id}`}
-                        className="text-xs sm:text-sm font-medium text-[#0A0A0A] hover:text-[#FF4D00] transition-colors line-clamp-1 mt-0.5"
+                        className="text-xs sm:text-sm font-medium text-[#0A0A0A] hover:text-accent-text transition-colors line-clamp-1 mt-0.5"
                       >
                         {item.name}
                       </Link>

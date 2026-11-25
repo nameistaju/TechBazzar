@@ -106,7 +106,7 @@ export default function AdminLayout({
               className="h-7 w-auto object-contain shrink-0" 
             />
             <span className="font-mono text-xs tracking-wider uppercase font-bold text-[#0A0A0A] hidden sm:inline whitespace-nowrap">
-              {branding.brand_name?.toUpperCase() || 'TECHBAZAAR'} <span className="text-pop font-normal hidden lg:inline">BACK-OFFICE</span>
+              {branding.brand_name?.toUpperCase() || 'TECHBAZAAR'} <span className="text-accent-text font-normal hidden lg:inline">BACK-OFFICE</span>
             </span>
           </Link>
         </div>
@@ -135,7 +135,7 @@ export default function AdminLayout({
             target="_blank"
             rel="noopener noreferrer"
             onClick={handleLiveStoreClick}
-            className="hidden sm:flex items-center gap-1 text-xs font-mono uppercase text-[#6B6B6B] hover:text-[#FF4D00] transition-colors px-2 py-1 rounded-[2px] whitespace-nowrap"
+            className="hidden sm:flex items-center gap-1 text-xs font-mono uppercase text-[#6B6B6B] hover:text-accent-text transition-colors px-2 py-1 rounded-[2px] whitespace-nowrap"
             title="Open Live Store in new tab (with return bar)"
           >
             <span>Live Store</span>
@@ -151,7 +151,7 @@ export default function AdminLayout({
                 setIsNotificationsOpen(false);
                 setIsAccountMenuOpen(false);
               }}
-              className="px-2.5 py-1.5 bg-[#0A0A0A] text-white text-xs font-mono uppercase tracking-wider hover:bg-[#FF4D00] flex items-center gap-1 transition-colors font-semibold rounded-[2px]"
+              className="px-2.5 py-1.5 bg-[#0A0A0A] text-accent-contrast text-xs font-mono uppercase tracking-wider hover:bg-accent flex items-center gap-1 transition-colors font-semibold rounded-[2px]"
             >
               <Plus className="w-3.5 h-3.5" />
               <span className="hidden sm:inline">Create</span>
@@ -165,7 +165,7 @@ export default function AdminLayout({
                   onClick={() => { onTabChange('products'); setIsQuickCreateOpen(false); }}
                   className="w-full text-left px-3 py-2 hover:bg-[#F7F7F7] flex items-center gap-2"
                 >
-                  <Package className="w-3.5 h-3.5 text-[#FF4D00]" />
+                  <Package className="w-3.5 h-3.5 text-accent-text" />
                   <span>New Product</span>
                 </button>
                 <button
@@ -173,7 +173,7 @@ export default function AdminLayout({
                   onClick={() => { onTabChange('estimates'); setIsQuickCreateOpen(false); }}
                   className="w-full text-left px-3 py-2 hover:bg-[#F7F7F7] flex items-center gap-2"
                 >
-                  <FileSpreadsheet className="w-3.5 h-3.5 text-[#FF4D00]" />
+                  <FileSpreadsheet className="w-3.5 h-3.5 text-accent-text" />
                   <span>New Estimate</span>
                 </button>
                 <button
@@ -181,7 +181,7 @@ export default function AdminLayout({
                   onClick={() => { onTabChange('invoices'); setIsQuickCreateOpen(false); }}
                   className="w-full text-left px-3 py-2 hover:bg-[#F7F7F7] flex items-center gap-2"
                 >
-                  <Receipt className="w-3.5 h-3.5 text-[#FF4D00]" />
+                  <Receipt className="w-3.5 h-3.5 text-accent-text" />
                   <span>New Tax Invoice</span>
                 </button>
                 <button
@@ -189,7 +189,7 @@ export default function AdminLayout({
                   onClick={() => { onTabChange('orders'); setIsQuickCreateOpen(false); }}
                   className="w-full text-left px-3 py-2 hover:bg-[#F7F7F7] flex items-center gap-2 border-t border-[#F0F0F0]"
                 >
-                  <ShoppingBag className="w-3.5 h-3.5 text-[#FF4D00]" />
+                  <ShoppingBag className="w-3.5 h-3.5 text-accent-text" />
                   <span>Manual Walk-in Order</span>
                 </button>
               </div>
@@ -210,7 +210,7 @@ export default function AdminLayout({
             >
               <Bell className="w-4 h-4" />
               {notificationItems.length > 0 && (
-                <span className="w-2 h-2 rounded-full bg-[#FF4D00] absolute top-1 right-1" />
+                <span className="w-2 h-2 rounded-full bg-accent absolute top-1 right-1" />
               )}
             </button>
 
@@ -218,7 +218,7 @@ export default function AdminLayout({
               <div className="absolute right-0 top-10 w-72 sm:w-80 bg-white border border-[#0A0A0A] shadow-xl z-50 p-3 text-xs animate-in fade-in zoom-in-95 duration-100">
                 <div className="font-mono uppercase text-[10px] font-bold text-[#6B6B6B] mb-2 pb-1 border-b border-[#EAEAEA] flex items-center justify-between">
                   <span>Operational Notifications</span>
-                  <span className="text-pop">{notificationItems.length} alerts</span>
+                  <span className="text-accent-text">{notificationItems.length} alerts</span>
                 </div>
                 <div className="space-y-2 max-h-64 overflow-y-auto">
                   {notificationItems.length > 0 ? (
@@ -232,7 +232,7 @@ export default function AdminLayout({
                         className="p-2 border border-[#EAEAEA] hover:border-[#0A0A0A] cursor-pointer text-xs rounded-[2px]"
                       >
                         <div className="flex items-center gap-1.5 font-semibold text-[#0A0A0A]">
-                          <AlertTriangle className="w-3.5 h-3.5 text-[#FF4D00]" />
+                          <AlertTriangle className="w-3.5 h-3.5 text-accent-text" />
                           <span>{n.type === 'low_stock' ? 'Low Stock Warning' : 'Pending Fulfillment'}</span>
                         </div>
                         <div className="text-[11px] text-[#6B6B6B] mt-0.5">{n.text}</div>
@@ -350,7 +350,7 @@ export default function AdminLayout({
                       }`}
                     >
                       <div className="flex items-center gap-3">
-                        <Icon className={`w-4 h-4 ${isActive ? 'text-[#FF4D00]' : 'text-[#6B6B6B]'}`} />
+                        <Icon className={`w-4 h-4 ${isActive ? 'text-accent-text' : 'text-[#6B6B6B]'}`} />
                         <span>{item.label}</span>
                       </div>
                       {item.badge > 0 && (
@@ -389,7 +389,7 @@ export default function AdminLayout({
                     }`}
                   >
                     <div className="flex items-center gap-3 min-w-0">
-                      <Icon className={`w-4 h-4 shrink-0 ${isActive ? 'text-[#FF4D00]' : 'text-[#6B6B6B]'}`} />
+                      <Icon className={`w-4 h-4 shrink-0 ${isActive ? 'text-accent-text' : 'text-[#6B6B6B]'}`} />
                       {isSidebarOpen && <span className="truncate">{item.label}</span>}
                     </div>
 
@@ -400,7 +400,7 @@ export default function AdminLayout({
                     )}
 
                     {!isSidebarOpen && item.badge > 0 && (
-                      <span className="w-2 h-2 rounded-full bg-[#FF4D00] absolute top-2 right-2" />
+                      <span className="w-2 h-2 rounded-full bg-accent absolute top-2 right-2" />
                     )}
                   </button>
                 );

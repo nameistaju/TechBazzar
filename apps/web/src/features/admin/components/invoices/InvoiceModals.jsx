@@ -130,7 +130,7 @@ export default function InvoiceModals({
                 <button
                   type="submit"
                   disabled={submittingPayment}
-                  className="flex-1 py-2 bg-[#0A0A0A] text-white text-xs uppercase hover:bg-[#FF4D00] transition-colors font-bold"
+                  className="flex-1 py-2 bg-[#0A0A0A] text-accent-contrast text-xs uppercase hover:bg-accent transition-colors font-bold"
                 >
                   {submittingPayment ? 'Saving...' : 'Record Payment'}
                 </button>
@@ -215,7 +215,7 @@ export default function InvoiceModals({
                       name="invCustMode"
                       checked={customerMode === 'existing'}
                       onChange={() => setCustomerMode('existing')}
-                      className="accent-[#FF4D00]"
+                      className="accent-accent"
                     />
                     Select Existing Client
                   </label>
@@ -225,7 +225,7 @@ export default function InvoiceModals({
                       name="invCustMode"
                       checked={customerMode === 'new'}
                       onChange={() => setCustomerMode('new')}
-                      className="accent-[#FF4D00]"
+                      className="accent-accent"
                     />
                     New Client
                   </label>
@@ -328,7 +328,7 @@ export default function InvoiceModals({
                   <button
                     type="button"
                     onClick={() => setLineItems([...lineItems, { productId: '', itemName: '', quantity: 1, rate: 1000, discountPercent: 0, taxRate: 18, isTaxInclusive: true }])}
-                    className="text-xs font-mono text-[#FF4D00] hover:underline"
+                    className="text-xs font-mono text-accent-text hover:underline"
                   >
                     + Add Row
                   </button>
@@ -419,7 +419,7 @@ export default function InvoiceModals({
                     name="tmpl"
                     checked={templateChoice === 'standard'}
                     onChange={() => setTemplateChoice('standard')}
-                    className="accent-[#FF4D00]"
+                    className="accent-accent"
                   />
                   Standard Layout (Full Header)
                 </label>
@@ -429,7 +429,7 @@ export default function InvoiceModals({
                     name="tmpl"
                     checked={templateChoice === 'compact'}
                     onChange={() => setTemplateChoice('compact')}
-                    className="accent-[#FF4D00]"
+                    className="accent-accent"
                   />
                   Compact Layout (Dense 1-Page)
                 </label>
@@ -447,7 +447,7 @@ export default function InvoiceModals({
                 <button
                   type="submit"
                   disabled={savingInvoice}
-                  className="px-6 py-2 bg-[#0A0A0A] text-white text-xs font-mono uppercase hover:bg-[#FF4D00] transition-colors font-semibold"
+                  className="px-6 py-2 bg-[#0A0A0A] text-accent-contrast text-xs font-mono uppercase hover:bg-accent transition-colors font-semibold"
                 >
                   {savingInvoice ? 'Generating Invoice...' : 'Generate & Save Tax Invoice'}
                 </button>

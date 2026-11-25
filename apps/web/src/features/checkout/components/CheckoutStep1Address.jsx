@@ -75,7 +75,7 @@ export default function CheckoutStep1Address({
                 pincode: ''
               });
             }}
-            className="text-xs font-semibold text-[#FF4D00] hover:underline flex items-center gap-1 pt-1"
+            className="text-xs font-semibold text-accent-text hover:underline flex items-center gap-1 pt-1"
           >
             <Plus size={14} /> Add new address
           </button>
@@ -245,7 +245,7 @@ export default function CheckoutStep1Address({
                 type="checkbox"
                 checked={formData.sameAsBilling}
                 onChange={(e) => setFormData({ ...formData, sameAsBilling: e.target.checked })}
-                className="accent-[#FF4D00]"
+                className="accent-accent"
               />
               <span>Billing address is same as delivery destination</span>
             </label>
@@ -256,7 +256,7 @@ export default function CheckoutStep1Address({
       <div className="pt-4 border-t border-[#F2F2F2] flex justify-end">
         <button
           type="submit"
-          className="py-3.5 px-8 bg-[#0A0A0A] hover:bg-[#FF4D00] text-white text-xs font-semibold uppercase tracking-widest rounded-[4px] transition-colors flex items-center gap-2 cursor-pointer"
+          className="py-3.5 px-8 bg-[#0A0A0A] hover:bg-accent text-accent-contrast text-xs font-semibold uppercase tracking-widest rounded-[4px] transition-colors flex items-center gap-2 cursor-pointer"
         >
           Continue to Payment <ArrowRight size={14} />
         </button>

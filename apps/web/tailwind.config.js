@@ -8,18 +8,19 @@ export default {
     extend: {
       colors: {
         accent: {
-          DEFAULT: "var(--accent)",
-          hover: "var(--accent-hover)",
-          pressed: "var(--accent-pressed)",
-          tint: "var(--accent-tint)",
-          border: "var(--accent-border)",
-          contrast: "var(--accent-contrast)",
+          DEFAULT: "rgb(var(--accent) / <alpha-value>)",
+          hover: "rgb(var(--accent-hover) / <alpha-value>)",
+          pressed: "rgb(var(--accent-pressed) / <alpha-value>)",
+          tint: "rgb(var(--accent-tint) / <alpha-value>)",
+          border: "rgb(var(--accent-border) / <alpha-value>)",
+          text: "rgb(var(--accent-text) / <alpha-value>)",
+          contrast: "rgb(var(--accent-contrast) / <alpha-value>)",
           ring: "var(--accent-ring)",
         },
         pop: {
-          DEFAULT: "var(--color-primary)",
-          hover: "var(--color-primary-hover)",
-          light: "var(--color-primary-light)",
+          DEFAULT: "rgb(var(--accent) / <alpha-value>)",
+          hover: "rgb(var(--accent-hover) / <alpha-value>)",
+          light: "rgb(var(--accent-tint) / <alpha-value>)",
         },
         surface: {
           DEFAULT: "var(--color-surface)",

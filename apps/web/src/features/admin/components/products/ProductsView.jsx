@@ -477,13 +477,13 @@ export default function ProductsView({ initialEditId, onClearInitialEdit }) {
               loadDuplicateGroups();
               setShowDuplicatesModal(true);
             }}
-            className="px-3 py-1.5 border border-[#EAEAEA] bg-white text-xs font-mono uppercase tracking-wider text-[#0A0A0A] hover:border-[#FF4D00] hover:text-[#FF4D00] flex items-center gap-1.5 transition-colors relative"
+            className="px-3 py-1.5 border border-[#EAEAEA] bg-white text-xs font-mono uppercase tracking-wider text-[#0A0A0A] hover:border-accent hover:text-accent-text flex items-center gap-1.5 transition-colors relative"
             title="Scan catalog for duplicate products"
           >
-            <Sparkles className="w-3.5 h-3.5 text-[#FF4D00]" />
+            <Sparkles className="w-3.5 h-3.5 text-accent-text" />
             Find Duplicates
             {duplicateGroups.length > 0 && (
-              <span className="ml-1 px-1.5 py-0.2 bg-[#FF4D00] text-white rounded text-[10px] font-bold">
+              <span className="ml-1 px-1.5 py-0.2 bg-accent text-accent-contrast rounded text-[10px] font-bold">
                 {duplicateGroups.length}
               </span>
             )}
@@ -500,7 +500,7 @@ export default function ProductsView({ initialEditId, onClearInitialEdit }) {
 
           <button
             onClick={openAddDrawer}
-            className="px-3 py-1.5 bg-[#0A0A0A] text-white text-xs font-mono uppercase tracking-wider hover:bg-[#FF4D00] flex items-center gap-1.5 transition-colors font-semibold"
+            className="px-3 py-1.5 bg-[#0A0A0A] text-accent-contrast text-xs font-mono uppercase tracking-wider hover:bg-accent flex items-center gap-1.5 transition-colors font-semibold"
           >
             <Plus className="w-4 h-4" />
             Add Product
@@ -576,7 +576,7 @@ export default function ProductsView({ initialEditId, onClearInitialEdit }) {
                 type="checkbox"
                 checked={includeDeleted}
                 onChange={(e) => setIncludeDeleted(e.target.checked)}
-                className="accent-[#FF4D00]"
+                className="accent-accent"
               />
               Show Archived Products
             </label>
@@ -616,7 +616,7 @@ export default function ProductsView({ initialEditId, onClearInitialEdit }) {
                       type="checkbox"
                       checked={visibleCols[col]}
                       onChange={(e) => setVisibleCols(prev => ({ ...prev, [col]: e.target.checked }))}
-                      className="accent-[#FF4D00]"
+                      className="accent-accent"
                     />
                   </label>
                 ))}
@@ -630,7 +630,7 @@ export default function ProductsView({ initialEditId, onClearInitialEdit }) {
       {selectedIds.length > 0 && (
         <div className="p-3 bg-[#0A0A0A] text-white flex flex-wrap items-center justify-between gap-3 text-xs font-mono animate-in fade-in duration-150">
           <div className="flex items-center gap-2">
-            <span className="bg-[#FF4D00] text-black font-bold px-2 py-0.5">{selectedIds.length} Selected</span>
+            <span className="bg-accent text-black font-bold px-2 py-0.5">{selectedIds.length} Selected</span>
             <span>Bulk Actions:</span>
           </div>
 
@@ -703,13 +703,13 @@ export default function ProductsView({ initialEditId, onClearInitialEdit }) {
             <button
               onClick={handleApplyBulk}
               disabled={applyingBulk || !bulkAction}
-              className="px-3 py-1 bg-[#FF4D00] text-black font-bold uppercase hover:bg-white transition-colors"
+              className="px-3 py-1 bg-accent text-black font-bold uppercase hover:bg-white transition-colors"
             >
               {applyingBulk ? 'Applying...' : 'Apply'}
             </button>
             <button
               onClick={() => setSelectedIds([])}
-              className="p-1 hover:text-[#FF4D00]"
+              className="p-1 hover:text-accent-text"
             >
               <X className="w-4 h-4" />
             </button>
@@ -727,7 +727,7 @@ export default function ProductsView({ initialEditId, onClearInitialEdit }) {
                   type="checkbox"
                   checked={selectedIds.length === products.length && products.length > 0}
                   onChange={toggleSelectAll}
-                  className="accent-[#FF4D00]"
+                  className="accent-accent"
                 />
               </th>
               <th className="p-3">Product</th>
@@ -766,14 +766,14 @@ export default function ProductsView({ initialEditId, onClearInitialEdit }) {
               return (
                 <tr 
                   key={p.id} 
-                  className={`hover:bg-[#FBFBFB] transition-colors ${isSelected ? 'bg-orange-50/40' : ''} ${p.deletedAt ? 'opacity-60 bg-gray-50' : ''}`}
+                  className={`hover:bg-[#FBFBFB] transition-colors ${isSelected ? 'bg-accent-tint' : ''} ${p.deletedAt ? 'opacity-60 bg-gray-50' : ''}`}
                 >
                   <td className="p-3">
                     <input
                       type="checkbox"
                       checked={isSelected}
                       onChange={() => toggleSelect(p.id)}
-                      className="accent-[#FF4D00]"
+                      className="accent-accent"
                     />
                   </td>
 
@@ -836,7 +836,7 @@ export default function ProductsView({ initialEditId, onClearInitialEdit }) {
                         p.stock === 0 
                           ? 'bg-red-100 text-red-600' 
                           : p.stock <= (p.lowStockThreshold || 3)
-                          ? 'bg-orange-100 text-[#FF4D00]'
+                          ? 'bg-accent-tint text-accent-text'
                           : 'text-[#0A0A0A]'
                       }`}>
                         {p.stock}
@@ -863,7 +863,7 @@ export default function ProductsView({ initialEditId, onClearInitialEdit }) {
                   {visibleCols.flags && (
                     <td className="p-3">
                       <div className="flex flex-wrap gap-1">
-                        {p.isFlashSale && <span className="px-1.5 py-0.2 bg-[#FF4D00] text-black text-[9px] font-mono font-bold uppercase">Sale</span>}
+                        {p.isFlashSale && <span className="px-1.5 py-0.2 bg-accent text-black text-[9px] font-mono font-bold uppercase">Sale</span>}
                         {p.isTrending && <span className="px-1.5 py-0.2 bg-black text-white text-[9px] font-mono uppercase">Trend</span>}
                         {p.isBestseller && <span className="px-1.5 py-0.2 bg-amber-100 text-amber-800 text-[9px] font-mono uppercase">Top</span>}
                         {p.isNew && <span className="px-1.5 py-0.2 bg-blue-50 text-blue-700 text-[9px] font-mono uppercase">New</span>}

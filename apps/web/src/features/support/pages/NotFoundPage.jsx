@@ -7,11 +7,11 @@ export default function NotFoundPage() {
   return (
     <div className="bg-white min-h-[75vh] flex items-center justify-center py-20">
       <div className="max-w-xl mx-auto px-4 text-center">
-        <div className="w-16 h-16 rounded-full bg-[#F7F7F7] border border-[#EAEAEA] flex items-center justify-center text-[#FF4D00] mx-auto mb-6">
+        <div className="w-16 h-16 rounded-full bg-[#F7F7F7] border border-[#EAEAEA] flex items-center justify-center text-accent-text mx-auto mb-6">
           <Compass size={28} strokeWidth={1.5} />
         </div>
         
-        <span className="text-[10px] uppercase tracking-[0.2em] text-[#FF4D00] font-bold block mb-2">
+        <span className="text-[10px] uppercase tracking-[0.2em] text-accent-text font-bold block mb-2">
           Error 404
         </span>
         <h1 className="text-4xl sm:text-5xl font-light uppercase tracking-widest text-[#0A0A0A] mb-4">
@@ -36,7 +36,7 @@ export default function NotFoundPage() {
 
         <Link
           to="/"
-          className="inline-flex items-center gap-2 bg-[#0A0A0A] text-white text-xs font-semibold uppercase tracking-widest px-8 py-4 rounded-[4px] hover:bg-[#FF4D00] transition-colors"
+          className="inline-flex items-center gap-2 bg-[#0A0A0A] text-accent-contrast text-xs font-semibold uppercase tracking-widest px-8 py-4 rounded-[4px] hover:bg-accent transition-colors"
         >
           Return to Storefront <ArrowRight size={14} />
         </Link>

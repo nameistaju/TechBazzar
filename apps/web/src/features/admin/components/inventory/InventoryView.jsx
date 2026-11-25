@@ -153,7 +153,7 @@ export default function InventoryView({ preselectedProduct, onClearPreselected }
             onClick={() => setActiveTab('all')}
             className={`py-3 px-4 border-b-2 font-semibold transition-colors ${
               activeTab === 'all'
-                ? 'border-[#FF4D00] text-[#0A0A0A]'
+                ? 'border-accent text-[#0A0A0A]'
                 : 'border-transparent text-[#6B6B6B] hover:text-[#0A0A0A]'
             }`}
           >
@@ -164,11 +164,11 @@ export default function InventoryView({ preselectedProduct, onClearPreselected }
             onClick={() => setActiveTab('low')}
             className={`py-3 px-4 border-b-2 font-semibold transition-colors flex items-center gap-1.5 ${
               activeTab === 'low'
-                ? 'border-[#FF4D00] text-[#FF4D00]'
+                ? 'border-accent text-accent-text'
                 : 'border-transparent text-[#6B6B6B] hover:text-[#0A0A0A]'
             }`}
           >
-            <AlertTriangle className="w-3.5 h-3.5 text-[#FF4D00]" />
+            <AlertTriangle className="w-3.5 h-3.5 text-accent-text" />
             Low Stock ({counts.low})
           </button>
 
@@ -276,14 +276,14 @@ export default function InventoryView({ preselectedProduct, onClearPreselected }
                     </td>
 
                     <td className="p-3 text-center font-mono font-bold text-sm">
-                      <span className={isOut ? 'text-red-600' : isLow ? 'text-[#FF4D00]' : 'text-[#0A0A0A]'}>
+                      <span className={isOut ? 'text-red-600' : isLow ? 'text-accent-text' : 'text-[#0A0A0A]'}>
                         {item.stock}
                       </span>
                     </td>
 
                     <td className="p-3 text-center font-mono">
                       <span className={`px-2 py-0.5 text-[10px] uppercase font-bold ${
-                        isOut ? 'bg-red-100 text-red-600' : isLow ? 'bg-orange-100 text-[#FF4D00]' : 'bg-emerald-50 text-emerald-700'
+                        isOut ? 'bg-red-100 text-red-600' : isLow ? 'bg-accent-tint text-accent-text' : 'bg-emerald-50 text-emerald-700'
                       }`}>
                         {isOut ? 'Out of Stock' : isLow ? 'Low Stock' : 'In Stock'}
                       </span>
@@ -299,7 +299,7 @@ export default function InventoryView({ preselectedProduct, onClearPreselected }
                           setAdjustNotes('');
                           setAdjustRef('');
                         }}
-                        className="px-2.5 py-1 text-xs font-mono uppercase bg-[#0A0A0A] text-white hover:bg-[#FF4D00] transition-colors"
+                        className="px-2.5 py-1 text-xs font-mono uppercase bg-[#0A0A0A] text-accent-contrast hover:bg-accent transition-colors"
                       >
                         Adjust
                       </button>
@@ -486,7 +486,7 @@ export default function InventoryView({ preselectedProduct, onClearPreselected }
               <div className="p-3 bg-[#F7F7F7] border border-[#EAEAEA] text-xs font-mono flex items-center justify-between">
                 <span>Before: <strong>{adjustModalProduct.stock}</strong></span>
                 <span>→</span>
-                <span>After: <strong className="text-[#FF4D00] text-sm">{calcNewStock()}</strong></span>
+                <span>After: <strong className="text-accent-text text-sm">{calcNewStock()}</strong></span>
               </div>
 
               {/* Submit Buttons */}
@@ -501,7 +501,7 @@ export default function InventoryView({ preselectedProduct, onClearPreselected }
                 <button
                   type="submit"
                   disabled={submittingAdjust}
-                  className="flex-1 py-2 bg-[#0A0A0A] text-white text-xs font-mono uppercase hover:bg-[#FF4D00] transition-colors font-semibold"
+                  className="flex-1 py-2 bg-[#0A0A0A] text-accent-contrast text-xs font-mono uppercase hover:bg-accent transition-colors font-semibold"
                 >
                   {submittingAdjust ? 'Updating...' : 'Confirm Stock Adjustment'}
                 </button>

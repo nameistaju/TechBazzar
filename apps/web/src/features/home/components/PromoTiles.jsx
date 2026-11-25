@@ -12,7 +12,7 @@ export default function PromoTiles() {
           <div className="bg-[#F7F7F7] border border-[#EAEAEA] rounded-[4px] p-8 lg:p-10 flex flex-col justify-between group hover:border-[#D4D4D4] transition-all duration-300">
             <div className="flex flex-col sm:flex-row justify-between items-start gap-6">
               <div className="max-w-xs space-y-3">
-                <span className="text-[10px] uppercase tracking-[0.2em] text-[#FF4D00] font-bold">
+                <span className="text-[10px] uppercase tracking-[0.2em] text-accent-text font-bold">
                   Acoustic Design
                 </span>
                 <h3 className="text-2xl lg:text-3xl font-light uppercase tracking-wide text-[#0A0A0A] leading-tight">
@@ -39,7 +39,7 @@ export default function PromoTiles() {
               </div>
               <Link
                 to="/shop?category=earbuds"
-                className="text-xs font-semibold uppercase tracking-wider text-[#0A0A0A] group-hover:text-[#FF4D00] flex items-center gap-1.5 transition-colors"
+                className="text-xs font-semibold uppercase tracking-wider text-[#0A0A0A] group-hover:text-accent-text flex items-center gap-1.5 transition-colors"
               >
                 See more <ArrowRight size={13} className="group-hover:translate-x-1 transition-transform" />
               </Link>
@@ -50,7 +50,7 @@ export default function PromoTiles() {
           <div className="bg-[#F7F7F7] border border-[#EAEAEA] rounded-[4px] p-8 lg:p-10 flex flex-col justify-between group hover:border-[#D4D4D4] transition-all duration-300">
             <div className="flex flex-col sm:flex-row justify-between items-start gap-6">
               <div className="max-w-xs space-y-3">
-                <span className="text-[10px] uppercase tracking-[0.2em] text-[#FF4D00] font-bold">
+                <span className="text-[10px] uppercase tracking-[0.2em] text-accent-text font-bold">
                   New Collection Drop
                 </span>
                 <h3 className="text-2xl lg:text-3xl font-light uppercase tracking-wide text-[#0A0A0A] leading-tight">
@@ -77,7 +77,7 @@ export default function PromoTiles() {
               </div>
               <Link
                 to="/shop?category=phone-cases"
-                className="text-xs font-semibold uppercase tracking-wider text-[#0A0A0A] group-hover:text-[#FF4D00] flex items-center gap-1.5 transition-colors"
+                className="text-xs font-semibold uppercase tracking-wider text-[#0A0A0A] group-hover:text-accent-text flex items-center gap-1.5 transition-colors"
               >
                 See more cases <ArrowRight size={13} className="group-hover:translate-x-1 transition-transform" />
               </Link>

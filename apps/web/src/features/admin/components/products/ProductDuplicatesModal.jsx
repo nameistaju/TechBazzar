@@ -26,11 +26,11 @@ export default function ProductDuplicatesModal({
           <div>
             <div className="flex items-center gap-2">
               <h2 className="text-lg font-bold font-mono uppercase tracking-tight text-[#0A0A0A] flex items-center gap-2">
-                <Sparkles className="w-5 h-5 text-[#FF4D00]" />
+                <Sparkles className="w-5 h-5 text-accent-text" />
                 Duplicate Products Review
               </h2>
               {duplicateGroups.filter(g => !dismissedGroupKeys.has(g.key)).length > 0 && (
-                <span className="px-2 py-0.5 bg-[#FF4D00] text-white text-[10px] font-mono font-bold uppercase rounded">
+                <span className="px-2 py-0.5 bg-accent text-accent-contrast text-[10px] font-mono font-bold uppercase rounded">
                   {duplicateGroups.filter(g => !dismissedGroupKeys.has(g.key)).length} Groups Detected
                 </span>
               )}
@@ -45,9 +45,9 @@ export default function ProductDuplicatesModal({
               <button
                 onClick={handleMergeAllSafeGroups}
                 disabled={mergingAll}
-                className="px-3.5 py-1.5 bg-[#0A0A0A] hover:bg-[#FF4D00] text-white text-xs font-mono uppercase tracking-wider font-semibold transition-colors flex items-center gap-1.5 disabled:opacity-50"
+                className="px-3.5 py-1.5 bg-[#0A0A0A] hover:bg-accent text-accent-contrast text-xs font-mono uppercase tracking-wider font-semibold transition-colors flex items-center gap-1.5 disabled:opacity-50"
               >
-                <Sparkles className="w-3.5 h-3.5 text-[#FF4D00]" />
+                <Sparkles className="w-3.5 h-3.5 text-accent-text" />
                 {mergingAll ? 'Merging All...' : 'Merge All Safe Groups'}
               </button>
             )}
@@ -64,7 +64,7 @@ export default function ProductDuplicatesModal({
         <div className="flex-1 overflow-y-auto p-6 space-y-6 bg-[#FAFAFA]">
           {loadingDuplicates ? (
             <div className="p-12 text-center space-y-3">
-              <RefreshCw className="w-6 h-6 animate-spin mx-auto text-[#FF4D00]" />
+              <RefreshCw className="w-6 h-6 animate-spin mx-auto text-accent-text" />
               <p className="text-xs font-mono text-[#6B6B6B]">Scanning product catalog for duplicates...</p>
             </div>
           ) : duplicateGroups.filter(g => !dismissedGroupKeys.has(g.key)).length === 0 ? (
@@ -129,12 +129,12 @@ export default function ProductDuplicatesModal({
                             key={p.id}
                             className={`p-3 border flex flex-col justify-between relative transition-all ${
                               isCanonical
-                                ? 'border-[#FF4D00] bg-orange-50/20'
+                                ? 'border-accent bg-accent-tint'
                                 : 'border-[#EAEAEA] bg-white hover:border-[#0A0A0A]'
                             }`}
                           >
                             {isCanonical && (
-                              <span className="absolute top-2 right-2 px-1.5 py-0.5 bg-[#0A0A0A] text-[#FF4D00] text-[9px] font-mono font-bold uppercase tracking-wider z-10">
+                              <span className="absolute top-2 right-2 px-1.5 py-0.5 bg-[#0A0A0A] text-accent-text text-[9px] font-mono font-bold uppercase tracking-wider z-10">
                                 Canonical
                               </span>
                             )}
@@ -182,9 +182,9 @@ export default function ProductDuplicatesModal({
                                   type="button"
                                   disabled={mergingGroupId === p.id}
                                   onClick={() => handleMergeGroup(p.id, duplicatesList.map(d => d.id))}
-                                  className="w-full py-1.5 bg-[#0A0A0A] hover:bg-[#FF4D00] text-white text-xs font-mono uppercase font-semibold tracking-wider transition-colors flex items-center justify-center gap-1.5 disabled:opacity-50"
+                                  className="w-full py-1.5 bg-[#0A0A0A] hover:bg-accent text-accent-contrast text-xs font-mono uppercase font-semibold tracking-wider transition-colors flex items-center justify-center gap-1.5 disabled:opacity-50"
                                 >
-                                  <Check className="w-3.5 h-3.5 text-[#FF4D00]" />
+                                  <Check className="w-3.5 h-3.5 text-accent-text" />
                                   {mergingGroupId === p.id ? 'Merging...' : 'Merge into this one'}
                                 </button>
                               ) : (
@@ -220,7 +220,7 @@ export default function ProductDuplicatesModal({
           <button
             type="button"
             onClick={() => setShowDuplicatesModal(false)}
-            className="px-4 py-1.5 bg-[#0A0A0A] text-white text-xs font-mono uppercase tracking-wider hover:bg-[#FF4D00] transition-colors shrink-0"
+            className="px-4 py-1.5 bg-[#0A0A0A] text-accent-contrast text-xs font-mono uppercase tracking-wider hover:bg-accent transition-colors shrink-0"
           >
             Close
           </button>

@@ -45,7 +45,7 @@ export default function CheckoutStep3Review({
             <button
               type="button"
               onClick={() => setCurrentStep(1)}
-              className="text-[#FF4D00] font-semibold text-[10px] uppercase hover:underline"
+              className="text-accent-text font-semibold text-[10px] uppercase hover:underline"
             >
               Edit
             </button>
@@ -72,7 +72,7 @@ export default function CheckoutStep3Review({
             <button
               type="button"
               onClick={() => setCurrentStep(2)}
-              className="text-[#FF4D00] font-semibold text-[10px] uppercase hover:underline"
+              className="text-accent-text font-semibold text-[10px] uppercase hover:underline"
             >
               Edit
             </button>
@@ -88,7 +88,7 @@ export default function CheckoutStep3Review({
           </p>
           {isAdvancePayment ? (
             <div className="mt-2 pt-2 border-t border-[#EAEAEA] space-y-1">
-              <div className="flex justify-between text-xs font-semibold text-[#FF4D00]">
+              <div className="flex justify-between text-xs font-semibold text-accent-text">
                 <span>50% Advance Today:</span>
                 <span className="tabular-nums">₹{advanceAmount.toLocaleString('en-IN')}</span>
               </div>
@@ -143,7 +143,7 @@ export default function CheckoutStep3Review({
           type="button"
           disabled={isSubmitting}
           onClick={handlePlaceOrder}
-          className="py-4 px-10 bg-[#FF4D00] hover:bg-[#E04400] text-white text-xs font-semibold uppercase tracking-widest rounded-[4px] transition-colors flex items-center gap-2 cursor-pointer shadow-md disabled:opacity-50"
+          className="py-4 px-10 bg-accent hover:bg-accent-hover text-accent-contrast text-xs font-semibold uppercase tracking-widest rounded-[4px] transition-colors flex items-center gap-2 cursor-pointer shadow-md disabled:opacity-50"
         >
           {isSubmitting ? (
             <>

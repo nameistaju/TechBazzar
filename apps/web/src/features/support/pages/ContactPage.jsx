@@ -13,7 +13,7 @@ export default function ContactPage() {
 
         {/* Header */}
         <div className="py-6 border-b border-[#EAEAEA] mb-10">
-          <span className="text-[10px] uppercase tracking-[0.25em] text-[#FF4D00] font-bold block mb-1">
+          <span className="text-[10px] uppercase tracking-[0.25em] text-accent-text font-bold block mb-1">
             Direct Trade Support
           </span>
           <h1 className="text-2xl sm:text-3xl font-light uppercase tracking-wider text-[#0A0A0A]">
@@ -52,7 +52,7 @@ export default function ContactPage() {
             {/* Channels Grid */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div className="p-5 border border-[#EAEAEA] rounded-[4px] bg-[#FAFAFA] space-y-2">
-                <div className="w-8 h-8 rounded-full bg-white border border-[#EAEAEA] flex items-center justify-center text-[#FF4D00]">
+                <div className="w-8 h-8 rounded-full bg-white border border-[#EAEAEA] flex items-center justify-center text-accent-text">
                   <Phone size={15} />
                 </div>
                 <div className="text-xs font-semibold text-[#0A0A0A] uppercase tracking-wider">B2B Sales Desk</div>
@@ -61,7 +61,7 @@ export default function ContactPage() {
               </div>
 
               <div className="p-5 border border-[#EAEAEA] rounded-[4px] bg-[#FAFAFA] space-y-2">
-                <div className="w-8 h-8 rounded-full bg-white border border-[#EAEAEA] flex items-center justify-center text-[#FF4D00]">
+                <div className="w-8 h-8 rounded-full bg-white border border-[#EAEAEA] flex items-center justify-center text-accent-text">
                   <Mail size={15} />
                 </div>
                 <div className="text-xs font-semibold text-[#0A0A0A] uppercase tracking-wider">Official Wholesale RFQ</div>
@@ -70,7 +70,7 @@ export default function ContactPage() {
               </div>
 
               <div className="p-5 border border-[#EAEAEA] rounded-[4px] bg-[#FAFAFA] space-y-2">
-                <div className="w-8 h-8 rounded-full bg-white border border-[#EAEAEA] flex items-center justify-center text-[#FF4D00]">
+                <div className="w-8 h-8 rounded-full bg-white border border-[#EAEAEA] flex items-center justify-center text-accent-text">
                   <Clock size={15} />
                 </div>
                 <div className="text-xs font-semibold text-[#0A0A0A] uppercase tracking-wider">Freight & Dispatch Desk</div>
@@ -79,7 +79,7 @@ export default function ContactPage() {
               </div>
 
               <div className="p-5 border border-[#EAEAEA] rounded-[4px] bg-[#FAFAFA] space-y-2">
-                <div className="w-8 h-8 rounded-full bg-white border border-[#EAEAEA] flex items-center justify-center text-[#FF4D00]">
+                <div className="w-8 h-8 rounded-full bg-white border border-[#EAEAEA] flex items-center justify-center text-accent-text">
                   <Building size={15} />
                 </div>
                 <div className="text-xs font-semibold text-[#0A0A0A] uppercase tracking-wider">Tax & Billing Division</div>
@@ -91,7 +91,7 @@ export default function ContactPage() {
             {/* Warehouse Location */}
             <div className="p-5 border border-[#EAEAEA] rounded-[4px] bg-white space-y-2">
               <div className="flex items-center gap-2 text-xs font-semibold text-[#0A0A0A] uppercase tracking-wider">
-                <MapPin size={15} className="text-[#FF4D00]" /> Central Warehousing & Fulfilment Hub
+                <MapPin size={15} className="text-accent-text" /> Central Warehousing & Fulfilment Hub
               </div>
               <p className="text-xs text-[#6B6B6B] leading-relaxed">
                 TechBazaar Logistics Park, Plot 42/B, Peenya Industrial Area, Phase 2, Bangalore, Karnataka — 560058, India.
@@ -115,21 +115,21 @@ export default function ContactPage() {
                   className="p-3 bg-white border border-[#EAEAEA] rounded flex items-center justify-between hover:border-[#0A0A0A] transition-colors"
                 >
                   <span className="font-medium text-[#0A0A0A]">Bulk SKU Order Matrix</span>
-                  <ArrowRight size={13} className="text-[#FF4D00]" />
+                  <ArrowRight size={13} className="text-accent-text" />
                 </Link>
                 <Link
                   to="/quote"
                   className="p-3 bg-white border border-[#EAEAEA] rounded flex items-center justify-between hover:border-[#0A0A0A] transition-colors"
                 >
                   <span className="font-medium text-[#0A0A0A]">Request Factory Quote / RFQ</span>
-                  <ArrowRight size={13} className="text-[#FF4D00]" />
+                  <ArrowRight size={13} className="text-accent-text" />
                 </Link>
                 <Link
                   to="/track"
                   className="p-3 bg-white border border-[#EAEAEA] rounded flex items-center justify-between hover:border-[#0A0A0A] transition-colors"
                 >
                   <span className="font-medium text-[#0A0A0A]">Track Freight Consignment</span>
-                  <ArrowRight size={13} className="text-[#FF4D00]" />
+                  <ArrowRight size={13} className="text-accent-text" />
                 </Link>
               </div>
             </div>

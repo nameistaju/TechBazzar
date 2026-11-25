@@ -51,7 +51,7 @@ export default function FlashSaleSection() {
         {/* Section Header with Countdown */}
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-8">
           <div>
-            <div className="flex items-center gap-2 text-[10px] uppercase tracking-[0.2em] text-[#FF4D00] font-bold mb-1">
+            <div className="flex items-center gap-2 text-[10px] uppercase tracking-[0.2em] text-accent-text font-bold mb-1">
               <Zap size={14} className="fill-current" /> Limited Window Deals
             </div>
             <h2 className="text-2xl sm:text-3xl font-light uppercase tracking-widest text-[#0A0A0A]">
@@ -62,7 +62,7 @@ export default function FlashSaleSection() {
           {/* Countdown Clock Box */}
           <div className="flex items-center gap-4">
             <div className="flex items-center gap-2 bg-white border border-[#EAEAEA] px-4 py-2.5 rounded-[4px] shadow-sm">
-              <Clock size={16} className="text-[#FF4D00]" />
+              <Clock size={16} className="text-accent-text" />
               <span className="text-xs font-medium text-[#6B6B6B] uppercase tracking-wider mr-1">
                 Ends In:
               </span>
@@ -75,7 +75,7 @@ export default function FlashSaleSection() {
                   {String(timeLeft.minutes).padStart(2, '0')}
                 </span>
                 <span>:</span>
-                <span className="bg-[#FF4D00] text-white px-1.5 py-0.5 rounded-[2px]">
+                <span className="bg-accent text-accent-contrast px-1.5 py-0.5 rounded-[2px]">
                   {String(timeLeft.seconds).padStart(2, '0')}
                 </span>
               </div>
@@ -122,7 +122,7 @@ export default function FlashSaleSection() {
         <div className="mt-8 text-center">
           <Link
             to="/shop?sale=true"
-            className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-widest text-[#0A0A0A] hover:text-[#FF4D00] transition-colors group"
+            className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-widest text-[#0A0A0A] hover:text-accent-text transition-colors group"
           >
             Explore All Flash Sale Offers <ArrowRight size={13} className="group-hover:translate-x-1 transition-transform" />
           </Link>

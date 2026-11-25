@@ -168,7 +168,7 @@ export default function NavbarSearch({ isMobileModalOpen, onCloseMobileModal }) 
     const parts = text.split(regex);
     return parts.map((part, i) => 
       regex.test(part) ? (
-        <span key={i} className="text-pop font-bold underline decoration-pop/30">
+        <span key={i} className="text-accent-text font-bold underline decoration-pop/30">
           {part}
         </span>
       ) : (
@@ -279,7 +279,7 @@ export default function NavbarSearch({ isMobileModalOpen, onCloseMobileModal }) 
                 {/* Popular Searches */}
                 <div>
                   <div className="flex items-center gap-1.5 text-[11px] font-mono uppercase text-[#8A8A8A] mb-2 font-semibold">
-                    <TrendingUp className="w-3.5 h-3.5 text-pop" />
+                    <TrendingUp className="w-3.5 h-3.5 text-accent-text" />
                     <span>Popular Gadget Terms</span>
                   </div>
                   <div className="flex flex-wrap gap-1.5">
@@ -331,7 +331,7 @@ export default function NavbarSearch({ isMobileModalOpen, onCloseMobileModal }) 
                   <div className="p-4 space-y-3">
                     <div className="flex items-center justify-between text-[11px] font-mono text-[#8A8A8A]">
                       <span>Searching catalog for "{debouncedQuery}"...</span>
-                      <RefreshCw className="w-3.5 h-3.5 animate-spin text-pop" />
+                      <RefreshCw className="w-3.5 h-3.5 animate-spin text-accent-text" />
                     </div>
                     {[1, 2, 3].map((n) => (
                       <div key={n} className="flex items-center gap-3 animate-pulse">
@@ -364,7 +364,7 @@ export default function NavbarSearch({ isMobileModalOpen, onCloseMobileModal }) 
                   <div>
                     <div className="px-4 py-2 bg-[#FAFAFA] flex items-center justify-between text-[11px] font-mono uppercase text-[#8A8A8A] font-semibold border-b border-[#F0F0F0]">
                       <span>Matching Products ({totalMatches})</span>
-                      <span className="text-[10px] text-pop font-normal">Use ↑↓ to navigate</span>
+                      <span className="text-[10px] text-accent-text font-normal">Use ↑↓ to navigate</span>
                     </div>
 
                     <div className="divide-y divide-[#F7F7F7]">
@@ -409,7 +409,7 @@ export default function NavbarSearch({ isMobileModalOpen, onCloseMobileModal }) 
                                 ₹{Number(p.price || 0).toLocaleString('en-IN')}
                               </div>
                               {mode === 'wholesale' ? (
-                                <span className="text-[10px] font-mono text-pop font-semibold">
+                                <span className="text-[10px] font-mono text-accent-text font-semibold">
                                   MOQ: {p.moq || 1}
                                 </span>
                               ) : (
@@ -492,7 +492,7 @@ export default function NavbarSearch({ isMobileModalOpen, onCloseMobileModal }) 
                   <button
                     type="button"
                     onClick={() => executeSearch()}
-                    className="w-full px-4 py-2.5 bg-white hover:bg-pop/5 text-xs text-pop font-semibold transition-colors flex items-center justify-center gap-1.5 border-t border-[#F0F0F0]"
+                    className="w-full px-4 py-2.5 bg-white hover:bg-accent/5 text-xs text-accent-text font-semibold transition-colors flex items-center justify-center gap-1.5 border-t border-[#F0F0F0]"
                   >
                     <span>See all {totalMatches} results for "{debouncedQuery}"</span>
                     <ArrowRight size={13} />

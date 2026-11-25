@@ -45,7 +45,7 @@ export default function CartOrderSummary({
           <button
             type="submit"
             disabled={isApplyingCoupon}
-            className="bg-[#0A0A0A] text-white hover:bg-[#FF4D00] disabled:opacity-60 text-xs font-semibold uppercase tracking-wider px-4 py-2.5 rounded-[4px] transition-colors cursor-pointer"
+            className="bg-[#0A0A0A] text-accent-contrast hover:bg-accent disabled:opacity-60 text-xs font-semibold uppercase tracking-wider px-4 py-2.5 rounded-[4px] transition-colors cursor-pointer"
           >
             {isApplyingCoupon ? '...' : 'Apply'}
           </button>
@@ -90,7 +90,7 @@ export default function CartOrderSummary({
         )}
 
         {isWholesale && groupDiscountTotal > 0 && (
-          <div className="flex justify-between text-[#FF4D00] pt-3">
+          <div className="flex justify-between text-accent-text pt-3">
             <span>Wholesale Group Extra Discount</span>
             <span className="font-semibold tabular-nums">
               -{formatMoney(groupDiscountTotal || 0)}
@@ -99,7 +99,7 @@ export default function CartOrderSummary({
         )}
 
         {isWholesale && volumeDiscountAmount > 0 && (
-          <div className="flex justify-between text-[#FF4D00] pt-3">
+          <div className="flex justify-between text-accent-text pt-3">
             <span>Volume Tier Incentive ({volumeDiscountPercent}%)</span>
             <span className="font-semibold tabular-nums">
               -{formatMoney(volumeDiscountAmount || 0)}
@@ -133,7 +133,7 @@ export default function CartOrderSummary({
         </div>
 
         {isWholesale && cartSavingsVsRetail > 0 && (
-          <div className="pt-3 text-[11px] text-[#FF4D00] font-semibold text-center">
+          <div className="pt-3 text-[11px] text-accent-text font-semibold text-center">
             You saved {formatMoney(cartSavingsVsRetail || 0)} compared to Retail Single-Unit Pricing!
           </div>
         )}
@@ -148,7 +148,7 @@ export default function CartOrderSummary({
             onClick={() => navigate('/wholesale-checkout')}
             className={`w-full text-xs font-semibold uppercase tracking-widest py-4 rounded-[4px] transition-colors flex items-center justify-center gap-2 group shadow-sm ${
               meetsMinOrderValue && !hasMoqViolations
-                ? 'bg-[#0A0A0A] hover:bg-[#FF4D00] text-white cursor-pointer'
+                ? 'bg-[#0A0A0A] hover:bg-accent text-accent-contrast cursor-pointer'
                 : 'bg-neutral-300 text-neutral-500 cursor-not-allowed'
             }`}
           >
@@ -166,7 +166,7 @@ export default function CartOrderSummary({
           <button
             type="button"
             onClick={() => navigate('/checkout')}
-            className="w-full text-xs font-semibold uppercase tracking-widest py-4 rounded-[4px] bg-[#0A0A0A] hover:bg-[#FF4D00] text-white transition-colors flex items-center justify-center gap-2 group shadow-sm cursor-pointer"
+            className="w-full text-xs font-semibold uppercase tracking-widest py-4 rounded-[4px] bg-[#0A0A0A] hover:bg-accent text-accent-contrast transition-colors flex items-center justify-center gap-2 group shadow-sm cursor-pointer"
           >
             <span>Proceed to Checkout</span>
             <ArrowRight size={14} className="group-hover:translate-x-1 transition-transform" />

@@ -18,17 +18,17 @@ export default function AnnouncementBar() {
         <div className="max-w-site mx-auto flex items-center justify-between">
           <div className="hidden sm:flex items-center gap-4 text-[#A0A0A0]">
             <span className="flex items-center gap-1.5">
-              <Truck size={13} className="text-[#FF4D00]" /> Express Pan-India Delivery
+              <Truck size={13} className="text-accent-text" /> Express Pan-India Delivery
             </span>
             <span className="hidden md:inline text-[#444]">•</span>
             <span className="hidden md:flex items-center gap-1.5">
-              <ShieldCheck size={13} className="text-[#FF4D00]" /> 100% Genuine Brand Warranty
+              <ShieldCheck size={13} className="text-accent-text" /> 100% Genuine Brand Warranty
             </span>
           </div>
 
           <div className="mx-auto sm:mx-0 flex items-center gap-2 font-medium">
-            <span className="text-[#D4D4D4]">Use code <strong className="text-[#FF4D00] font-semibold tracking-wider">WELCOME10</strong> for 10% off first order</span>
-            <Link to="/shop?sale=true" className="inline-flex items-center gap-1 text-[#FF4D00] hover:underline underline-offset-4 font-normal">
+            <span className="text-[#D4D4D4]">Use code <strong className="text-accent-text font-semibold tracking-wider">WELCOME10</strong> for 10% off first order</span>
+            <Link to="/shop?sale=true" className="inline-flex items-center gap-1 text-accent-text hover:underline underline-offset-4 font-normal">
               Shop Flash Sale <ArrowRight size={11} />
             </Link>
           </div>
@@ -46,13 +46,13 @@ export default function AnnouncementBar() {
         <div className="bg-[#18181B] text-white text-[11.5px] py-1.5 px-4 border-b border-[#27272A] flex items-center justify-between animate-fadeIn">
           <div className="max-w-site mx-auto w-full flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider bg-[#FF4D00] text-white">
+              <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider bg-accent text-accent-contrast">
                 <Sparkles size={11} /> Wholesale Mode
               </span>
               <span className="text-[#D4D4D4]">
                 <strong className="text-white font-semibold">{groupName} Buyer</strong>
                 {groupDiscount > 0 ? (
-                  <> · Extra <strong className="text-[#FF4D00] font-bold">{groupDiscount}%</strong> on every order</>
+                  <> · Extra <strong className="text-accent-text font-bold">{groupDiscount}%</strong> on every order</>
                 ) : (
                   <> · B2B Tier Pricing & GST Invoicing Active</>
                 )}

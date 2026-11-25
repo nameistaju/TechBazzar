@@ -58,7 +58,7 @@ export default function CheckoutStep2Payment({
                   name="payment"
                   checked={isSelected}
                   onChange={() => setPaymentMethod(method.id)}
-                  className="mt-1 accent-[#FF4D00]"
+                  className="mt-1 accent-accent"
                 />
                 <div className="flex-1">
                   <div className="flex items-center gap-2">
@@ -114,20 +114,20 @@ export default function CheckoutStep2Payment({
       </div>
 
       {isWholesale && (
-      <div className="p-4 bg-orange-50/60 border border-orange-200/80 rounded-[4px]">
+      <div className="p-4 bg-accent-tint border border-accent-border rounded-[4px]">
         <label className="flex items-start gap-3 cursor-pointer">
           <input
             type="checkbox"
             checked={isAdvancePayment}
             onChange={(e) => setIsAdvancePayment(e.target.checked)}
-            className="mt-1 accent-[#FF4D00] w-4 h-4 rounded"
+            className="mt-1 accent-accent w-4 h-4 rounded"
           />
           <div className="flex-1">
             <div className="flex items-center gap-2">
               <span className="text-xs font-bold text-[#0A0A0A] uppercase tracking-wider">
                 Opt for 50% Advance Booking
               </span>
-              <span className="bg-[#FF4D00] text-white text-[10px] font-bold px-1.5 py-0.5 rounded">
+              <span className="bg-accent text-accent-contrast text-[10px] font-bold px-1.5 py-0.5 rounded">
                 B2B CREDIT
               </span>
             </div>
@@ -149,7 +149,7 @@ export default function CheckoutStep2Payment({
         </button>
         <button
           type="submit"
-          className="py-3.5 px-8 bg-[#0A0A0A] hover:bg-[#FF4D00] text-white text-xs font-semibold uppercase tracking-widest rounded-[4px] transition-colors flex items-center gap-2 cursor-pointer"
+          className="py-3.5 px-8 bg-[#0A0A0A] hover:bg-accent text-accent-contrast text-xs font-semibold uppercase tracking-widest rounded-[4px] transition-colors flex items-center gap-2 cursor-pointer"
         >
           Review Order <ArrowRight size={14} />
         </button>
