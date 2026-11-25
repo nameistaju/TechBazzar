@@ -1,33 +1,45 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, Suspense, lazy } from 'react';
 import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ArrowUp } from 'lucide-react';
 
-import { StoreProvider } from './context/StoreContext';
+import { StoreProvider, useStore } from './context/StoreContext';
+import { BrandingProvider } from './context/BrandingContext';
 import useAuthStore from './store/authStore';
 
-import AnnouncementBar from './components/common/AnnouncementBar';
-import Navbar from './components/common/Navbar';
-import CartDrawer from './components/common/CartDrawer';
+import StoreLayout from './layouts/StoreLayout';
 import Toast from './components/common/Toast';
-import Footer from './components/common/Footer';
 import AuthModal from './components/auth/AuthModal';
-
 import HomePage from './pages/HomePage';
-import ShopPage from './pages/ShopPage';
-import ProductDetailPage from './pages/ProductDetailPage';
-import CartPage from './pages/CartPage';
-import CheckoutPage from './pages/CheckoutPage';
-import OrderSuccessPage from './pages/OrderSuccessPage';
-import TrackOrderPage from './pages/TrackOrderPage';
-import AccountPage from './pages/AccountPage';
-import AdminPage from './pages/AdminPage';
-import WishlistPage from './pages/WishlistPage';
-import SearchResultsPage from './pages/SearchResultsPage';
-import QuickOrderPage from './pages/QuickOrderPage';
-import QuoteRequestPage from './pages/QuoteRequestPage';
-import ContactPage from './pages/ContactPage';
-import NotFoundPage from './pages/NotFoundPage';
+
+const ShopPage = lazy(() => import('./pages/ShopPage'));
+const ProductDetailPage = lazy(() => import('./pages/ProductDetailPage'));
+const CartPage = lazy(() => import('./pages/CartPage'));
+const CheckoutPage = lazy(() => import('./pages/CheckoutPage'));
+const WholesaleCheckoutPage = lazy(() => import('./pages/WholesaleCheckoutPage'));
+const OrderSuccessPage = lazy(() => import('./pages/OrderSuccessPage'));
+const TrackOrderPage = lazy(() => import('./pages/TrackOrderPage'));
+const AccountPage = lazy(() => import('./pages/AccountPage'));
+const AdminPage = lazy(() => import('./pages/AdminPage'));
+const WishlistPage = lazy(() => import('./pages/WishlistPage'));
+const SearchResultsPage = lazy(() => import('./pages/SearchResultsPage'));
+const QuickOrderPage = lazy(() => import('./pages/QuickOrderPage'));
+const QuoteRequestPage = lazy(() => import('./pages/QuoteRequestPage'));
+const ContactPage = lazy(() => import('./pages/ContactPage'));
+const NotFoundPage = lazy(() => import('./pages/NotFoundPage'));
+
+function RouteFallback() {
+  return (
+    <div className="min-h-[60vh] max-w-site mx-auto px-4 sm:px-6 lg:px-8 py-12 animate-pulse">
+      <div className="h-6 w-48 bg-[#F0F0F0] rounded mb-6" />
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="h-64 bg-[#F5F5F5] rounded" />
+        <div className="h-64 bg-[#F5F5F5] rounded" />
+        <div className="h-64 bg-[#F5F5F5] rounded" />
+      </div>
+    </div>
+  );
+}
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -73,6 +85,44 @@ function BackToTopButton() {
   );
 }
 
+function AppContent() {
+  return (
+    <BrowserRouter>
+      <ScrollToTop />
+      <Suspense fallback={<RouteFallback />}>
+        <Routes>
+          {/* Admin Back-Office Routes: Isolated under AdminLayout */}
+          <Route path="/admin/*" element={<AdminPage />} />
+          <Route path="/admin" element={<AdminPage />} />
+
+          {/* Storefront Routes: Wrapped inside StoreLayout */}
+          <Route element={<StoreLayout />}>
+            <Route path="/" element={<HomePage />} />
+            <Route path="/shop" element={<ShopPage />} />
+            <Route path="/product/:id" element={<ProductDetailPage />} />
+            <Route path="/cart" element={<CartPage />} />
+            <Route path="/checkout" element={<CheckoutPage />} />
+            <Route path="/wholesale-checkout" element={<WholesaleCheckoutPage />} />
+            <Route path="/order-success/:orderNumber" element={<OrderSuccessPage />} />
+            <Route path="/track" element={<TrackOrderPage />} />
+            <Route path="/account" element={<AccountPage />} />
+            <Route path="/wishlist" element={<WishlistPage />} />
+            <Route path="/search" element={<SearchResultsPage />} />
+            <Route path="/quick-order" element={<QuickOrderPage />} />
+            <Route path="/quote" element={<QuoteRequestPage />} />
+            <Route path="/contact" element={<ContactPage />} />
+            <Route path="*" element={<NotFoundPage />} />
+          </Route>
+        </Routes>
+      </Suspense>
+
+      <Toast />
+      <AuthModal />
+      <BackToTopButton />
+    </BrowserRouter>
+  );
+}
+
 export default function App() {
   const checkAuth = useAuthStore((s) => s.checkAuth);
 
@@ -82,41 +132,11 @@ export default function App() {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <StoreProvider>
-        <BrowserRouter>
-          <ScrollToTop />
-          <div className="flex flex-col min-h-screen bg-white">
-            <AnnouncementBar />
-            <Navbar />
-            
-            <main className="flex-1">
-              <Routes>
-                <Route path="/" element={<HomePage />} />
-                <Route path="/shop" element={<ShopPage />} />
-                <Route path="/product/:id" element={<ProductDetailPage />} />
-                <Route path="/cart" element={<CartPage />} />
-                <Route path="/checkout" element={<CheckoutPage />} />
-                <Route path="/order-success/:orderNumber" element={<OrderSuccessPage />} />
-                <Route path="/track" element={<TrackOrderPage />} />
-                <Route path="/account" element={<AccountPage />} />
-                <Route path="/admin" element={<AdminPage />} />
-                <Route path="/wishlist" element={<WishlistPage />} />
-                <Route path="/search" element={<SearchResultsPage />} />
-                <Route path="/quick-order" element={<QuickOrderPage />} />
-                <Route path="/quote" element={<QuoteRequestPage />} />
-                <Route path="/contact" element={<ContactPage />} />
-                <Route path="*" element={<NotFoundPage />} />
-              </Routes>
-            </main>
-
-            <Footer />
-            <CartDrawer />
-            <Toast />
-            <AuthModal />
-            <BackToTopButton />
-          </div>
-        </BrowserRouter>
-      </StoreProvider>
+      <BrandingProvider>
+        <StoreProvider>
+          <AppContent />
+        </StoreProvider>
+      </BrandingProvider>
     </QueryClientProvider>
   );
 }

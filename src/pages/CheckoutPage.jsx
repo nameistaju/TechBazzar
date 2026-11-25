@@ -230,9 +230,10 @@ export default function CheckoutPage() {
       return;
     }
 
-    // Success: clear cart and navigate to order success page
+    // Success: clear cart and navigate to order success page with trackingToken for reload safety
     clearCart();
-    navigate(`/order-success/${res.data.order.orderNumber}`, {
+    const tok = res.data.order.trackingToken ? `?token=${encodeURIComponent(res.data.order.trackingToken)}` : '';
+    navigate(`/order-success/${res.data.order.orderNumber}${tok}`, {
       state: {
         order: res.data.order,
         customerEmail: formData.email.trim()
@@ -271,6 +272,10 @@ export default function CheckoutPage() {
             { label: 'Express Checkout' }
           ]}
         />
+
+        <h1 className="text-2xl sm:text-3xl font-light uppercase tracking-widest text-[#0A0A0A] mt-4 mb-2">
+          {isWholesale ? 'Wholesale Checkout' : 'Express Checkout'}
+        </h1>
 
         {/* Guest sign-in hint banner (non-blocking) */}
         {!isAuthenticated && (

@@ -4,14 +4,14 @@ import { ArrowRight, Sparkles } from 'lucide-react';
 
 const heroSlides = [
   {
-    tagline: 'AUTUMN / WINTER 2026',
+    tagline: null,
     title: 'ACOUSTIC PURITY',
     subtitle: 'Sennheiser Momentum 4 Wireless Audiophile ANC',
     description: 'Engineered with 42mm audiophile transducers and 60-hour marathon battery reserves.',
     price: '₹27,990',
     originalPrice: '₹34,990',
     link: '/product/sennheiser-momentum-4-wireless',
-    image: '/images/image-149.jpg',
+    image: '/images/image-149.png',
     category: 'headphones'
   },
   {
@@ -33,7 +33,7 @@ const heroSlides = [
     price: '₹27,999',
     originalPrice: '₹31,999',
     link: '/product/marshall-acton-iii-bluetooth-speaker',
-    image: '/images/image-101.jpg',
+    image: '/images/image-101.png',
     category: 'speakers'
   }
 ];
@@ -58,10 +58,12 @@ export default function HeroSection() {
           
           {/* Left Editorial Copy */}
           <div className="lg:col-span-7 space-y-6">
-            <div className="inline-flex items-center gap-2 px-3 py-1 bg-white border border-[#EAEAEA] rounded-[2px] text-[10px] font-semibold tracking-[0.2em] uppercase text-[#6B6B6B]">
-              <Sparkles size={11} className="text-[#FF4D00]" />
-              {slide.tagline}
-            </div>
+            {slide.tagline && (
+              <div className="inline-flex items-center gap-2 px-3 py-1 bg-white border border-[#EAEAEA] rounded-[2px] text-[10px] font-semibold tracking-[0.2em] uppercase text-[#6B6B6B]">
+                <Sparkles size={11} className="text-[#FF4D00]" />
+                {slide.tagline}
+              </div>
+            )}
 
             <div className="space-y-2">
               <h1 className="text-3xl sm:text-5xl lg:text-7xl font-light tracking-[0.05em] sm:tracking-[0.12em] uppercase text-[#0A0A0A] leading-[1.1] break-words">
@@ -128,17 +130,19 @@ export default function HeroSection() {
               {/* Radial backdrop halo */}
               <div className="absolute inset-0 bg-white/70 rounded-full filter blur-2xl transform scale-90 -z-0" />
               
-              <div className="relative z-10 w-full h-full p-8 flex items-center justify-center animate-[pulse_4s_ease-in-out_infinite]">
+              <div className="relative z-10 w-full h-full p-6 sm:p-10 flex items-center justify-center animate-[pulse_4s_ease-in-out_infinite]">
                 <img
                   key={slide.image}
                   src={slide.image}
                   alt={slide.title}
+                  width={420}
+                  height={420}
                   className="w-full h-full object-contain filter drop-shadow-[0_20px_35px_rgba(0,0,0,0.12)] transition-all duration-700 animate-in fade-in zoom-in-95 hover:scale-105"
                 />
               </div>
 
-              {/* Floating Specification Tag */}
-              <div className="absolute bottom-4 left-4 bg-white/90 backdrop-blur-md border border-[#EAEAEA] p-3 rounded-[4px] shadow-lg text-left hidden sm:block animate-in slide-in-from-bottom-2 duration-500">
+              {/* Floating Specification Tag (positioned cleanly below image to avoid overlap) */}
+              <div className="absolute -bottom-3 left-2 sm:left-4 z-20 bg-white/95 backdrop-blur-md border border-[#EAEAEA] p-2.5 sm:p-3 rounded-[4px] shadow-lg text-left hidden md:block animate-in slide-in-from-bottom-2 duration-500">
                 <span className="text-[9px] uppercase tracking-widest text-[#FF4D00] font-bold block">
                   Official Verification
                 </span>

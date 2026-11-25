@@ -50,13 +50,16 @@ export default function OrderSuccessPage() {
     } catch {}
   }, []);
 
-  // If order details not in location state, fetch via order tracking endpoint
+  // If order details not in location state, fetch via order tracking endpoint with URL token/contact
   useEffect(() => {
     let isMounted = true;
     async function fetchOrder() {
       if (order || !orderNumber) return;
       setLoading(true);
-      const res = await ordersApi.trackOrder({ orderNumber });
+      const searchParams = new URLSearchParams(location.search);
+      const trackingToken = searchParams.get('token') || undefined;
+      const contact = searchParams.get('contact') || location.state?.customerEmail || undefined;
+      const res = await ordersApi.trackOrder({ orderNumber, trackingToken, contact });
       if (isMounted && res.data?.order) {
         setOrder(res.data.order);
       }
@@ -64,7 +67,7 @@ export default function OrderSuccessPage() {
     }
     fetchOrder();
     return () => { isMounted = false; };
-  }, [order, orderNumber]);
+  }, [order, orderNumber, location.search, location.state]);
 
   const handleClaimAccount = async (e) => {
     e.preventDefault();

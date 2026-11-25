@@ -393,7 +393,65 @@ export default function QuickOrderPage() {
         {/* Tab 1: Grid Entry */}
         {activeTab === 'grid' && (
           <div className="space-y-6">
-            <div className="border border-[#EAEAEA] rounded-[4px] bg-white min-h-[420px] shadow-sm overflow-visible">
+            {/* Mobile / Tablet Card View (< md) */}
+            <div className="md:hidden space-y-3">
+              {rows.map((row, idx) => {
+                const prod = row.product || findProductBySku(row.sku);
+                const tier = prod && isWholesale ? getWholesaleTier(prod, row.quantity) : null;
+                const unitPrice = tier ? tier.unitPrice : (prod ? Number(prod.price || 0) : 0);
+                const lineTotal = prod ? unitPrice * row.quantity : 0;
+                return (
+                  <div key={row.id} className="bg-white border border-[#EAEAEA] rounded-[4px] p-3.5 space-y-3 shadow-xs">
+                    <div className="flex items-center justify-between">
+                      <span className="text-[11px] font-mono text-[#6B6B6B] font-semibold">ROW #{idx + 1}</span>
+                      <button
+                        type="button"
+                        onClick={() => handleRemoveRow(row.id)}
+                        className="min-h-[44px] min-w-[44px] flex items-center justify-center text-[#8A8A8A] hover:text-red-500 -mr-2"
+                        aria-label={`Remove row ${idx + 1}`}
+                      >
+                        <Trash2 size={16} />
+                      </button>
+                    </div>
+                    <SkuCombobox
+                      value={row.sku}
+                      onChange={(val) => handleRowSkuChange(row.id, val)}
+                      onSelect={(selectedProd) => {
+                        handleSelectProduct(row.id, selectedProd);
+                      }}
+                      existingSkus={new Set(rows.filter(r => r.id !== row.id && r.sku).map(r => r.sku.toLowerCase()))}
+                      mode={mode}
+                      isApprovedWholesale={isApproved}
+                    />
+                    {prod && (
+                      <div className="flex items-center justify-between gap-3 pt-1 border-t border-[#F2F2F2]">
+                        <div className="min-w-0 flex-1">
+                          <div className="text-xs font-medium text-[#0A0A0A] truncate">{prod.name}</div>
+                          <div className="text-[11px] font-mono text-[#6B6B6B]">{formatINR(unitPrice)} / unit</div>
+                        </div>
+                        <div className="flex items-center gap-2 shrink-0">
+                          <input
+                            type="number"
+                            min={isWholesale ? (prod?.moq || 10) : 1}
+                            step={isWholesale ? (prod?.packSize || 5) : 1}
+                            value={row.quantity}
+                            onChange={(e) => handleRowQtyChange(row.id, e.target.value)}
+                            aria-label={`Quantity for ${prod.name}`}
+                            className="w-20 min-h-[44px] px-2.5 border border-[#EAEAEA] rounded bg-white text-xs font-semibold tabular-nums"
+                          />
+                          <div className="text-right min-w-[72px] font-mono text-xs font-bold text-[#0A0A0A]">
+                            {formatINR(lineTotal)}
+                          </div>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+
+            {/* Desktop Table View (>= md) */}
+            <div className="hidden md:block border border-[#EAEAEA] rounded-[4px] bg-white min-h-[420px] shadow-sm overflow-x-auto">
               <table className="w-full text-left text-xs border-collapse">
                 <thead>
                   <tr className="bg-[#F7F7F7] border-b border-[#EAEAEA] text-[#6B6B6B] uppercase tracking-wider text-[10px]">

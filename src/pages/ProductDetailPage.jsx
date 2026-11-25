@@ -80,9 +80,21 @@ export default function ProductDetailPage() {
 
   if (loading) {
     return (
-      <div className="min-h-[70vh] flex flex-col items-center justify-center p-6 text-center">
-        <div className="w-8 h-8 border-2 border-[#FF4D00] border-t-transparent rounded-full animate-spin mb-4" />
-        <p className="text-xs font-mono text-[#6B6B6B]">Loading product details...</p>
+      <div className="bg-white min-h-screen pb-24">
+        <div className="max-w-site mx-auto px-4 sm:px-6 lg:px-8 pt-6 animate-pulse">
+          <div className="h-4 w-56 bg-[#F0F0F0] rounded mb-8" />
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12">
+            <div className="lg:col-span-6 aspect-square bg-[#F5F5F5] border border-[#EAEAEA] rounded-[4px]" />
+            <div className="lg:col-span-6 space-y-5">
+              <div className="h-3 w-28 bg-[#F0F0F0] rounded" />
+              <div className="h-8 w-3/4 bg-[#EAEAEA] rounded" />
+              <div className="h-4 w-40 bg-[#F0F0F0] rounded" />
+              <div className="h-10 w-48 bg-[#EAEAEA] rounded" />
+              <div className="h-24 w-full bg-[#F5F5F5] rounded" />
+              <div className="h-12 w-full bg-[#EAEAEA] rounded-[4px]" />
+            </div>
+          </div>
+        </div>
       </div>
     );
   }
