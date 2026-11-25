@@ -7,15 +7,15 @@ import {
   GitMerge, 
   Mail, 
   Phone, 
-  X,
-  RefreshCw,
   Building2,
-  ShieldCheck,
-  CheckCircle2
+  ShieldCheck
 } from 'lucide-react';
 import adminApi from '@shared/api/adminApi';
 import { formatINR } from '@shared/utils/formatters';
 import useToastStore from '@shared/store/toastStore';
+import WholesaleApplicationsTab from '@features/admin/components/customers/WholesaleApplicationsTab';
+import WholesaleGroupsTab from '@features/admin/components/customers/WholesaleGroupsTab';
+import CustomerModals from '@features/admin/components/customers/CustomerModals';
 
 export default function CustomersView({ initialCustomerId, onClearInitialCustomer, _onNavigate }) {
   const addToast = useToastStore((s) => s.addToast);
@@ -471,467 +471,52 @@ export default function CustomersView({ initialCustomerId, onClearInitialCustome
         </div>
       )}
 
-      {/* ======================================================== */}
-      {/* TAB 2: WHOLESALE APPLICATIONS INBOX */}
-      {/* ======================================================== */}
       {activeTab === 'applications' && (
-        <div className="space-y-4">
-          {/* Status Filter */}
-          <div className="p-4 bg-white border border-[#EAEAEA] flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <span className="text-[11px] font-mono uppercase text-[#6B6B6B]">Filter Status:</span>
-              {['all', 'pending', 'approved', 'rejected'].map(st => (
-                <button
-                  key={st}
-                  onClick={() => setAppFilter(st)}
-                  className={`px-3 py-1 rounded text-xs font-mono uppercase transition-colors cursor-pointer ${
-                    appFilter === st
-                      ? 'bg-[#0A0A0A] text-white font-bold'
-                      : 'bg-neutral-100 text-[#6B6B6B] hover:text-[#0A0A0A]'
-                  }`}
-                >
-                  {st}
-                </button>
-              ))}
-            </div>
-
-            <button
-              onClick={fetchApplications}
-              className="p-1.5 text-[#6B6B6B] hover:text-[#0A0A0A] border border-[#EAEAEA] rounded cursor-pointer"
-              title="Refresh applications list"
-            >
-              <RefreshCw size={13} className={loadingApps ? 'animate-spin' : ''} />
-            </button>
-          </div>
-
-          {/* Applications Table */}
-          <div className="bg-white border border-[#EAEAEA] overflow-x-auto">
-            <table className="w-full text-left text-xs border-collapse">
-              <thead>
-                <tr className="bg-[#F7F7F7] border-b border-[#EAEAEA] font-mono uppercase text-[#6B6B6B] text-[11px]">
-                  <th className="p-3">Company / Applicant</th>
-                  <th className="p-3">Type & City</th>
-                  <th className="p-3">GSTIN</th>
-                  <th className="p-3">Monthly Volume</th>
-                  <th className="p-3">Status</th>
-                  <th className="p-3 text-right">Review Action</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-[#F0F0F0]">
-                {loadingApps && (
-                  <tr>
-                    <td colSpan={6} className="p-8 text-center text-xs font-mono text-[#6B6B6B]">
-                      Loading wholesale applications...
-                    </td>
-                  </tr>
-                )}
-
-                {!loadingApps && applications.length === 0 && (
-                  <tr>
-                    <td colSpan={6} className="p-8 text-center text-xs text-[#6B6B6B]">
-                      No wholesale applications found in this status.
-                    </td>
-                  </tr>
-                )}
-
-                {!loadingApps && applications.map(app => (
-                  <tr key={app.id} className="hover:bg-[#FBFBFB]">
-                    <td className="p-3">
-                      <div className="font-bold text-[#0A0A0A]">{app.business_name}</div>
-                      <div className="text-[11px] text-[#6B6B6B]">{app.contact_name} · {app.email}</div>
-                      <div className="text-[10px] text-[#8A8A8A] font-mono">{app.phone}</div>
-                    </td>
-                    <td className="p-3 font-mono">
-                      <div className="uppercase text-[#0A0A0A] font-medium">{app.business_type}</div>
-                      <div className="text-[10px] text-[#8A8A8A]">{app.city}</div>
-                    </td>
-                    <td className="p-3 font-mono">
-                      {app.gstin ? (
-                        <div className="flex items-center gap-1 text-emerald-700 font-semibold">
-                          <CheckCircle2 size={12} />
-                          <span>{app.gstin}</span>
-                        </div>
-                      ) : (
-                        <span className="text-[#A1A1AA] text-[10px]">No GSTIN provided</span>
-                      )}
-                    </td>
-                    <td className="p-3 font-mono text-[#0A0A0A]">
-                      {app.expected_monthly_volume}
-                    </td>
-                    <td className="p-3 font-mono">
-                      {app.status === 'approved' ? (
-                        <span className="px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider bg-emerald-50 text-emerald-800 border border-emerald-200">
-                          Approved ({app.assigned_group_name || 'Gold'})
-                        </span>
-                      ) : app.status === 'rejected' ? (
-                        <span className="px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider bg-red-50 text-red-800 border border-red-200">
-                          Rejected
-                        </span>
-                      ) : (
-                        <span className="px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider bg-amber-50 text-amber-800 border border-amber-200">
-                          Pending Review
-                        </span>
-                      )}
-                    </td>
-                    <td className="p-3 text-right">
-                      {app.status === 'pending' ? (
-                        <div className="flex items-center justify-end gap-1.5">
-                          <button
-                            onClick={() => handleApproveApp(app.id, 3)}
-                            className="px-2.5 py-1 text-[10px] font-mono uppercase bg-[#0A0A0A] text-white hover:bg-emerald-600 rounded transition-colors font-semibold cursor-pointer"
-                            title="Approve immediately as Gold Buyer"
-                          >
-                            Approve (Gold)
-                          </button>
-                          <button
-                            onClick={() => setRejectAppId(app.id)}
-                            className="px-2 py-1 text-[10px] font-mono uppercase border border-red-200 text-red-600 hover:bg-red-50 rounded transition-colors cursor-pointer"
-                          >
-                            Reject
-                          </button>
-                        </div>
-                      ) : (
-                        <span className="text-[10px] text-[#A1A1AA] font-mono">Resolved</span>
-                      )}
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </div>
+        <WholesaleApplicationsTab
+          appFilter={appFilter}
+          setAppFilter={setAppFilter}
+          fetchApplications={fetchApplications}
+          loadingApps={loadingApps}
+          applications={applications}
+          handleApproveApp={handleApproveApp}
+          setRejectAppId={setRejectAppId}
+        />
       )}
 
-      {/* ======================================================== */}
-      {/* TAB 3: WHOLESALE GROUPS & CREDIT TIERS */}
-      {/* ======================================================== */}
       {activeTab === 'groups' && (
-        <div className="space-y-4">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-            {groups.map((grp) => (
-              <div key={grp.id} className="bg-white border border-[#EAEAEA] p-5 rounded-[4px] space-y-3 relative">
-                <div className="flex items-center justify-between pb-2 border-b border-[#F0F0F0]">
-                  <h3 className="text-sm font-bold uppercase tracking-wider font-mono text-[#0A0A0A]">
-                    {grp.name} Tier
-                  </h3>
-                  <span className="text-[10px] font-mono text-[#8A8A8A]">
-                    {grp.member_count || 0} members
-                  </span>
-                </div>
-
-                <div className="space-y-2 text-xs">
-                  <div className="flex justify-between">
-                    <span className="text-[#6B6B6B]">Extra Margin:</span>
-                    <strong className="text-[#FF4D00] font-bold">+{grp.extra_discount_percent}%</strong>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-[#6B6B6B]">Credit Facility:</span>
-                    <strong className="text-[#0A0A0A] font-mono">
-                      {grp.credit_limit > 0 ? formatINR(grp.credit_limit) : 'Prepaid Only'}
-                    </strong>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-[#6B6B6B]">Payment Terms:</span>
-                    <strong className="uppercase font-mono text-[#0A0A0A]">{grp.payment_terms}</strong>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-[#6B6B6B]">Minimum Order (MOV):</span>
-                    <strong className="font-mono text-[#0A0A0A]">
-                      {formatINR(grp.min_order_value || 250000)}
-                    </strong>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-[#6B6B6B]">Free Freight at:</span>
-                    <strong className="font-mono text-[#0A0A0A]">
-                      {formatINR(grp.free_shipping_threshold || 1000000)}
-                    </strong>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
+        <WholesaleGroupsTab groups={groups} />
       )}
 
-      {/* ======================================================== */}
-      {/* CONVERT CUSTOMER TO WHOLESALE MODAL */}
-      {/* ======================================================== */}
-      {convertModalUser && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
-          <div className="w-full max-w-md bg-white border border-[#0A0A0A] p-6 shadow-2xl relative">
-            <div className="flex items-center justify-between pb-3 mb-4 border-b border-[#EAEAEA]">
-              <h3 className="font-mono text-xs uppercase tracking-wider font-bold text-[#0A0A0A]">
-                Upgrade to Wholesale Buyer
-              </h3>
-              <button onClick={() => setConvertModalUser(null)} className="p-1 cursor-pointer">
-                <X className="w-4 h-4 text-[#6B6B6B]" />
-              </button>
-            </div>
-
-            <form onSubmit={handleConvertSubmit} className="space-y-4 text-xs">
-              <p className="text-[#6B6B6B] leading-relaxed">
-                Assign <strong>{convertModalUser.name}</strong> ({convertModalUser.email}) to a B2B wholesale tier to unlock bulk tier pricing, MOQs, and credit terms.
-              </p>
-
-              <div>
-                <label className="block text-[10px] font-mono uppercase text-[#6B6B6B] mb-1">
-                  Assign Wholesale Group *
-                </label>
-                <select
-                  value={selectedGroupId}
-                  onChange={(e) => setSelectedGroupId(e.target.value)}
-                  className="w-full p-2 border border-[#EAEAEA] rounded text-xs font-mono outline-none"
-                >
-                  {groups.map(g => (
-                    <option key={g.id} value={g.id}>
-                      {g.name} Tier (+{g.extra_discount_percent}% off, {g.payment_terms.toUpperCase()})
-                    </option>
-                  ))}
-                </select>
-              </div>
-
-              <div>
-                <label className="block text-[10px] font-mono uppercase text-[#6B6B6B] mb-1">
-                  Business Entity Name
-                </label>
-                <input
-                  type="text"
-                  defaultValue={convertModalUser.business_name || convertModalUser.name}
-                  onChange={(e) => setConvertModalUser({ ...convertModalUser, businessName: e.target.value })}
-                  className="w-full p-2 border border-[#EAEAEA] rounded text-xs outline-none"
-                />
-              </div>
-
-              <div>
-                <label className="block text-[10px] font-mono uppercase text-[#6B6B6B] mb-1">
-                  GSTIN (Optional)
-                </label>
-                <input
-                  type="text"
-                  defaultValue={convertModalUser.gstin || ''}
-                  onChange={(e) => setConvertModalUser({ ...convertModalUser, gstin: e.target.value.toUpperCase() })}
-                  className="w-full p-2 border border-[#EAEAEA] rounded text-xs font-mono uppercase outline-none"
-                />
-              </div>
-
-              <div className="pt-2 flex gap-2">
-                <button
-                  type="button"
-                  onClick={() => setConvertModalUser(null)}
-                  className="flex-1 py-2 border border-[#CCC] uppercase cursor-pointer"
-                >
-                  Cancel
-                </button>
-                <button
-                  type="submit"
-                  disabled={converting}
-                  className="flex-1 py-2 bg-[#0A0A0A] text-white uppercase hover:bg-[#FF4D00] transition-colors font-bold cursor-pointer"
-                >
-                  {converting ? 'Converting...' : 'Confirm Upgrade'}
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
-      )}
-
-      {/* ======================================================== */}
-      {/* REJECT APPLICATION DIALOG */}
-      {/* ======================================================== */}
-      {rejectAppId && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
-          <div className="w-full max-w-sm bg-white border border-[#0A0A0A] p-6 shadow-2xl relative">
-            <h3 className="font-mono text-xs uppercase tracking-wider font-bold text-red-600 mb-2">
-              Reject Wholesale Application
-            </h3>
-            <p className="text-xs text-[#6B6B6B] mb-4">
-              Specify the reason for declining this commercial account application:
-            </p>
-
-            <form onSubmit={handleRejectApp} className="space-y-4">
-              <textarea
-                rows={3}
-                required
-                value={rejectReason}
-                onChange={(e) => setRejectReason(e.target.value)}
-                placeholder="e.g. Unverified GSTIN record or invalid commercial premises address."
-                className="w-full p-2 border border-[#EAEAEA] text-xs outline-none resize-none"
-              />
-
-              <div className="flex gap-2">
-                <button
-                  type="button"
-                  onClick={() => setRejectAppId(null)}
-                  className="flex-1 py-2 border border-[#CCC] text-xs uppercase cursor-pointer"
-                >
-                  Cancel
-                </button>
-                <button
-                  type="submit"
-                  disabled={submittingReject}
-                  className="flex-1 py-2 bg-red-600 text-white text-xs uppercase hover:bg-red-700 transition-colors font-bold cursor-pointer"
-                >
-                  {submittingReject ? 'Rejecting...' : 'Reject Application'}
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
-      )}
-
-      {/* ======================================================== */}
-      {/* MERGE CUSTOMERS MODAL */}
-      {/* ======================================================== */}
-      {isMergeModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
-          <div className="w-full max-w-lg bg-white border border-[#0A0A0A] p-6 shadow-2xl relative">
-            <div className="flex items-center justify-between pb-3 mb-4 border-b border-[#EAEAEA]">
-              <div>
-                <h3 className="font-mono text-xs uppercase tracking-wider font-bold text-[#0A0A0A]">
-                  Merge Duplicate Customer Accounts
-                </h3>
-              </div>
-              <button onClick={() => setIsMergeModalOpen(false)} className="p-1 cursor-pointer">
-                <X className="w-4 h-4 text-[#6B6B6B]" />
-              </button>
-            </div>
-
-            <form onSubmit={handleMergeSubmit} className="space-y-4">
-              <div>
-                <label className="block text-[10px] font-mono uppercase text-[#6B6B6B] mb-1">
-                  Primary Customer (Target to Keep) *
-                </label>
-                <select
-                  value={primaryMergeId}
-                  onChange={(e) => setPrimaryMergeId(e.target.value)}
-                  className="w-full p-2 border border-[#CCC] text-xs font-mono outline-none"
-                  required
-                >
-                  <option value="">-- Choose Account to Keep --</option>
-                  {customers.map(c => (
-                    <option key={c.id} value={c.id}>{c.name} ({c.email})</option>
-                  ))}
-                </select>
-              </div>
-
-              <div>
-                <label className="block text-[10px] font-mono uppercase text-[#6B6B6B] mb-1">
-                  Secondary Customer (Account to Absorb) *
-                </label>
-                <select
-                  value={secondaryMergeId}
-                  onChange={(e) => setSecondaryMergeId(e.target.value)}
-                  className="w-full p-2 border border-[#CCC] text-xs font-mono outline-none"
-                  required
-                >
-                  <option value="">-- Choose Account to Merge --</option>
-                  {customers.filter(c => String(c.id) !== String(primaryMergeId)).map(c => (
-                    <option key={c.id} value={c.id}>{c.name} ({c.email})</option>
-                  ))}
-                </select>
-              </div>
-
-              <div className="pt-2 flex gap-2">
-                <button
-                  type="button"
-                  onClick={() => setIsMergeModalOpen(false)}
-                  className="flex-1 py-2 border border-[#CCC] uppercase cursor-pointer"
-                >
-                  Cancel
-                </button>
-                <button
-                  type="submit"
-                  disabled={submittingMerge}
-                  className="flex-1 py-2 bg-[#0A0A0A] text-white uppercase hover:bg-[#FF4D00] transition-colors font-bold cursor-pointer"
-                >
-                  {submittingMerge ? 'Merging...' : 'Confirm Merge'}
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
-      )}
-
-      {/* ======================================================== */}
-      {/* ADD CUSTOMER MODAL */}
-      {/* ======================================================== */}
-      {isAddModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
-          <div className="w-full max-w-md bg-white border border-[#0A0A0A] p-6 shadow-2xl relative">
-            <div className="flex items-center justify-between pb-3 mb-4 border-b border-[#EAEAEA]">
-              <div>
-                <h3 className="font-mono text-xs uppercase tracking-wider font-bold text-[#0A0A0A]">
-                  New Customer Profile
-                </h3>
-              </div>
-              <button onClick={() => setIsAddModalOpen(false)} className="p-1 cursor-pointer">
-                <X className="w-4 h-4 text-[#6B6B6B]" />
-              </button>
-            </div>
-
-            <form onSubmit={handleAddSubmit} className="space-y-4">
-              <div>
-                <label className="block text-[10px] font-mono uppercase text-[#6B6B6B] mb-1">Full Name *</label>
-                <input
-                  type="text"
-                  required
-                  value={newCust.name}
-                  onChange={(e) => setNewCust({ ...newCust, name: e.target.value })}
-                  className="w-full px-3 py-1.5 border border-[#CCC] text-xs outline-none"
-                />
-              </div>
-
-              <div>
-                <label className="block text-[10px] font-mono uppercase text-[#6B6B6B] mb-1">Email Address *</label>
-                <input
-                  type="email"
-                  required
-                  value={newCust.email}
-                  onChange={(e) => setNewCust({ ...newCust, email: e.target.value })}
-                  className="w-full px-3 py-1.5 border border-[#CCC] text-xs font-mono outline-none"
-                />
-              </div>
-
-              <div>
-                <label className="block text-[10px] font-mono uppercase text-[#6B6B6B] mb-1">Phone Number</label>
-                <input
-                  type="text"
-                  value={newCust.phone}
-                  onChange={(e) => setNewCust({ ...newCust, phone: e.target.value })}
-                  className="w-full px-3 py-1.5 border border-[#CCC] text-xs font-mono outline-none"
-                />
-              </div>
-
-              <div>
-                <label className="block text-[10px] font-mono uppercase text-[#6B6B6B] mb-1">GSTIN (Optional B2B)</label>
-                <input
-                  type="text"
-                  value={newCust.gstin}
-                  onChange={(e) => setNewCust({ ...newCust, gstin: e.target.value })}
-                  className="w-full px-3 py-1.5 border border-[#CCC] text-xs font-mono outline-none uppercase"
-                />
-              </div>
-
-              <div className="pt-2 flex gap-2">
-                <button
-                  type="button"
-                  onClick={() => setIsAddModalOpen(false)}
-                  className="flex-1 py-2 border border-[#CCC] text-xs font-mono uppercase cursor-pointer"
-                >
-                  Cancel
-                </button>
-                <button
-                  type="submit"
-                  disabled={submittingAdd}
-                  className="flex-1 py-2 bg-[#0A0A0A] text-white text-xs font-mono uppercase hover:bg-[#FF4D00] transition-colors font-bold cursor-pointer"
-                >
-                  {submittingAdd ? 'Saving...' : 'Create Client'}
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
-      )}
+      <CustomerModals
+        convertModalUser={convertModalUser}
+        setConvertModalUser={setConvertModalUser}
+        selectedGroupId={selectedGroupId}
+        setSelectedGroupId={setSelectedGroupId}
+        groups={groups}
+        converting={converting}
+        handleConvertSubmit={handleConvertSubmit}
+        rejectAppId={rejectAppId}
+        setRejectAppId={setRejectAppId}
+        rejectReason={rejectReason}
+        setRejectReason={setRejectReason}
+        submittingReject={submittingReject}
+        handleRejectApp={handleRejectApp}
+        isMergeModalOpen={isMergeModalOpen}
+        setIsMergeModalOpen={setIsMergeModalOpen}
+        primaryMergeId={primaryMergeId}
+        setPrimaryMergeId={setPrimaryMergeId}
+        secondaryMergeId={secondaryMergeId}
+        setSecondaryMergeId={setSecondaryMergeId}
+        customers={customers}
+        submittingMerge={submittingMerge}
+        handleMergeSubmit={handleMergeSubmit}
+        isAddModalOpen={isAddModalOpen}
+        setIsAddModalOpen={setIsAddModalOpen}
+        newCust={newCust}
+        setNewCust={setNewCust}
+        submittingAdd={submittingAdd}
+        handleAddSubmit={handleAddSubmit}
+      />
     </div>
   );
 }
