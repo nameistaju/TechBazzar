@@ -48,6 +48,11 @@ test.describe('Feature 1: Dynamic Accent Colour Engine E2E', () => {
     await expect(page.getByText('1.98:1 (needs 4.5:1)')).toBeVisible();
     await expect(page.getByText('1.98:1 (needs 3.0:1)')).toBeVisible();
     await expect(page.getByText(/Near-black label/i)).toBeVisible();
+    const createBtnColors = await page.getByRole('button', { name: /Create/i }).evaluate((el) => {
+      const s = getComputedStyle(el);
+      return { color: s.color, bg: s.backgroundColor };
+    });
+    expect(createBtnColors.color).not.toBe(createBtnColors.bg);
     await page.screenshot({ path: path.join(SHOTS_DIR, 'accent-lime-84CC16.png'), fullPage: false });
 
     // 2. Test Cobalt Blue #2563EB, save, and reload

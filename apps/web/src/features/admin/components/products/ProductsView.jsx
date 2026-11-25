@@ -500,7 +500,7 @@ export default function ProductsView({ initialEditId, onClearInitialEdit }) {
 
           <button
             onClick={openAddDrawer}
-            className="px-3 py-1.5 bg-[#0A0A0A] text-accent-contrast text-xs font-mono uppercase tracking-wider hover:bg-accent flex items-center gap-1.5 transition-colors font-semibold"
+            className="px-3 py-1.5 bg-[#0A0A0A] text-white hover:text-accent-contrast text-xs font-mono uppercase tracking-wider hover:bg-accent flex items-center gap-1.5 transition-colors font-semibold"
           >
             <Plus className="w-4 h-4" />
             Add Product

@@ -138,7 +138,7 @@ export default function CartPage() {
           <div>
             <Link
               to="/shop"
-              className="inline-flex items-center gap-2 bg-[#0A0A0A] text-accent-contrast text-xs font-semibold uppercase tracking-widest px-8 py-4 rounded-[4px] hover:bg-accent transition-colors"
+              className="inline-flex items-center gap-2 bg-[#0A0A0A] text-white hover:text-accent-contrast text-xs font-semibold uppercase tracking-widest px-8 py-4 rounded-[4px] hover:bg-accent transition-colors"
             >
               {isWholesale ? 'Explore Wholesale Catalog' : 'Start Exploring Products'} <ArrowRight size={14} />
             </Link>
@@ -248,7 +248,7 @@ export default function CartPage() {
               <button
                 type="button"
                 onClick={() => navigate('/quote')}
-                className="px-3 py-1.5 rounded bg-[#0A0A0A] hover:bg-accent text-accent-contrast text-xs font-medium flex items-center gap-1.5 transition-colors cursor-pointer"
+                className="px-3 py-1.5 rounded bg-[#0A0A0A] hover:bg-accent text-white hover:text-accent-contrast text-xs font-medium flex items-center gap-1.5 transition-colors cursor-pointer"
               >
                 <FileText size={13} /> Request Custom Quote
               </button>

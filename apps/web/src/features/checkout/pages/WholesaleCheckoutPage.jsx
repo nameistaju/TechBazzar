@@ -132,7 +132,7 @@ export default function WholesaleCheckoutPage() {
           <button
             type="button"
             onClick={() => openWholesaleSheet('login')}
-            className="w-full sm:w-auto px-6 py-3 bg-[#0A0A0A] text-accent-contrast text-xs font-semibold uppercase tracking-widest rounded-[4px] hover:bg-accent transition-colors"
+            className="w-full sm:w-auto px-6 py-3 bg-[#0A0A0A] text-white hover:text-accent-contrast text-xs font-semibold uppercase tracking-widest rounded-[4px] hover:bg-accent transition-colors"
           >
             Sign In to Wholesale
           </button>
@@ -161,7 +161,7 @@ export default function WholesaleCheckoutPage() {
         </p>
         <Link
           to="/shop"
-          className="inline-flex items-center gap-2 px-6 py-3 bg-[#0A0A0A] text-accent-contrast text-xs font-semibold uppercase tracking-widest rounded-[4px] hover:bg-accent transition-colors"
+          className="inline-flex items-center gap-2 px-6 py-3 bg-[#0A0A0A] text-white hover:text-accent-contrast text-xs font-semibold uppercase tracking-widest rounded-[4px] hover:bg-accent transition-colors"
         >
           Browse Wholesale Catalog <ArrowRight size={14} />
         </Link>
@@ -863,7 +863,7 @@ export default function WholesaleCheckoutPage() {
                 <button
                   type="submit"
                   disabled={isSubmitting || !meetsMinOrderValue || hasMoqViolations}
-                  className="w-full mt-6 py-3.5 bg-[#0A0A0A] text-accent-contrast text-xs font-bold uppercase tracking-widest rounded-[4px] hover:bg-accent transition-colors flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed shadow-md"
+                  className="w-full mt-6 py-3.5 bg-[#0A0A0A] text-white hover:text-accent-contrast text-xs font-bold uppercase tracking-widest rounded-[4px] hover:bg-accent transition-colors flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed shadow-md"
                 >
                   {isSubmitting ? (
                     <>

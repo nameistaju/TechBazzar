@@ -513,7 +513,7 @@ export default function BannersView() {
           </a>
           <button
             onClick={() => handleOpenAdd()}
-            className="px-4 py-2 bg-[#0A0A0A] hover:bg-accent text-accent-contrast text-xs font-mono font-bold flex items-center gap-1.5 transition-colors cursor-pointer"
+            className="px-4 py-2 bg-[#0A0A0A] hover:bg-accent text-white hover:text-accent-contrast text-xs font-mono font-bold flex items-center gap-1.5 transition-colors cursor-pointer"
           >
             <Plus size={14} /> Add New Banner
           </button>

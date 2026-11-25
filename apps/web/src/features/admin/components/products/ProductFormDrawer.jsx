@@ -206,7 +206,7 @@ export default function ProductFormDrawer({
                   <button
                     type="button"
                     onClick={() => setShowImagePicker(true)}
-                    className="px-3 py-1.5 bg-[#0A0A0A] text-accent-contrast text-xs font-mono uppercase tracking-wider hover:bg-accent flex items-center gap-1.5"
+                    className="px-3 py-1.5 bg-[#0A0A0A] text-white hover:text-accent-contrast text-xs font-mono uppercase tracking-wider hover:bg-accent flex items-center gap-1.5"
                   >
                     <ImageIcon className="w-3.5 h-3.5" />
                     Open Local Media Library
@@ -826,7 +826,7 @@ export default function ProductFormDrawer({
             <button
               type="submit"
               disabled={savingProduct}
-              className="px-6 py-2 bg-[#0A0A0A] text-accent-contrast text-xs font-mono uppercase tracking-wider hover:bg-accent transition-colors font-semibold"
+              className="px-6 py-2 bg-[#0A0A0A] text-white hover:text-accent-contrast text-xs font-mono uppercase tracking-wider hover:bg-accent transition-colors font-semibold"
             >
               {savingProduct ? 'Saving...' : (editingId ? 'Save Product Changes' : 'Create Product')}
             </button>

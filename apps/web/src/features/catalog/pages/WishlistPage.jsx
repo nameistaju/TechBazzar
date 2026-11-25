@@ -42,7 +42,7 @@ export default function WishlistPage() {
             </p>
             <Link
               to="/shop"
-              className="inline-flex items-center gap-2 bg-[#0A0A0A] text-accent-contrast text-xs font-semibold uppercase tracking-widest px-6 py-3 rounded-[4px] hover:bg-accent transition-colors"
+              className="inline-flex items-center gap-2 bg-[#0A0A0A] text-white hover:text-accent-contrast text-xs font-semibold uppercase tracking-widest px-6 py-3 rounded-[4px] hover:bg-accent transition-colors"
             >
               Explore Products <ArrowRight size={14} />
             </Link>
@@ -93,7 +93,7 @@ export default function WishlistPage() {
                 <button
                   type="button"
                   onClick={() => handleMoveToCart(product)}
-                  className="w-full bg-[#0A0A0A] hover:bg-accent text-accent-contrast text-xs font-semibold uppercase tracking-wider py-2.5 rounded-[4px] transition-colors flex items-center justify-center gap-1.5"
+                  className="w-full bg-[#0A0A0A] hover:bg-accent text-white hover:text-accent-contrast text-xs font-semibold uppercase tracking-wider py-2.5 rounded-[4px] transition-colors flex items-center justify-center gap-1.5"
                 >
                   <ShoppingBag size={14} /> Move to Bag
                 </button>

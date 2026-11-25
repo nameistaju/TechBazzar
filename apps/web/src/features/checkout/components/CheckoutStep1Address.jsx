@@ -256,7 +256,7 @@ export default function CheckoutStep1Address({
       <div className="pt-4 border-t border-[#F2F2F2] flex justify-end">
         <button
           type="submit"
-          className="py-3.5 px-8 bg-[#0A0A0A] hover:bg-accent text-accent-contrast text-xs font-semibold uppercase tracking-widest rounded-[4px] transition-colors flex items-center gap-2 cursor-pointer"
+          className="py-3.5 px-8 bg-[#0A0A0A] hover:bg-accent text-white hover:text-accent-contrast text-xs font-semibold uppercase tracking-widest rounded-[4px] transition-colors flex items-center gap-2 cursor-pointer"
         >
           Continue to Payment <ArrowRight size={14} />
         </button>

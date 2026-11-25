@@ -125,7 +125,7 @@ export function ForcePasswordChangeModal({ isOpen, _onClose, onPasswordChanged }
           <button
             type="submit"
             disabled={loading}
-            className="w-full py-2.5 px-4 bg-[#0A0A0A] text-accent-contrast font-mono text-xs uppercase tracking-wider hover:bg-accent transition-colors font-semibold flex items-center justify-center gap-2"
+            className="w-full py-2.5 px-4 bg-[#0A0A0A] text-white hover:text-accent-contrast font-mono text-xs uppercase tracking-wider hover:bg-accent transition-colors font-semibold flex items-center justify-center gap-2"
           >
             {loading ? 'Saving...' : 'Set New Password & Enter'}
           </button>
@@ -204,7 +204,7 @@ export function SessionTimeoutModal({ isOpen, onReauthenticated }) {
           <button
             type="submit"
             disabled={loading}
-            className="w-full py-2 px-4 bg-[#0A0A0A] text-accent-contrast font-mono text-xs uppercase tracking-wider hover:bg-accent transition-colors"
+            className="w-full py-2 px-4 bg-[#0A0A0A] text-white hover:text-accent-contrast font-mono text-xs uppercase tracking-wider hover:bg-accent transition-colors"
           >
             {loading ? 'Verifying...' : 'Unlock & Continue Working'}
           </button>
@@ -452,7 +452,7 @@ export function PackingSlipModal({ order, settings, isOpen, onClose }) {
           <div className="flex items-center gap-2">
             <button
               onClick={handlePrint}
-              className="px-3 py-1.5 bg-[#0A0A0A] text-accent-contrast text-xs font-mono uppercase tracking-wider flex items-center gap-1.5 hover:bg-accent transition-colors"
+              className="px-3 py-1.5 bg-[#0A0A0A] text-white hover:text-accent-contrast text-xs font-mono uppercase tracking-wider flex items-center gap-1.5 hover:bg-accent transition-colors"
             >
               <Printer className="w-3.5 h-3.5" />
               Print Slip

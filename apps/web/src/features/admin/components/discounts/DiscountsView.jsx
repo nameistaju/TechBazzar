@@ -195,7 +195,7 @@ export default function DiscountsView() {
         <div className="flex items-center gap-2">
           <button
             onClick={openAddBuilder}
-            className="px-3 py-1.5 bg-[#0A0A0A] text-accent-contrast text-xs font-mono uppercase tracking-wider hover:bg-accent flex items-center gap-1.5 transition-colors font-semibold"
+            className="px-3 py-1.5 bg-[#0A0A0A] text-white hover:text-accent-contrast text-xs font-mono uppercase tracking-wider hover:bg-accent flex items-center gap-1.5 transition-colors font-semibold"
           >
             <Plus className="w-4 h-4" />
             New Discount Rule
@@ -415,7 +415,7 @@ export default function DiscountsView() {
             <button
               onClick={handleSimulate}
               disabled={simulating}
-              className="w-full py-2 bg-[#0A0A0A] text-accent-contrast text-xs uppercase hover:bg-accent transition-colors font-bold flex items-center justify-center gap-1.5"
+              className="w-full py-2 bg-[#0A0A0A] text-white hover:text-accent-contrast text-xs uppercase hover:bg-accent transition-colors font-bold flex items-center justify-center gap-1.5"
             >
               <Play className="w-3.5 h-3.5" />
               {simulating ? 'Evaluating...' : 'Run Simulation'}
@@ -622,7 +622,7 @@ export default function DiscountsView() {
                 <button
                   type="submit"
                   disabled={savingDiscount}
-                  className="flex-1 py-2 bg-[#0A0A0A] text-accent-contrast uppercase hover:bg-accent transition-colors font-bold"
+                  className="flex-1 py-2 bg-[#0A0A0A] text-white hover:text-accent-contrast uppercase hover:bg-accent transition-colors font-bold"
                 >
                   {savingDiscount ? 'Saving...' : 'Save Promotion Rule'}
                 </button>

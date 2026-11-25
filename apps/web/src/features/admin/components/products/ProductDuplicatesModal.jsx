@@ -45,7 +45,7 @@ export default function ProductDuplicatesModal({
               <button
                 onClick={handleMergeAllSafeGroups}
                 disabled={mergingAll}
-                className="px-3.5 py-1.5 bg-[#0A0A0A] hover:bg-accent text-accent-contrast text-xs font-mono uppercase tracking-wider font-semibold transition-colors flex items-center gap-1.5 disabled:opacity-50"
+                className="px-3.5 py-1.5 bg-[#0A0A0A] hover:bg-accent text-white hover:text-accent-contrast text-xs font-mono uppercase tracking-wider font-semibold transition-colors flex items-center gap-1.5 disabled:opacity-50"
               >
                 <Sparkles className="w-3.5 h-3.5 text-accent-text" />
                 {mergingAll ? 'Merging All...' : 'Merge All Safe Groups'}
@@ -182,7 +182,7 @@ export default function ProductDuplicatesModal({
                                   type="button"
                                   disabled={mergingGroupId === p.id}
                                   onClick={() => handleMergeGroup(p.id, duplicatesList.map(d => d.id))}
-                                  className="w-full py-1.5 bg-[#0A0A0A] hover:bg-accent text-accent-contrast text-xs font-mono uppercase font-semibold tracking-wider transition-colors flex items-center justify-center gap-1.5 disabled:opacity-50"
+                                  className="w-full py-1.5 bg-[#0A0A0A] hover:bg-accent text-white hover:text-accent-contrast text-xs font-mono uppercase font-semibold tracking-wider transition-colors flex items-center justify-center gap-1.5 disabled:opacity-50"
                                 >
                                   <Check className="w-3.5 h-3.5 text-accent-text" />
                                   {mergingGroupId === p.id ? 'Merging...' : 'Merge into this one'}
@@ -220,7 +220,7 @@ export default function ProductDuplicatesModal({
           <button
             type="button"
             onClick={() => setShowDuplicatesModal(false)}
-            className="px-4 py-1.5 bg-[#0A0A0A] text-accent-contrast text-xs font-mono uppercase tracking-wider hover:bg-accent transition-colors shrink-0"
+            className="px-4 py-1.5 bg-[#0A0A0A] text-white hover:text-accent-contrast text-xs font-mono uppercase tracking-wider hover:bg-accent transition-colors shrink-0"
           >
             Close
           </button>

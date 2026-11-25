@@ -222,7 +222,7 @@ export default function WholesaleAccessSheet({ isOpen, onClose, initialTab = 'ap
                     <div className="pt-4">
                       <button
                         onClick={onClose}
-                        className="w-full bg-[#0A0A0A] hover:bg-accent text-accent-contrast text-xs font-mono uppercase font-bold py-3 transition-colors"
+                        className="w-full bg-[#0A0A0A] hover:bg-accent text-white hover:text-accent-contrast text-xs font-mono uppercase font-bold py-3 transition-colors"
                       >
                         Continue Browsing
                       </button>
@@ -378,7 +378,7 @@ export default function WholesaleAccessSheet({ isOpen, onClose, initialTab = 'ap
                     <button
                       type="submit"
                       disabled={applyLoading}
-                      className="w-full bg-[#0A0A0A] hover:bg-accent text-accent-contrast text-xs font-mono uppercase font-bold py-3 transition-colors flex items-center justify-center gap-2 mt-4"
+                      className="w-full bg-[#0A0A0A] hover:bg-accent text-white hover:text-accent-contrast text-xs font-mono uppercase font-bold py-3 transition-colors flex items-center justify-center gap-2 mt-4"
                     >
                       {applyLoading ? 'Submitting Application...' : 'Submit Wholesale Application'}
                       <ArrowRight size={14} />
@@ -429,7 +429,7 @@ export default function WholesaleAccessSheet({ isOpen, onClose, initialTab = 'ap
                 <button
                   type="submit"
                   disabled={loginLoading}
-                  className="w-full bg-[#0A0A0A] hover:bg-accent text-accent-contrast text-xs font-mono uppercase font-bold py-3 transition-colors flex items-center justify-center gap-2 mt-2"
+                  className="w-full bg-[#0A0A0A] hover:bg-accent text-white hover:text-accent-contrast text-xs font-mono uppercase font-bold py-3 transition-colors flex items-center justify-center gap-2 mt-2"
                 >
                   {loginLoading ? 'Signing In...' : 'Sign In to Wholesale'}
                   <ArrowRight size={14} />

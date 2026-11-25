@@ -50,7 +50,7 @@ export default function InvoiceDetailDrawer({
                   setPaymentAmount(selectedInvoice.balance_due);
                   setIsPaymentModalOpen(true);
                 }}
-                className="px-3 py-1.5 bg-accent text-black text-xs font-mono uppercase font-bold hover:bg-[#0A0A0A] hover:text-accent-contrast transition-colors"
+                className="px-3 py-1.5 bg-accent text-accent-contrast text-xs font-mono uppercase font-bold hover:bg-[#0A0A0A] hover:text-white transition-colors"
               >
                 + Record Payment
               </button>

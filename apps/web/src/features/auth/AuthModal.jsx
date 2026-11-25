@@ -310,7 +310,7 @@ export default function AuthModal() {
           <button
             type="submit"
             disabled={isSubmitting}
-            className="w-full h-12 bg-[#0A0A0A] hover:bg-accent text-accent-contrast text-xs font-semibold uppercase tracking-widest rounded-[4px] transition-all flex items-center justify-center gap-2 mt-4 cursor-pointer disabled:opacity-50"
+            className="w-full h-12 bg-[#0A0A0A] hover:bg-accent text-white hover:text-accent-contrast text-xs font-semibold uppercase tracking-widest rounded-[4px] transition-all flex items-center justify-center gap-2 mt-4 cursor-pointer disabled:opacity-50"
           >
             {isSubmitting ? (
               <>

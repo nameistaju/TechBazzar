@@ -94,7 +94,7 @@ export default function HeroSection() {
             <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 sm:gap-4 pt-4">
               <Link
                 to={slide.link}
-                className="bg-[#0A0A0A] text-accent-contrast text-xs font-semibold uppercase tracking-widest px-8 py-4 rounded-[4px] hover:bg-accent transition-all flex items-center justify-center gap-2 group shadow-sm text-center"
+                className="bg-[#0A0A0A] text-white hover:text-accent-contrast text-xs font-semibold uppercase tracking-widest px-8 py-4 rounded-[4px] hover:bg-accent transition-all flex items-center justify-center gap-2 group shadow-sm text-center"
               >
                 Explore Product <ArrowRight size={14} className="group-hover:translate-x-1 transition-transform" />
               </Link>

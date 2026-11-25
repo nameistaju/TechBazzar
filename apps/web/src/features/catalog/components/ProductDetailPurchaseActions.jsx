@@ -92,7 +92,7 @@ export default function ProductDetailPurchaseActions({
               className={`flex-1 py-4 px-6 rounded-[4px] text-xs font-semibold uppercase tracking-widest transition-all duration-200 flex items-center justify-center gap-2 shadow-sm cursor-pointer ${
                 isAdded 
                   ? 'bg-emerald-600 text-white' 
-                  : 'bg-[#0A0A0A] text-accent-contrast hover:bg-accent'
+                  : 'bg-[#0A0A0A] text-white hover:text-accent-contrast hover:bg-accent'
               }`}
             >
               {isAdded ? (
@@ -168,7 +168,7 @@ export default function ProductDetailPurchaseActions({
                 <button
                   type="submit"
                   disabled={notifyLoading}
-                  className="h-10 px-4 bg-[#0A0A0A] hover:bg-accent text-accent-contrast text-xs font-semibold uppercase tracking-wider rounded-[4px] transition-colors flex items-center gap-1.5 cursor-pointer disabled:opacity-50"
+                  className="h-10 px-4 bg-[#0A0A0A] hover:bg-accent text-white hover:text-accent-contrast text-xs font-semibold uppercase tracking-wider rounded-[4px] transition-colors flex items-center gap-1.5 cursor-pointer disabled:opacity-50"
                 >
                   <Bell size={13} /> {notifyLoading ? 'Saving...' : 'Notify Me'}
                 </button>

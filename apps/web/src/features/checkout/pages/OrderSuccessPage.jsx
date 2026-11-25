@@ -241,7 +241,7 @@ export default function OrderSuccessPage() {
           <div className="flex flex-col sm:flex-row gap-3 justify-center">
             <Link
               to={`/track?number=${orderNumber}&contact=${encodeURIComponent(customerEmail)}`}
-              className="py-3 px-6 bg-[#0A0A0A] hover:bg-accent text-accent-contrast text-xs font-semibold uppercase tracking-widest rounded-[4px] transition-colors flex items-center justify-center gap-2"
+              className="py-3 px-6 bg-[#0A0A0A] hover:bg-accent text-white hover:text-accent-contrast text-xs font-semibold uppercase tracking-widest rounded-[4px] transition-colors flex items-center justify-center gap-2"
             >
               Track Order Live <ArrowRight size={13} />
             </Link>
@@ -289,7 +289,7 @@ export default function OrderSuccessPage() {
                       <button
                         type="submit"
                         disabled={claiming}
-                        className="h-11 px-6 bg-[#0A0A0A] hover:bg-accent text-accent-contrast text-xs font-semibold uppercase tracking-wider rounded-[4px] transition-colors flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
+                        className="h-11 px-6 bg-[#0A0A0A] hover:bg-accent text-white hover:text-accent-contrast text-xs font-semibold uppercase tracking-wider rounded-[4px] transition-colors flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
                       >
                         {claiming ? (
                           <>

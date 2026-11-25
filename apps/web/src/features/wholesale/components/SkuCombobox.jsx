@@ -286,7 +286,7 @@ export default function SkuCombobox({
                 <button
                   type="button"
                   onClick={() => refetch()}
-                  className="px-3 py-1 bg-[#0A0A0A] text-accent-contrast text-[10px] font-mono uppercase font-semibold rounded hover:bg-accent"
+                  className="px-3 py-1 bg-[#0A0A0A] text-white hover:text-accent-contrast text-[10px] font-mono uppercase font-semibold rounded hover:bg-accent"
                 >
                   Retry
                 </button>
@@ -431,7 +431,7 @@ export default function SkuCombobox({
                 <button
                   type="button"
                   onClick={handleCommitMultiSelect}
-                  className="px-3 py-1.5 bg-[#0A0A0A] hover:bg-accent text-accent-contrast text-xs font-mono uppercase font-semibold transition-colors flex items-center gap-1.5 rounded-[3px]"
+                  className="px-3 py-1.5 bg-[#0A0A0A] hover:bg-accent text-white hover:text-accent-contrast text-xs font-mono uppercase font-semibold transition-colors flex items-center gap-1.5 rounded-[3px]"
                 >
                   <Plus size={13} />
                   Add {selectedIds.length} Selected

@@ -299,7 +299,7 @@ export default function InventoryView({ preselectedProduct, onClearPreselected }
                           setAdjustNotes('');
                           setAdjustRef('');
                         }}
-                        className="px-2.5 py-1 text-xs font-mono uppercase bg-[#0A0A0A] text-accent-contrast hover:bg-accent transition-colors"
+                        className="px-2.5 py-1 text-xs font-mono uppercase bg-[#0A0A0A] text-white hover:text-accent-contrast hover:bg-accent transition-colors"
                       >
                         Adjust
                       </button>
@@ -501,7 +501,7 @@ export default function InventoryView({ preselectedProduct, onClearPreselected }
                 <button
                   type="submit"
                   disabled={submittingAdjust}
-                  className="flex-1 py-2 bg-[#0A0A0A] text-accent-contrast text-xs font-mono uppercase hover:bg-accent transition-colors font-semibold"
+                  className="flex-1 py-2 bg-[#0A0A0A] text-white hover:text-accent-contrast text-xs font-mono uppercase hover:bg-accent transition-colors font-semibold"
                 >
                   {submittingAdjust ? 'Updating...' : 'Confirm Stock Adjustment'}
                 </button>

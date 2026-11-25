@@ -252,7 +252,7 @@ export default function ShopPage() {
                 <button
                   type="button"
                   onClick={handleResetFilters}
-                  className="bg-[#0A0A0A] text-accent-contrast text-xs font-semibold uppercase tracking-wider px-6 py-3 rounded-[4px] hover:bg-accent transition-colors inline-flex items-center gap-2"
+                  className="bg-[#0A0A0A] text-white hover:text-accent-contrast text-xs font-semibold uppercase tracking-wider px-6 py-3 rounded-[4px] hover:bg-accent transition-colors inline-flex items-center gap-2"
                 >
                   <RotateCcw size={13} /> Reset All Filters
                 </button>

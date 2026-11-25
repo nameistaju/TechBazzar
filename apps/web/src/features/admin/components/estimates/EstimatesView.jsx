@@ -177,7 +177,7 @@ export default function EstimatesView({ onNavigate }) {
         <div className="flex items-center gap-2">
           <button
             onClick={() => setIsBuilderOpen(true)}
-            className="px-3 py-1.5 bg-[#0A0A0A] text-accent-contrast text-xs font-mono uppercase tracking-wider hover:bg-accent flex items-center gap-1.5 transition-colors font-semibold"
+            className="px-3 py-1.5 bg-[#0A0A0A] text-white hover:text-accent-contrast text-xs font-mono uppercase tracking-wider hover:bg-accent flex items-center gap-1.5 transition-colors font-semibold"
           >
             <Plus className="w-4 h-4" />
             New Quotation
@@ -295,7 +295,7 @@ export default function EstimatesView({ onNavigate }) {
                     {est.status !== 'Accepted' && (
                       <button
                         onClick={() => handleConvertToInvoice(est.id)}
-                        className="px-2.5 py-1 text-xs font-mono uppercase bg-[#0A0A0A] text-accent-contrast hover:bg-accent flex items-center gap-1 transition-colors"
+                        className="px-2.5 py-1 text-xs font-mono uppercase bg-[#0A0A0A] text-white hover:text-accent-contrast hover:bg-accent flex items-center gap-1 transition-colors"
                       >
                         Convert <ArrowRight className="w-3 h-3" />
                       </button>
@@ -575,7 +575,7 @@ export default function EstimatesView({ onNavigate }) {
                 <button
                   type="submit"
                   disabled={savingEstimate}
-                  className="px-6 py-2 bg-[#0A0A0A] text-accent-contrast text-xs font-mono uppercase hover:bg-accent transition-colors font-semibold"
+                  className="px-6 py-2 bg-[#0A0A0A] text-white hover:text-accent-contrast text-xs font-mono uppercase hover:bg-accent transition-colors font-semibold"
                 >
                   {savingEstimate ? 'Generating...' : 'Save & Issue Quotation'}
                 </button>

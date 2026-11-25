@@ -113,7 +113,7 @@ export default function CartDrawerFooter({
             }}
             className={`w-full text-xs font-semibold uppercase tracking-widest py-3.5 rounded-[4px] transition-all flex items-center justify-center gap-2 group shadow-sm ${
               meetsMinOrderValue && !hasMoqViolations
-                ? 'bg-[#0A0A0A] text-accent-contrast hover:bg-accent cursor-pointer'
+                ? 'bg-[#0A0A0A] text-white hover:text-accent-contrast hover:bg-accent cursor-pointer'
                 : 'bg-neutral-300 text-neutral-500 cursor-not-allowed'
             }`}
           >
@@ -134,7 +134,7 @@ export default function CartDrawerFooter({
               setIsCartOpen(false);
               navigate('/checkout');
             }}
-            className="w-full text-xs font-semibold uppercase tracking-widest py-3.5 rounded-[4px] bg-[#0A0A0A] text-accent-contrast hover:bg-accent transition-colors flex items-center justify-center gap-2 cursor-pointer shadow-sm group"
+            className="w-full text-xs font-semibold uppercase tracking-widest py-3.5 rounded-[4px] bg-[#0A0A0A] text-white hover:text-accent-contrast hover:bg-accent transition-colors flex items-center justify-center gap-2 cursor-pointer shadow-sm group"
           >
             <span>Proceed to Checkout</span>
             <ArrowRight size={14} className="group-hover:translate-x-1 transition-transform" />

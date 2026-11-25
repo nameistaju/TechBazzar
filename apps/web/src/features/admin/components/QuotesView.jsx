@@ -215,7 +215,7 @@ export default function QuotesView({ onNavigate }) {
                               type="button"
                               disabled={convertingId === q.id}
                               onClick={() => handleConvertToEstimate(q)}
-                              className="px-2 py-1 bg-[#0A0A0A] hover:bg-accent text-accent-contrast text-[10px] uppercase font-bold rounded flex items-center gap-1 transition-colors"
+                              className="px-2 py-1 bg-[#0A0A0A] hover:bg-accent text-white hover:text-accent-contrast text-[10px] uppercase font-bold rounded flex items-center gap-1 transition-colors"
                               title="Convert to Proforma Estimate"
                             >
                               <FileSpreadsheet size={11} /> Convert

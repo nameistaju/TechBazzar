@@ -209,7 +209,7 @@ export default function OrdersView({ initialOrderId, onClearInitialOrder, onNavi
         <div className="flex items-center gap-2">
           <button
             onClick={() => setIsManualModalOpen(true)}
-            className="px-3 py-1.5 bg-[#0A0A0A] text-accent-contrast text-xs font-mono uppercase tracking-wider hover:bg-accent flex items-center gap-1.5 transition-colors font-semibold"
+            className="px-3 py-1.5 bg-[#0A0A0A] text-white hover:text-accent-contrast text-xs font-mono uppercase tracking-wider hover:bg-accent flex items-center gap-1.5 transition-colors font-semibold"
           >
             <Plus className="w-4 h-4" />
             Manual / Walk-In Order
@@ -381,7 +381,7 @@ export default function OrdersView({ initialOrderId, onClearInitialOrder, onNavi
                 <td className="p-3 text-right">
                   <button
                     onClick={() => openOrderDetail(ord.id)}
-                    className="px-2.5 py-1 text-xs font-mono uppercase bg-[#0A0A0A] text-accent-contrast hover:bg-accent transition-colors"
+                    className="px-2.5 py-1 text-xs font-mono uppercase bg-[#0A0A0A] text-white hover:text-accent-contrast hover:bg-accent transition-colors"
                   >
                     Manage
                   </button>
@@ -435,7 +435,7 @@ export default function OrdersView({ initialOrderId, onClearInitialOrder, onNavi
                 ) : (
                   <button
                     onClick={handleCreateInvoice}
-                    className="px-2.5 py-1.5 bg-[#0A0A0A] text-accent-contrast text-xs font-mono uppercase hover:bg-accent flex items-center gap-1 transition-colors"
+                    className="px-2.5 py-1.5 bg-[#0A0A0A] text-white hover:text-accent-contrast text-xs font-mono uppercase hover:bg-accent flex items-center gap-1 transition-colors"
                   >
                     <FileText className="w-3.5 h-3.5" />
                     1-Click Invoice
@@ -517,7 +517,7 @@ export default function OrdersView({ initialOrderId, onClearInitialOrder, onNavi
                     type="button"
                     onClick={handleSaveOrderMeta}
                     disabled={savingDetails}
-                    className="px-3 py-1 bg-[#0A0A0A] text-accent-contrast text-xs font-mono uppercase hover:bg-accent transition-colors"
+                    className="px-3 py-1 bg-[#0A0A0A] text-white hover:text-accent-contrast text-xs font-mono uppercase hover:bg-accent transition-colors"
                   >
                     Save Details
                   </button>
@@ -778,7 +778,7 @@ export default function OrdersView({ initialOrderId, onClearInitialOrder, onNavi
                 <button
                   type="submit"
                   disabled={submittingManual}
-                  className="flex-1 py-2 bg-[#0A0A0A] text-accent-contrast text-xs font-mono uppercase hover:bg-accent transition-colors font-semibold"
+                  className="flex-1 py-2 bg-[#0A0A0A] text-white hover:text-accent-contrast text-xs font-mono uppercase hover:bg-accent transition-colors font-semibold"
                 >
                   {submittingManual ? 'Creating...' : 'Create & Complete Sale'}
                 </button>

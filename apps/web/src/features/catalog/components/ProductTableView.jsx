@@ -238,7 +238,7 @@ export default function ProductTableView({ products = [] }) {
                       className={`h-7 px-3 rounded text-[10px] font-semibold tracking-wider uppercase transition-colors inline-flex items-center gap-1 ${
                         isAdded
                           ? 'bg-emerald-600 text-white'
-                          : 'bg-[#0A0A0A] text-accent-contrast hover:bg-accent'
+                          : 'bg-[#0A0A0A] text-white hover:text-accent-contrast hover:bg-accent'
                       }`}
                     >
                       {isAdded ? <Check size={12} /> : <ShoppingBag size={11} />}

@@ -108,7 +108,7 @@ export default function ProductListRow({ product }) {
             className={`px-4 py-2 rounded-[4px] text-xs font-semibold uppercase tracking-wider transition-all flex items-center gap-1.5 ${
               isAdded 
                 ? 'bg-emerald-600 text-white' 
-                : 'bg-[#0A0A0A] text-accent-contrast hover:bg-accent'
+                : 'bg-[#0A0A0A] text-white hover:text-accent-contrast hover:bg-accent'
             }`}
           >
             {isAdded ? (

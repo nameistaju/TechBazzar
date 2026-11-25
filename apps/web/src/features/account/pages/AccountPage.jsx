@@ -74,7 +74,7 @@ export default function AccountPage() {
         <button
           type="button"
           onClick={() => openAuthModal('login')}
-          className="py-3 px-8 bg-[#0A0A0A] hover:bg-accent text-accent-contrast text-xs font-semibold uppercase tracking-widest rounded-[4px] transition-colors cursor-pointer"
+          className="py-3 px-8 bg-[#0A0A0A] hover:bg-accent text-white hover:text-accent-contrast text-xs font-semibold uppercase tracking-widest rounded-[4px] transition-colors cursor-pointer"
         >
           Sign In
         </button>
@@ -243,7 +243,7 @@ export default function AccountPage() {
                       </div>
                       <Link
                         to={`/track?number=${selectedOrder.orderNumber}&contact=${encodeURIComponent(user.email)}`}
-                        className="py-2 px-4 bg-[#0A0A0A] hover:bg-accent text-accent-contrast text-xs font-semibold uppercase tracking-wider rounded-[4px] transition-colors"
+                        className="py-2 px-4 bg-[#0A0A0A] hover:bg-accent text-white hover:text-accent-contrast text-xs font-semibold uppercase tracking-wider rounded-[4px] transition-colors"
                       >
                         Live Tracking
                       </Link>
@@ -288,7 +288,7 @@ export default function AccountPage() {
                       <button
                         type="button"
                         onClick={() => handleReorder(selectedOrder)}
-                        className="py-3 px-6 bg-[#0A0A0A] hover:bg-accent text-accent-contrast text-xs font-semibold uppercase tracking-widest rounded-[4px] transition-colors flex items-center gap-2 cursor-pointer"
+                        className="py-3 px-6 bg-[#0A0A0A] hover:bg-accent text-white hover:text-accent-contrast text-xs font-semibold uppercase tracking-widest rounded-[4px] transition-colors flex items-center gap-2 cursor-pointer"
                       >
                         <RotateCcw size={14} /> Reorder All Items
                       </button>
@@ -307,7 +307,7 @@ export default function AccountPage() {
                         <p className="text-xs text-[#6B6B6B] mb-4">You have not placed any orders yet.</p>
                         <Link
                           to="/shop"
-                          className="py-2.5 px-6 bg-[#0A0A0A] hover:bg-accent text-accent-contrast text-xs font-semibold uppercase tracking-widest rounded-[4px] transition-colors"
+                          className="py-2.5 px-6 bg-[#0A0A0A] hover:bg-accent text-white hover:text-accent-contrast text-xs font-semibold uppercase tracking-widest rounded-[4px] transition-colors"
                         >
                           Start Shopping
                         </Link>
@@ -401,7 +401,7 @@ export default function AccountPage() {
                     <p className="text-xs text-[#6B6B6B] mb-4">Your wishlist is currently empty.</p>
                     <Link
                       to="/shop"
-                      className="py-2.5 px-6 bg-[#0A0A0A] hover:bg-accent text-accent-contrast text-xs font-semibold uppercase tracking-widest rounded-[4px] transition-colors"
+                      className="py-2.5 px-6 bg-[#0A0A0A] hover:bg-accent text-white hover:text-accent-contrast text-xs font-semibold uppercase tracking-widest rounded-[4px] transition-colors"
                     >
                       Explore Trending
                     </Link>
@@ -458,7 +458,7 @@ export default function AccountPage() {
                     <button
                       type="button"
                       onClick={() => setIsAddingAddress(true)}
-                      className="py-2 px-3.5 bg-[#0A0A0A] hover:bg-accent text-accent-contrast text-xs font-semibold uppercase tracking-wider rounded-[4px] flex items-center gap-1.5 transition-colors cursor-pointer"
+                      className="py-2 px-3.5 bg-[#0A0A0A] hover:bg-accent text-white hover:text-accent-contrast text-xs font-semibold uppercase tracking-wider rounded-[4px] flex items-center gap-1.5 transition-colors cursor-pointer"
                     >
                       <Plus size={14} /> Add Address
                     </button>
@@ -539,7 +539,7 @@ export default function AccountPage() {
                     <div className="flex items-center gap-2 pt-2">
                       <button
                         type="submit"
-                        className="py-2.5 px-6 bg-[#0A0A0A] hover:bg-accent text-accent-contrast text-xs font-semibold uppercase tracking-wider rounded-[4px] transition-colors"
+                        className="py-2.5 px-6 bg-[#0A0A0A] hover:bg-accent text-white hover:text-accent-contrast text-xs font-semibold uppercase tracking-wider rounded-[4px] transition-colors"
                       >
                         Save Address
                       </button>

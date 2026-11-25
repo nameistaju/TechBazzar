@@ -604,7 +604,7 @@ export default function QuickOrderPage() {
               <button
                 type="button"
                 onClick={handleAddAllFromGrid}
-                className="bg-[#0A0A0A] hover:bg-accent text-accent-contrast text-xs font-semibold uppercase tracking-widest px-8 py-3.5 rounded transition-colors flex items-center gap-2 shadow-sm font-mono"
+                className="bg-[#0A0A0A] hover:bg-accent text-white hover:text-accent-contrast text-xs font-semibold uppercase tracking-widest px-8 py-3.5 rounded transition-colors flex items-center gap-2 shadow-sm font-mono"
               >
                 <ShoppingBag size={14} /> Add All Items to Cart
               </button>
@@ -636,7 +636,7 @@ export default function QuickOrderPage() {
                     type="button"
                     onClick={handleParsePaste}
                     disabled={isParsing}
-                    className="bg-[#0A0A0A] hover:bg-accent text-accent-contrast text-xs font-semibold uppercase tracking-wider px-6 py-2.5 rounded transition-colors flex items-center gap-1.5"
+                    className="bg-[#0A0A0A] hover:bg-accent text-white hover:text-accent-contrast text-xs font-semibold uppercase tracking-wider px-6 py-2.5 rounded transition-colors flex items-center gap-1.5"
                   >
                     {isParsing ? <RefreshCw className="w-3.5 h-3.5 animate-spin" /> : null}
                     Validate & Preview Lines

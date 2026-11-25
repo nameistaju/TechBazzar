@@ -77,7 +77,7 @@ function BackToTopButton() {
     <button
       type="button"
       onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-      className="fixed bottom-6 left-6 z-40 bg-[#0A0A0A] text-accent-contrast p-3 rounded-[4px] shadow-lg border border-[#222222] hover:bg-accent transition-colors cursor-pointer"
+      className="fixed bottom-6 left-6 z-40 bg-[#0A0A0A] text-white hover:text-accent-contrast p-3 rounded-[4px] shadow-lg border border-[#222222] hover:bg-accent transition-colors cursor-pointer"
       aria-label="Back to top of page"
     >
       <ArrowUp size={16} />

@@ -123,7 +123,7 @@ export default function SettingsView() {
         <button
           onClick={handleSaveSettings}
           disabled={saving}
-          className="px-4 py-2 bg-[#0A0A0A] text-accent-contrast text-xs font-mono uppercase tracking-wider hover:bg-accent flex items-center gap-1.5 transition-colors font-semibold"
+          className="px-4 py-2 bg-[#0A0A0A] text-white hover:text-accent-contrast text-xs font-mono uppercase tracking-wider hover:bg-accent flex items-center gap-1.5 transition-colors font-semibold"
         >
           <Save className="w-4 h-4" />
           {saving ? 'Saving...' : 'Save All Settings'}
@@ -392,7 +392,7 @@ export default function SettingsView() {
             <a
               href={adminApi.getBackupUrl()}
               download
-              className="inline-flex items-center gap-2 px-4 py-2 bg-[#0A0A0A] text-accent-contrast text-xs font-mono uppercase hover:bg-accent transition-colors font-bold"
+              className="inline-flex items-center gap-2 px-4 py-2 bg-[#0A0A0A] text-white hover:text-accent-contrast text-xs font-mono uppercase hover:bg-accent transition-colors font-bold"
             >
               <Download className="w-4 h-4" />
               Download techbazaar.db Backup
@@ -446,7 +446,7 @@ export default function SettingsView() {
             <button
               type="submit"
               disabled={savingAccount}
-              className="px-4 py-2 bg-[#0A0A0A] text-accent-contrast text-xs font-mono uppercase hover:bg-accent font-bold"
+              className="px-4 py-2 bg-[#0A0A0A] text-white hover:text-accent-contrast text-xs font-mono uppercase hover:bg-accent font-bold"
             >
               Update Owner Profile
             </button>
@@ -479,7 +479,7 @@ export default function SettingsView() {
             <button
               type="submit"
               disabled={savingAccount}
-              className="px-4 py-2 bg-[#0A0A0A] text-accent-contrast text-xs font-mono uppercase hover:bg-accent font-bold"
+              className="px-4 py-2 bg-[#0A0A0A] text-white hover:text-accent-contrast text-xs font-mono uppercase hover:bg-accent font-bold"
             >
               Update Password
             </button>

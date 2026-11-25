@@ -203,7 +203,7 @@ export default function AdminPage() {
         </p>
         <button
           onClick={() => openAuthModal('login')}
-          className="px-6 py-2.5 bg-[#0A0A0A] text-accent-contrast font-mono text-xs uppercase tracking-wider hover:bg-accent transition-colors font-bold"
+          className="px-6 py-2.5 bg-[#0A0A0A] text-white hover:text-accent-contrast font-mono text-xs uppercase tracking-wider hover:bg-accent transition-colors font-bold"
         >
           Sign In as Admin
         </button>

@@ -151,7 +151,7 @@ export default function AdminLayout({
                 setIsNotificationsOpen(false);
                 setIsAccountMenuOpen(false);
               }}
-              className="px-2.5 py-1.5 bg-[#0A0A0A] text-accent-contrast text-xs font-mono uppercase tracking-wider hover:bg-accent flex items-center gap-1 transition-colors font-semibold rounded-[2px]"
+              className="px-2.5 py-1.5 bg-[#0A0A0A] text-white hover:text-accent-contrast text-xs font-mono uppercase tracking-wider hover:bg-accent flex items-center gap-1 transition-colors font-semibold rounded-[2px]"
             >
               <Plus className="w-3.5 h-3.5" />
               <span className="hidden sm:inline">Create</span>

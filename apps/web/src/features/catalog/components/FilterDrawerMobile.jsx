@@ -39,7 +39,7 @@ export default function FilterDrawerMobile({
             <button
               type="button"
               onClick={onClose}
-              className="w-full bg-[#0A0A0A] text-accent-contrast text-xs font-semibold uppercase tracking-wider py-3 rounded-[4px] hover:bg-accent transition-colors flex items-center justify-center gap-2"
+              className="w-full bg-[#0A0A0A] text-white hover:text-accent-contrast text-xs font-semibold uppercase tracking-wider py-3 rounded-[4px] hover:bg-accent transition-colors flex items-center justify-center gap-2"
             >
               <Check size={14} /> Apply Filters
             </button>

@@ -242,7 +242,7 @@ export default function CheckoutPage() {
         </p>
         <Link
           to="/shop"
-          className="bg-[#0A0A0A] text-accent-contrast text-xs font-semibold uppercase tracking-widest px-6 py-3.5 rounded-[4px] hover:bg-accent transition-colors"
+          className="bg-[#0A0A0A] text-white hover:text-accent-contrast text-xs font-semibold uppercase tracking-widest px-6 py-3.5 rounded-[4px] hover:bg-accent transition-colors"
         >
           Explore Catalog
         </Link>

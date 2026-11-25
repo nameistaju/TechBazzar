@@ -130,7 +130,7 @@ export default function InvoiceModals({
                 <button
                   type="submit"
                   disabled={submittingPayment}
-                  className="flex-1 py-2 bg-[#0A0A0A] text-accent-contrast text-xs uppercase hover:bg-accent transition-colors font-bold"
+                  className="flex-1 py-2 bg-[#0A0A0A] text-white hover:text-accent-contrast text-xs uppercase hover:bg-accent transition-colors font-bold"
                 >
                   {submittingPayment ? 'Saving...' : 'Record Payment'}
                 </button>
@@ -447,7 +447,7 @@ export default function InvoiceModals({
                 <button
                   type="submit"
                   disabled={savingInvoice}
-                  className="px-6 py-2 bg-[#0A0A0A] text-accent-contrast text-xs font-mono uppercase hover:bg-accent transition-colors font-semibold"
+                  className="px-6 py-2 bg-[#0A0A0A] text-white hover:text-accent-contrast text-xs font-mono uppercase hover:bg-accent transition-colors font-semibold"
                 >
                   {savingInvoice ? 'Generating Invoice...' : 'Generate & Save Tax Invoice'}
                 </button>

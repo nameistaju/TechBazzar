@@ -364,7 +364,7 @@ export default function DashboardView({ onNavigate, onQuickRestock }) {
                   </span>
                   <button
                     onClick={() => onQuickRestock && onQuickRestock(p)}
-                    className="px-2.5 py-1 text-[11px] font-mono uppercase bg-[#0A0A0A] text-accent-contrast hover:bg-accent transition-colors"
+                    className="px-2.5 py-1 text-[11px] font-mono uppercase bg-[#0A0A0A] text-white hover:text-accent-contrast hover:bg-accent transition-colors"
                   >
                     Restock
                   </button>

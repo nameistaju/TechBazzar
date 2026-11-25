@@ -78,7 +78,7 @@ export default function SearchResultsPage() {
             </p>
             <Link
               to="/shop"
-              className="inline-flex items-center gap-2 bg-[#0A0A0A] text-accent-contrast text-xs font-semibold uppercase tracking-widest px-6 py-3 rounded-[4px] hover:bg-accent transition-colors"
+              className="inline-flex items-center gap-2 bg-[#0A0A0A] text-white hover:text-accent-contrast text-xs font-semibold uppercase tracking-widest px-6 py-3 rounded-[4px] hover:bg-accent transition-colors"
             >
               Browse All Products <ArrowRight size={14} />
             </Link>

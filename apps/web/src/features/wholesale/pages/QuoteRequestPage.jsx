@@ -450,7 +450,7 @@ export default function QuoteRequestPage() {
                   <button
                     type="submit"
                     disabled={submitting}
-                    className="bg-[#0A0A0A] hover:bg-accent text-accent-contrast text-xs font-semibold uppercase tracking-widest px-8 py-4 rounded transition-colors flex items-center gap-2 shadow-sm"
+                    className="bg-[#0A0A0A] hover:bg-accent text-white hover:text-accent-contrast text-xs font-semibold uppercase tracking-widest px-8 py-4 rounded transition-colors flex items-center gap-2 shadow-sm"
                   >
                     <Send size={13} /> {submitting ? 'Submitting...' : 'Submit Request for Quote'}
                   </button>
@@ -487,7 +487,7 @@ export default function QuoteRequestPage() {
                 <button
                   type="submit"
                   disabled={trackingLoading}
-                  className="bg-[#0A0A0A] text-accent-contrast hover:bg-accent text-xs font-semibold uppercase tracking-wider px-6 py-2.5 rounded transition-colors"
+                  className="bg-[#0A0A0A] text-white hover:text-accent-contrast hover:bg-accent text-xs font-semibold uppercase tracking-wider px-6 py-2.5 rounded transition-colors"
                 >
                   {trackingLoading ? 'Searching...' : 'Track'}
                 </button>

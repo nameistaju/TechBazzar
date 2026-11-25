@@ -45,7 +45,7 @@ export default function CartOrderSummary({
           <button
             type="submit"
             disabled={isApplyingCoupon}
-            className="bg-[#0A0A0A] text-accent-contrast hover:bg-accent disabled:opacity-60 text-xs font-semibold uppercase tracking-wider px-4 py-2.5 rounded-[4px] transition-colors cursor-pointer"
+            className="bg-[#0A0A0A] text-white hover:text-accent-contrast hover:bg-accent disabled:opacity-60 text-xs font-semibold uppercase tracking-wider px-4 py-2.5 rounded-[4px] transition-colors cursor-pointer"
           >
             {isApplyingCoupon ? '...' : 'Apply'}
           </button>
@@ -148,7 +148,7 @@ export default function CartOrderSummary({
             onClick={() => navigate('/wholesale-checkout')}
             className={`w-full text-xs font-semibold uppercase tracking-widest py-4 rounded-[4px] transition-colors flex items-center justify-center gap-2 group shadow-sm ${
               meetsMinOrderValue && !hasMoqViolations
-                ? 'bg-[#0A0A0A] hover:bg-accent text-accent-contrast cursor-pointer'
+                ? 'bg-[#0A0A0A] hover:bg-accent text-white hover:text-accent-contrast cursor-pointer'
                 : 'bg-neutral-300 text-neutral-500 cursor-not-allowed'
             }`}
           >
@@ -166,7 +166,7 @@ export default function CartOrderSummary({
           <button
             type="button"
             onClick={() => navigate('/checkout')}
-            className="w-full text-xs font-semibold uppercase tracking-widest py-4 rounded-[4px] bg-[#0A0A0A] hover:bg-accent text-accent-contrast transition-colors flex items-center justify-center gap-2 group shadow-sm cursor-pointer"
+            className="w-full text-xs font-semibold uppercase tracking-widest py-4 rounded-[4px] bg-[#0A0A0A] hover:bg-accent text-white hover:text-accent-contrast transition-colors flex items-center justify-center gap-2 group shadow-sm cursor-pointer"
           >
             <span>Proceed to Checkout</span>
             <ArrowRight size={14} className="group-hover:translate-x-1 transition-transform" />
