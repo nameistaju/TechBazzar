@@ -81,10 +81,10 @@ export default function ProductDetailPage() {
   if (loading) {
     return (
       <div className="bg-white min-h-screen pb-24">
-        <div className="max-w-site mx-auto px-4 sm:px-6 lg:px-8 pt-6 animate-pulse">
-          <div className="h-4 w-56 bg-[#F0F0F0] rounded mb-8" />
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12">
-            <div className="lg:col-span-6 aspect-square bg-[#F5F5F5] border border-[#EAEAEA] rounded-[4px]" />
+        <div className="max-w-site mx-auto px-4 sm:px-6 lg:px-8">
+          <Breadcrumbs items={[{ label: 'Shop', link: '/shop' }, { label: 'Loading...' }]} />
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-14 py-8 items-start animate-pulse">
+            <div className="lg:col-span-6 aspect-square bg-[#FAFAFA] border border-[#EAEAEA] rounded-[4px]" />
             <div className="lg:col-span-6 space-y-5">
               <div className="h-3 w-28 bg-[#F0F0F0] rounded" />
               <div className="h-8 w-3/4 bg-[#EAEAEA] rounded" />
