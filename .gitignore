@@ -32,10 +32,16 @@ public/uploads/
 dist/
 dist-ssr/
 build/
+coverage/
 playwright-report/
 test-results/
 AUDIT/lighthouse/
 *.local
+
+# Stray / temporary artifacts
+shot_*.png
+public/logo-backup.png
+server/db/database.sqlite
 
 # Logs
 npm-debug.log*
