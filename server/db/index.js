@@ -27,4 +27,22 @@ try {
   }
 } catch {}
 
+// Apply numbered SQL migrations idempotently
+try {
+  db.exec(`
+    CREATE TABLE IF NOT EXISTS schema_migrations (
+      id TEXT PRIMARY KEY,
+      applied_at DATETIME DEFAULT CURRENT_TIMESTAMP
+    )
+  `);
+  const sqlMigrationPath = path.resolve(__dirname, 'migrations', '002_indexes_and_constraints.sql');
+  if (fs.existsSync(sqlMigrationPath)) {
+    const applied = db.prepare('SELECT id FROM schema_migrations WHERE id = ?').get('002_indexes_and_constraints');
+    if (!applied) {
+      db.exec(fs.readFileSync(sqlMigrationPath, 'utf-8'));
+      db.prepare('INSERT INTO schema_migrations (id) VALUES (?)').run('002_indexes_and_constraints');
+    }
+  }
+} catch {}
+
 export default db;

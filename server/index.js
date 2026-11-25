@@ -6,6 +6,7 @@ import helmet from 'helmet';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
 import rateLimit from 'express-rate-limit';
+import fs from 'fs';
 import path from 'path';
 
 import authRoutes from './routes/auth.js';
@@ -94,6 +95,15 @@ app.use('/api', miscRoutes);
 app.use('/api', (req, res) => {
   res.status(404).json({ data: null, error: `API route ${req.method} ${req.originalUrl} not found` });
 });
+
+// Serve production SPA build & fallback if dist/ exists
+const distDir = path.join(process.cwd(), 'dist');
+if (fs.existsSync(path.join(distDir, 'index.html'))) {
+  app.use(express.static(distDir));
+  app.get(/^\/(?!api|uploads).*/, (req, res) => {
+    res.sendFile(path.join(distDir, 'index.html'));
+  });
+}
 
 // Central Error Handler
 app.use(errorHandler);

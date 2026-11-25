@@ -5,6 +5,7 @@ import rateLimit from 'express-rate-limit';
 import db from '../db/index.js';
 import { optionalAuth, requireAuth } from '../middleware/auth.js';
 import { validateBody } from '../middleware/validate.js';
+import { idempotencyMiddleware } from '../middleware/idempotency.js';
 import PaymentService from '../services/payment.js';
 import { evaluateDiscount, getWholesaleTier, isIntraStateSupply, numberToWordsIndian, formatMoney } from '../services/calculation.js';
 import { generateDocumentPDF } from '../services/pdfGenerator.js';
@@ -73,7 +74,7 @@ function generateOrderNumber() {
 }
 
 // POST /api/orders (Guest or Logged-in Order - Retail only; Wholesale must use /api/wholesale/orders)
-router.post('/', orderLimiter, optionalAuth, validateBody(createOrderSchema), async (req, res) => {
+router.post('/', orderLimiter, optionalAuth, idempotencyMiddleware, validateBody(createOrderSchema), async (req, res) => {
   const { customer, shippingAddress, billingAddress, items, paymentMethod, discountCode, isAdvancePayment, channel = 'retail' } = req.body;
   const userId = req.user ? req.user.id : null;
   const isWholesaleChannel = channel === 'wholesale';

@@ -13,6 +13,7 @@ import rateLimit from 'express-rate-limit';
 import db from '../db/index.js';
 import { requireAuth, requireApprovedWholesaleBuyer, generateToken, COOKIE_OPTIONS } from '../middleware/auth.js';
 import { validateBody } from '../middleware/validate.js';
+import { idempotencyMiddleware } from '../middleware/idempotency.js';
 import { calculateWholesaleCart, getWholesaleTier, formatINR, numberToWordsIndian } from '../services/calculation.js';
 
 const router = Router();
@@ -414,7 +415,7 @@ router.get('/credit', requireApprovedWholesaleBuyer, (req, res) => {
 });
 
 // POST /api/wholesale/orders (Place B2B Wholesale Order)
-router.post('/orders', requireApprovedWholesaleBuyer, validateBody(wholesaleOrderSchema), (req, res) => {
+router.post('/orders', requireApprovedWholesaleBuyer, idempotencyMiddleware, validateBody(wholesaleOrderSchema), (req, res) => {
   const { shippingAddress, billingAddress, paymentMethod, poNumber, deliveryNotes, discountCode } = req.body;
   const userId = req.user.id;
 
