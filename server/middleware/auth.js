@@ -59,7 +59,7 @@ export function optionalAuth(req, res, next) {
       WHERE u.id = ?
     `).get(decoded.id);
 
-    if (!user || (decoded.tokenVersion !== undefined && decoded.tokenVersion !== (user.token_version ?? 0))) {
+    if (!user || (decoded.tokenVersion ?? 0) !== (user.token_version ?? 0)) {
       req.user = null;
       return next();
     }
@@ -90,6 +90,13 @@ export function requireAdmin(req, res, next) {
       return res.status(403).json({
         data: null,
         error: 'Access denied. Administrator privileges required.'
+      });
+    }
+    if (req.user.must_change_password && req.path !== '/change-password') {
+      return res.status(403).json({
+        data: null,
+        error: 'Password change required before accessing admin APIs.',
+        code: 'MUST_CHANGE_PASSWORD'
       });
     }
     next();

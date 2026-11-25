@@ -102,7 +102,7 @@ router.post('/login', loginLimiter, validateBody(loginSchema), (req, res) => {
   const normalizedEmail = email.trim().toLowerCase();
 
   const user = db.prepare(`
-    SELECT u.id, u.email, u.password_hash, u.name, u.role, u.must_change_password, u.created_at,
+    SELECT u.id, u.email, u.password_hash, u.name, u.role, u.must_change_password, u.token_version, u.created_at,
            u.buyer_type, u.wholesale_status, u.group_id, u.business_name, u.gstin,
            u.credit_limit_override,
            wg.name as group_name, wg.extra_discount_percent, wg.credit_limit as group_credit_limit,
@@ -146,7 +146,7 @@ router.post('/login', loginLimiter, validateBody(loginSchema), (req, res) => {
     createdAt: user.created_at
   };
 
-  const token = generateToken(safeUser);
+  const token = generateToken({ ...safeUser, token_version: user.token_version ?? 0 });
   res.cookie('token', token, COOKIE_OPTIONS);
 
   return res.json({

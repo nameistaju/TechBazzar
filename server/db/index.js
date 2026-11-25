@@ -6,7 +6,9 @@ import { fileURLToPath } from 'url';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-const dbPath = path.resolve(__dirname, 'techbazaar.db');
+const dbPath = process.env.TECHBAZAAR_DB_PATH
+  ? path.resolve(process.env.TECHBAZAAR_DB_PATH)
+  : path.resolve(__dirname, 'techbazaar.db');
 const schemaPath = path.resolve(__dirname, 'schema.sql');
 
 export const db = new Database(dbPath);
