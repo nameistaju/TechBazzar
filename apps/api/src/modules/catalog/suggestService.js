@@ -2,7 +2,7 @@
 // Advanced multi-token suggestion engine with synonym expansion, relevance scoring,
 // mode-specific pricing, and privacy gating.
 
-import db from '../db/index.js';
+import db from '../../../db/index.js';
 
 const SYNONYM_MAP = {
   'earbud': ['earbud', 'earbuds', 'earphone', 'earphones', 'tws', 'airdrop', 'airdopes', 'buds', 'in-ear', 'inear'],

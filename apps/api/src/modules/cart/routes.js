@@ -1,10 +1,10 @@
 import { Router } from 'express';
 import { z } from 'zod';
-import db from '../db/index.js';
-import { requireAuth, optionalAuth } from '../middleware/auth.js';
-import { validateBody } from '../middleware/validate.js';
-import { formatProduct } from './products.js';
-import { evaluateDiscount } from '../services/calculation.js';
+import db from '../../../db/index.js';
+import { requireAuth, optionalAuth } from '../../core/middleware/auth.js';
+import { validateBody } from '../../core/middleware/validate.js';
+import { formatProduct } from '../catalog/routes.js';
+import { evaluateDiscount } from '../../services/calculation/index.js';
 
 const router = Router();
 

@@ -2,7 +2,7 @@
 // Seeds complete business settings, sample customers, sample discounts, estimates, invoices, and activity logs
 
 import db from '../index.js';
-import { calculateDocumentTotals } from '../../services/calculation.js';
+import { calculateDocumentTotals } from '../../src/services/calculation/index.js';
 
 console.log('🌱 Seeding Admin Back-Office Data...');
 

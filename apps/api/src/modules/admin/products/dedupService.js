@@ -2,7 +2,7 @@
 // Dedicated service for Product Deduplication, Canonical Grouping,
 // Reference Remapping, Variant Consolidation, and Safe Undo.
 
-import db from '../db/index.js';
+import db from '../../../../db/index.js';
 
 const COLOR_WORDS = [
   'black', 'white', 'silver', 'grey', 'gray', 'space grey', 'space gray',

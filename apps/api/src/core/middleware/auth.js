@@ -1,6 +1,6 @@
 import jwt from 'jsonwebtoken';
 import crypto from 'crypto';
-import db from '../db/index.js';
+import db from '../../../db/index.js';
 
 let ephemeralDevSecret = null;
 

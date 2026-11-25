@@ -4,10 +4,10 @@ import { Router } from 'express';
 import fs from 'fs';
 import path from 'path';
 import crypto from 'crypto';
-import db from '../db/index.js';
-import { UPLOADS_DIR, WEB_PUBLIC_DIR } from '../config/paths.js';
-import { requireAdmin } from '../middleware/auth.js';
-import { validateImageUpload } from '../utils/imageSecurity.js';
+import db from '../../../db/index.js';
+import { UPLOADS_DIR, WEB_PUBLIC_DIR } from '../../../config/paths.js';
+import { requireAdmin } from '../../core/middleware/auth.js';
+import { validateImageUpload } from '../../core/utils/imageSecurity.js';
 
 const router = Router();
 

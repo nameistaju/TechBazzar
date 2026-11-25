@@ -5,7 +5,7 @@ import { setupTempDb } from './testDb.js';
 const { cleanup } = setupTempDb('tb-calc-matrix-');
 const { default: app } = await import('../src/app.js');
 const { default: db } = await import('../db/index.js');
-const { calculateRetailCart, calculateWholesaleCart } = await import('../services/calculation.js');
+const { calculateRetailCart, calculateWholesaleCart } = await import('../src/services/calculation/index.js');
 
 // Deterministic PRNG (Mulberry32)
 function mulberry32(seed) {

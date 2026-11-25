@@ -1,9 +1,9 @@
 import { Router } from 'express';
 import rateLimit from 'express-rate-limit';
-import db from '../db/index.js';
-import { optionalAuth } from '../middleware/auth.js';
-import { checkDuplicateName } from '../services/dedupService.js';
-import { searchSuggestions } from '../services/suggestService.js';
+import db from '../../../db/index.js';
+import { optionalAuth } from '../../core/middleware/auth.js';
+import { checkDuplicateName } from '../admin/products/dedupService.js';
+import { searchSuggestions } from './suggestService.js';
 
 const router = Router();
 

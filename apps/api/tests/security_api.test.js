@@ -5,7 +5,7 @@ import { setupTempDb } from './testDb.js';
 const { cleanup } = setupTempDb('tb-sec-api-');
 const { default: app } = await import('../src/app.js');
 const { default: db } = await import('../db/index.js');
-const { getJwtSecret } = await import('../middleware/auth.js');
+const { getJwtSecret } = await import('../src/core/middleware/auth.js');
 
 describe('Part 2.2 & 2.4: Invoice/Quote Access Control, Leak Scan & JWT Guard', () => {
   afterAll(cleanup);

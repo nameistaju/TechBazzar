@@ -1,4 +1,4 @@
-import db from '../db/index.js';
+import db from '../../../db/index.js';
 
 export function idempotencyMiddleware(req, res, next) {
   const key = req.get('Idempotency-Key')?.trim();

@@ -10,25 +10,24 @@ import path from 'node:path';
 
 import { UPLOADS_DIR, resolveDistDir } from '../config/paths.js';
 
-import authRoutes from '../routes/auth.js';
-import productsRoutes from '../routes/products.js';
-import cartRoutes from '../routes/cart.js';
-import ordersRoutes from '../routes/orders.js';
-import addressesRoutes from '../routes/addresses.js';
+import authRoutes from './modules/auth/routes.js';
+import productsRoutes from './modules/catalog/routes.js';
+import cartRoutes from './modules/cart/routes.js';
+import ordersRoutes from './modules/orders/routes.js';
+import addressesRoutes from './modules/addresses/routes.js';
 import adminRoutes from '../routes/admin.js';
-import miscRoutes from '../routes/misc.js';
-import bannersRoutes from '../routes/banners.js';
-import quotesRoutes from '../routes/quotes.js';
-import wholesaleRoutes from '../routes/wholesale.js';
-import brandingRoutes from '../routes/branding.js';
-import { errorHandler } from '../middleware/error.js';
-import { getJwtSecret } from '../middleware/auth.js';
+import miscRoutes from './modules/misc/routes.js';
+import bannersRoutes from './modules/banners/routes.js';
+import quotesRoutes from './modules/quotes/routes.js';
+import wholesaleRoutes from './modules/wholesale/routes.js';
+import brandingRoutes from './modules/branding/routes.js';
+import { errorHandler } from './core/middleware/error.js';
+import { getJwtSecret } from './core/middleware/auth.js';
 
 // Validate JWT secret on startup (refuses to boot in production without strong JWT_SECRET)
 getJwtSecret();
 
 const app = express();
-const PORT = process.env.PORT || 5000;
 const CLIENT_URL = process.env.CLIENT_URL || 'http://localhost:3000';
 
 // Security Headers with Helmet + CSP

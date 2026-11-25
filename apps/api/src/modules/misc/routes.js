@@ -1,8 +1,8 @@
 import { Router } from 'express';
 import { z } from 'zod';
 import rateLimit from 'express-rate-limit';
-import db from '../db/index.js';
-import { validateBody } from '../middleware/validate.js';
+import db from '../../../db/index.js';
+import { validateBody } from '../../core/middleware/validate.js';
 
 const router = Router();
 

@@ -4,7 +4,7 @@
 import PDFDocument from 'pdfkit';
 import path from 'path';
 import fs from 'fs';
-import { formatINR } from './calculation.js';
+import { formatINR } from './calculation/index.js';
 
 /**
  * Generate Invoice / Estimate PDF
