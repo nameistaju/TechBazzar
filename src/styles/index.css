@@ -3,9 +3,20 @@
 @tailwind utilities;
 
 :root {
-  --color-primary: #FF4D00;
-  --color-primary-hover: #E04400;
-  --color-primary-light: #FFF0EB;
+  /* Dynamic Accent Branding Variables */
+  --accent: #FF4D00;
+  --accent-hover: #E04400;
+  --accent-pressed: #C73C00;
+  --accent-tint: #FFEDE6;
+  --accent-border: #FFD3BF;
+  --accent-contrast: #FFFFFF;
+  --accent-ring: rgba(255, 77, 0, 0.35);
+  --footer-dark: #0A0A0A;
+
+  /* Theme mappings for existing classes */
+  --color-primary: var(--accent);
+  --color-primary-hover: var(--accent-hover);
+  --color-primary-light: var(--accent-tint);
   --color-bg: #FFFFFF;
   --color-surface: #F7F7F7;
   --color-surface-hover: #EFEFEF;

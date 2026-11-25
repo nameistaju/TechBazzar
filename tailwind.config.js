@@ -7,6 +7,15 @@ export default {
   theme: {
     extend: {
       colors: {
+        accent: {
+          DEFAULT: "var(--accent)",
+          hover: "var(--accent-hover)",
+          pressed: "var(--accent-pressed)",
+          tint: "var(--accent-tint)",
+          border: "var(--accent-border)",
+          contrast: "var(--accent-contrast)",
+          ring: "var(--accent-ring)",
+        },
         pop: {
           DEFAULT: "var(--color-primary)",
           hover: "var(--color-primary-hover)",
