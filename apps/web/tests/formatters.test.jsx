@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
-import { formatMoney, formatINR, getResponsiveImageSrcSet } from '../src/utils/formatters';
-import { calculateRetailCart, calculateWholesaleCart, getWholesaleTier } from '../src/utils/wholesaleCalculation';
+import { formatMoney, formatINR, getResponsiveImageSrcSet } from '@shared/utils/formatters';
+import { calculateRetailCart, calculateWholesaleCart, getWholesaleTier } from '@shared/utils/wholesaleCalculation';
 
 describe('Frontend Money, Image & Calculation Formatters', () => {
   it('formats integer paise accurately without /100 bugs', () => {
