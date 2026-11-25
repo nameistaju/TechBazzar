@@ -11,13 +11,13 @@ const trackingLimiter = rateLimit({
   message: { data: null, error: 'Tracking rate limit exceeded' }
 });
 
-// GET /api/banners - get active banners (optionally filtered by slot)
+// GET /api/banners - get active banners (optionally filtered by slot and audience)
 router.get('/', (req, res, next) => {
   try {
-    const { slot } = req.query;
+    const { slot, audience } = req.query;
     let query = `
       SELECT id, title, slot, desktop_image, mobile_image, thumb, focal_x, focal_y,
-             alt, link_type, link_target, new_tab, label, starts_at, ends_at, active, sort_order
+             alt, link_type, link_target, new_tab, label, starts_at, ends_at, active, sort_order, audience
       FROM banners
       WHERE active = 1
         AND (starts_at IS NULL OR starts_at = '' OR DATETIME('now') >= DATETIME(starts_at))
@@ -28,6 +28,11 @@ router.get('/', (req, res, next) => {
     if (slot) {
       query += ` AND slot = ?`;
       params.push(slot);
+    }
+
+    if (audience && ['retail', 'wholesale'].includes(audience)) {
+      query += ` AND (audience = 'both' OR audience = ? OR audience IS NULL)`;
+      params.push(audience);
     }
 
     query += ` ORDER BY sort_order ASC, id ASC`;

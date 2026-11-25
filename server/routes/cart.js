@@ -4,7 +4,7 @@ import db from '../db/index.js';
 import { requireAuth, optionalAuth } from '../middleware/auth.js';
 import { validateBody } from '../middleware/validate.js';
 import { formatProduct } from './products.js';
-import { evaluateDiscount, getWholesaleTier } from '../services/calculation.js';
+import { evaluateDiscount } from '../services/calculation.js';
 
 const router = Router();
 

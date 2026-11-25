@@ -28,6 +28,8 @@ CREATE TABLE IF NOT EXISTS products (
   tags TEXT, -- JSON array of tags
   specs TEXT, -- JSON object of specs
   short_description TEXT,
+  merged_into TEXT, -- Canonical product ID if merged/soft-deleted
+  normalized_name TEXT,
   created_at DATETIME DEFAULT CURRENT_TIMESTAMP
 );
 
@@ -173,6 +175,9 @@ CREATE TABLE IF NOT EXISTS banner_stats (
 CREATE INDEX IF NOT EXISTS idx_products_category ON products(category);
 CREATE INDEX IF NOT EXISTS idx_products_brand ON products(brand);
 CREATE INDEX IF NOT EXISTS idx_products_price ON products(price);
+CREATE UNIQUE INDEX IF NOT EXISTS idx_products_sku ON products(sku) WHERE deleted_at IS NULL;
+CREATE INDEX IF NOT EXISTS idx_products_brand_norm ON products(brand, normalized_name);
+CREATE INDEX IF NOT EXISTS idx_products_merged_into ON products(merged_into);
 CREATE INDEX IF NOT EXISTS idx_orders_user_id ON orders(user_id);
 CREATE INDEX IF NOT EXISTS idx_orders_order_number ON orders(order_number);
 CREATE INDEX IF NOT EXISTS idx_orders_guest_email ON orders(guest_email);

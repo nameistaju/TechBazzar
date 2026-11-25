@@ -11,10 +11,10 @@ import bcrypt from 'bcryptjs';
 import { z } from 'zod';
 import rateLimit from 'express-rate-limit';
 import db from '../db/index.js';
-import { requireAuth, requireApprovedWholesaleBuyer, generateToken, COOKIE_OPTIONS } from '../middleware/auth.js';
+import { requireApprovedWholesaleBuyer, generateToken, COOKIE_OPTIONS } from '../middleware/auth.js';
 import { validateBody } from '../middleware/validate.js';
 import { idempotencyMiddleware } from '../middleware/idempotency.js';
-import { calculateWholesaleCart, getWholesaleTier, formatINR, numberToWordsIndian } from '../services/calculation.js';
+import { calculateWholesaleCart, formatINR, numberToWordsIndian } from '../services/calculation.js';
 
 const router = Router();
 

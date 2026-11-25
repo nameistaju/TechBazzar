@@ -8,7 +8,7 @@ export const PaymentService = {
   /**
    * Initialize a payment transaction
    */
-  async createPaymentSession({ orderId, amount, currency = 'INR', customerEmail, paymentMethod }) {
+  async createPaymentSession({ orderId, _amount, _currency = 'INR', _customerEmail, paymentMethod }) {
     if (paymentMethod === 'cod') {
       return {
         success: true,

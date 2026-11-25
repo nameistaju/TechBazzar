@@ -1,5 +1,5 @@
 // Centralized error handler (PII-free structured logging)
-export function errorHandler(err, req, res, next) {
+export function errorHandler(err, req, res, _next) {
   const statusCode = err.status || err.statusCode || 500;
   const message = err.isPublic ? err.message : (statusCode === 500 ? 'An unexpected server error occurred' : err.message);
 

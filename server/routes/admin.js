@@ -6,7 +6,6 @@ import fs from 'fs';
 import path from 'path';
 import crypto from 'crypto';
 import bcrypt from 'bcryptjs';
-import { z } from 'zod';
 import db from '../db/index.js';
 import { requireAdmin, COOKIE_OPTIONS, generateToken } from '../middleware/auth.js';
 import { validateBody, validateQuery } from '../middleware/validate.js';
@@ -14,10 +13,7 @@ import { validateImageUpload } from '../utils/imageSecurity.js';
 import * as adminSchemas from '../validators/adminSchemas.js';
 import { formatProduct } from './products.js';
 import { 
-  formatINR, 
   formatMoney,
-  numberToWordsIndian, 
-  calculateLineItem, 
   calculateDocumentTotals, 
   evaluateDiscount 
 } from '../services/calculation.js';
@@ -25,8 +21,7 @@ import { generateDocumentPDF } from '../services/pdfGenerator.js';
 import { 
   findDuplicateGroups, 
   mergeProductGroup, 
-  undoMerge, 
-  checkDuplicateName 
+  undoMerge 
 } from '../services/dedupService.js';
 
 const router = Router();
@@ -363,7 +358,7 @@ router.get('/products/images', (req, res) => {
       }));
 
     return res.json({ data: { images: validImages }, error: null });
-  } catch (err) {
+  } catch {
     return res.status(500).json({ data: null, error: 'Could not load local images directory.' });
   }
 });

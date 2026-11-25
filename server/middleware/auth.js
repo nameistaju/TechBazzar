@@ -66,7 +66,7 @@ export function optionalAuth(req, res, next) {
 
     req.user = user;
     next();
-  } catch (err) {
+  } catch {
     req.user = null;
     next();
   }

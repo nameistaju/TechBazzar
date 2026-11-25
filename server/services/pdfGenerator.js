@@ -43,13 +43,17 @@ export function generateDocumentPDF(docData, settings = {}, type = 'invoice') {
       const primaryColor = '#0A0A0A';
       const secondaryColor = '#6B6B6B';
       const borderColor = '#EAEAEA';
-      const accentColor = '#FF4D00';
+      const accentColor = settings.branding_accent_hex || settings.accent_hex || '#FF4D00';
+      const brandName = settings.branding_brand_name || settings.business_trade_name || 'TechBazaar';
       const bgLight = '#F7F7F7';
 
       // 1. Header & Brand
-      let logoPath = path.resolve('public/logo.png');
+      let logoPath = settings.branding_logo_wordmark || settings.branding_logo_mark || path.resolve('public/logo.png');
+      if (typeof logoPath === 'string' && logoPath.startsWith('/')) {
+        logoPath = path.resolve('public' + logoPath);
+      }
       if (!fs.existsSync(logoPath)) {
-        logoPath = path.resolve('public/images/techbazaar-logo.png');
+        logoPath = path.resolve('public/logo.png');
       }
       const startY = margin;
 
@@ -62,7 +66,7 @@ export function generateDocumentPDF(docData, settings = {}, type = 'invoice') {
       if (fs.existsSync(logoPath)) {
         try {
           doc.image(logoPath, margin, curY, { height: 32 });
-        } catch (e) {
+        } catch {
           doc.font('Helvetica-Bold').fontSize(18).fillColor(primaryColor).text('TECHBAZAAR', margin, curY);
         }
       } else {
@@ -140,7 +144,7 @@ export function generateDocumentPDF(docData, settings = {}, type = 'invoice') {
         try {
           const parsed = typeof docData.shipping_address === 'string' ? JSON.parse(docData.shipping_address) : docData.shipping_address;
           shipAddrText = `${parsed.line1 || ''}, ${parsed.city || ''}, ${parsed.state || ''} ${parsed.pincode || ''}`;
-        } catch (e) {
+        } catch {
           shipAddrText = String(docData.shipping_address);
         }
       }
@@ -274,12 +278,12 @@ export function generateDocumentPDF(docData, settings = {}, type = 'invoice') {
 
       // Signatory
       const signX = margin + contentWidth - 140;
-      doc.font('Helvetica-Bold').fontSize(8).fillColor(primaryColor).text(`For ${settings.business_trade_name || 'TechBazaar'}`, signX, bottomY, { align: 'center', width: 140 });
+      doc.font('Helvetica-Bold').fontSize(8).fillColor(primaryColor).text(`For ${brandName}`, signX, bottomY, { align: 'center', width: 140 });
       doc.text('(Authorized Signatory)', signX, bottomY + 45, { align: 'center', width: 140 });
 
       // Footer note
       doc.font('Helvetica').fontSize(7).fillColor(secondaryColor).text(
-        'This is a computer-generated document and carries digital integrity.',
+        `Thank you for your business with ${brandName}. This is a computer-generated document.`,
         margin, 800, { align: 'center', width: contentWidth }
       );
 

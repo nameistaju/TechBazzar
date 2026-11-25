@@ -37,7 +37,7 @@ router.post('/newsletter', newsletterLimiter, validateBody(newsletterSchema), (r
       data: { message: 'Thank you for subscribing to TechBazaar private releases!' },
       error: null
     });
-  } catch (err) {
+  } catch {
     return res.status(500).json({ data: null, error: 'Failed to subscribe. Please try again.' });
   }
 });
@@ -53,7 +53,7 @@ router.post('/notify-me', notifyLimiter, validateBody(notifyMeSchema), (req, res
       data: { message: "We'll notify you via email the moment this item is restocked." },
       error: null
     });
-  } catch (err) {
+  } catch {
     return res.status(500).json({ data: null, error: 'Failed to record notification request.' });
   }
 });
